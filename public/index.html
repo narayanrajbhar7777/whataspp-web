@@ -557,9 +557,9 @@
             </div>
 
             <div class="content">
-                <div id="statusBadge" class="status-bar disconnected">Connecting to WhatsApp server...</div>
+                <div id="statusBadge" class="status-bar disconnected">Enter a User ID above and click Login to connect WhatsApp</div>
                 <div id="qrWrapper" class="qr-box">
-                    <p>Scan to connect WhatsApp:</p>
+                    <p>Scan to connect WhatsApp (WhatsApp app → Linked Devices → Link a Device):</p>
                     <div id="qrcode"></div>
                 </div>
 
@@ -715,15 +715,15 @@
                             <input type="file" id="scheduleFiles" multiple>
                             <div class="help">Files are uploaded to Node server first, then sent at scheduled time.
                             </div>
-                        </div>
-
-                        <div id="serverFolderSourceBox" class="hidden" style="margin-top:14px;">
                             <div style="margin:10px 0;">
                                 <label>
                                     <input type="checkbox" id="allowEmptyFile" checked>
                                     Allow sending without attachment
                                 </label>
                             </div>
+                        </div>
+
+                        <div id="serverFolderSourceBox" class="hidden" style="margin-top:14px;">
                             <label>Folder Location</label>
                             <input id="folderPath" placeholder="C:\Reports">
                             <div class="form-grid" style="margin-top:14px;">
@@ -849,6 +849,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         let currentUserId = null;
+        let statusPollInterval = null;
 
         const MAX_PHONE_NUMBERS = 20;
         const MAX_FILES = 10;
@@ -941,8 +942,9 @@
             }
         }
         async function checkWhatsAppStatus() {
+            if (!currentUserId) return;
             try {
-                const res = await fetch(`/api/whatsapp-status/${currentUserId}`);
+                const res = await fetch(`/api/whatsapp/status/${currentUserId}`);
                 const data = await parseJsonResponse(res);
                 const badge = document.getElementById('statusBadge');
                 const qrWrapper = document.getElementById('qrWrapper');
@@ -1063,7 +1065,9 @@
 
                 const form = new FormData();
 
-                form.append('phone', phoneList.join('')); 
+                // FIX: numbers must stay newline-separated, otherwise the server
+                // concatenates them into one unreadable digit string
+                form.append('phone', phoneList.join('\n'));
                 form.append('userId', currentUserId);
                 form.append('caption', caption);
                 form.append('schedulerName', schedulerName);
@@ -1107,7 +1111,8 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        phone: phoneList.join(''), userId: currentUserId,
+                        // FIX: numbers must stay newline-separated (see UPLOAD branch above)
+                        phone: phoneList.join('\n'), userId: currentUserId,
                         caption,
                         schedulerName,
 
@@ -1218,15 +1223,33 @@
             }).join('')}</tbody></table></div>`;
         }
         async function loginUser() {
-            currentUserId = document.getElementById('userIdInput').value;
-            if (!currentUserId)
+            const id = document.getElementById('userIdInput').value.trim();
+            if (!id)
                 return alert('Enter User ID');
+            currentUserId = id;
+
+            const badge = document.getElementById('statusBadge');
+            badge.textContent = 'Booting WhatsApp Driver...';
+            badge.className = 'status-bar disconnected';
+
             await fetch(`/api/whatsapp/init/${currentUserId}`, { method: 'POST' });
-            setInterval(checkWhatsAppStatus, 3000);
+
+            // FIX: avoid stacking duplicate polling intervals on repeated logins,
+            // and actually poll the same URL the status badge/QR code reads from
+            if (statusPollInterval) clearInterval(statusPollInterval);
+            checkWhatsAppStatus();
+            statusPollInterval = setInterval(checkWhatsAppStatus, 3000);
+
+            loadSchedules();
+            loadHistoryReport();
         }
-        function loadSchedules() {
-            const res =  fetch(`/api/schedules?userId=${currentUserId}&status=` + encodeURIComponent(currentScheduleFilter));
-            const data = parseJsonResponse(res);
+        async function loadSchedules() {
+            // FIX: this was missing "await" entirely, so it tried to read the
+            // schedule list/log table out of a pending Promise instead of the
+            // actual server response and silently failed every time
+            const uid = currentUserId || '';
+            const res = await fetch(`/api/schedules?userId=${encodeURIComponent(uid)}&status=` + encodeURIComponent(currentScheduleFilter));
+            const data = await parseJsonResponse(res);
             if (data.success) {
                 allLoadedSchedules = data.schedules || [];
                 updateScheduleCountTabs(data.counts);
@@ -1334,6 +1357,7 @@
             const files = document.getElementById('sendNowFiles').files;
             const form = new FormData();
             form.append('phone', phoneList.join('\n'));
+            form.append('userId', currentUserId);
             form.append('caption', document.getElementById('sendNowCaption').value.trim());
             for (const file of files) form.append('documents', file);
             const res = await fetch('/api/send-whatsapp', { method: 'POST', body: form });
@@ -1342,7 +1366,8 @@
         }
         function setHistoryFilter(status) { currentHistoryFilter = status; loadHistoryReport(); }
         async function loadHistoryReport() {
-            const res = await fetch(`/api/history?userId=${currentUserId}&status=` + encodeURIComponent(currentHistoryFilter));
+            const uid = currentUserId || '';
+            const res = await fetch(`/api/history?userId=${encodeURIComponent(uid)}&status=` + encodeURIComponent(currentHistoryFilter));
             const data = await parseJsonResponse(res);
             const listBox = document.getElementById('historyList');
             const summaryBox = document.getElementById('historySummary');
@@ -1360,8 +1385,6 @@
         document.getElementById('numberListInput').addEventListener('input', () => updateCount('numberListInput', 'numberListInputCount'));
         document.getElementById('editSchedulePhone').addEventListener('input', () => updateCount('editSchedulePhone', 'editSchedulePhoneCount'));
 
-        checkWhatsAppStatus();
-        setInterval(checkWhatsAppStatus, 3000);
         loadNumberList();
         loadSchedules();
         handleScheduleModeChange();
@@ -1389,17 +1412,18 @@
 
             document.addEventListener('change', (e) => {
                 if (e.target.classList.contains('row-checkbox')) {
-                    if (!e.target.dataset.id) return;
+                    // FIX: this referenced an undefined "id" variable and threw on
+                    // every single checkbox click instead of tracking the selection
+                    const id = e.target.dataset.id;
+                    if (!id) return;
 
-                    if (id) {
-                        if (e.target.checked) selectedScheduleIds.add(id);
-                        else selectedScheduleIds.delete(id);
-                    }
+                    if (e.target.checked) selectedScheduleIds.add(id);
+                    else selectedScheduleIds.delete(id);
 
                     const all = document.querySelectorAll('.row-checkbox').length;
-                    const checked = document.querySelectorAll('.row-checkbox:checked').length;
+                    const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
 
-                    selectAll.checked = all === checked;
+                    selectAll.checked = all > 0 && all === checkedCount;
                 }
             });
         }
