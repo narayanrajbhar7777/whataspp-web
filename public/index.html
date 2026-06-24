@@ -550,6 +550,7 @@
                 <input id="userIdInput" placeholder="User ID (U001)"
                     style="height:38px;border-radius:8px;border:1px solid #ccc;padding:0 10px;">
                 <button class="btn-blue" onclick="loginUser()">Login</button>
+                <button class="btn-white" onclick="openLoginQrPage()" title="Open a standalone QR scan page">QR Page ↗</button>
                 <input id="globalSearch" placeholder="Global search..." oninput="syncGlobalSearch(this.value)">
                 <button class="btn-white" onclick="quickExportSchedules()">Quick Export</button>
                 <button class="btn-blue" onclick="bulkQuickSend()">Quick Send</button>
@@ -1221,6 +1222,11 @@
                 </td>
             </tr>`;
             }).join('')}</tbody></table></div>`;
+        }
+        function openLoginQrPage() {
+            const id = (document.getElementById('userIdInput').value || currentUserId || '').trim();
+            const url = id ? `/loginqr?userId=${encodeURIComponent(id)}` : '/loginqr';
+            window.open(url, '_blank');
         }
         async function loginUser() {
             const id = document.getElementById('userIdInput').value.trim();

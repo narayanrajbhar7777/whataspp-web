@@ -140,6 +140,15 @@ app.get('/api/whatsapp/status/:userId', (req, res) => {
     });
 });
 
+/**
+ * Dedicated standalone QR login page — lets a phone/operator open just
+ * http://localhost:3000/loginqr (optionally http://localhost:3000/loginqr?userId=U001
+ * to auto-start) to scan and link WhatsApp without loading the full dashboard.
+ */
+app.get('/loginqr', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'loginqr.html'));
+});
+
 /** GROUP FETCH ENGINE */
 app.get('/groups/:sessionName', async (req, res) => {
     const sId = req.params.sessionName;
