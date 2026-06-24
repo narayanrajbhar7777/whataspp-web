@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>WhatsApp Scheduler Pro</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f4f7fb;
+            color: #0f172a;
+        }
+
+        .app {
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 230px 1fr;
+        }
+
+        .sidebar {
+            background: #fff;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            padding: 24px 18px 18px;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .brand h1 {
+            margin: 0;
+            color: #00843d;
+            font-size: 20px;
+            line-height: 1.05;
+        }
+
+        .brand span {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .nav {
+            padding: 16px 12px;
+            flex: 1;
+        }
+
+        .nav button {
+            width: 100%;
+            border: 0;
+            background: transparent;
+            text-align: left;
+            padding: 12px 14px;
+            border-radius: 12px;
+            color: #334155;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 6px;
+        }
+
+        .nav button.active {
+            background: #99f0df;
+            color: #065f46;
+        }
+
+        .side-footer {
+            border-top: 1px solid #eef2f7;
+            padding: 14px 12px 24px;
+        }
+
+        .main {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .topbar {
+            height: 64px;
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            display: grid;
+            grid-template-columns: 1fr 280px 120px 120px 160px;
+            gap: 12px;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .title {
+            color: #064e3b;
+            font-size: 24px;
+            font-weight: 900;
+            line-height: 1.05;
+        }
+
+        .topbar input {
+            height: 40px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            padding: 0 12px;
+            background: #f8fafc;
+        }
+
+        button {
+            border: 0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .btn-blue {
+            background: #3b82f6;
+            color: #fff;
+        }
+
+        .btn-green {
+            background: #22c55e;
+            color: #fff;
+        }
+
+        .btn-red {
+            background: #dc2626;
+            color: #fff;
+        }
+
+        .btn-orange {
+            background: #f97316;
+            color: #fff;
+        }
+
+        .btn-dark {
+            background: #0f172a;
+            color: #fff;
+        }
+
+        .btn-light {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-white {
+            background: #fff;
+            color: #0f172a;
+            border: 1px solid #cbd5e1;
+        }
+
+        .content {
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .status-bar {
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .connected {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .disconnected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .qr-box {
+            display: none;
+            text-align: center;
+            padding: 14px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            margin-bottom: 14px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #dbe3ef;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            font-weight: 800;
+            color: #475569;
+        }
+
+        .metric-value {
+            font-size: 30px;
+            font-weight: 900;
+            margin-top: 4px;
+        }
+
+        .metric-icon {
+            display: inline-flex;
+            width: 34px;
+            height: 34px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: #d1fae5;
+            color: #059669;
+            margin-bottom: 12px;
+        }
+
+        .metric-icon.red {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid #dbe3ef;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+        }
+
+        .panel-head {
+            padding: 14px 16px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .search {
+            width: 300px;
+            height: 38px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 0 12px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #fbfdff;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .filter-tab {
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+        }
+
+        .filter-tab.active {
+            background: #0f172a;
+            color: #fff;
+        }
+
+        .table-wrap {
+            overflow: auto;
+            max-height: 460px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1350px;
+            font-size: 12px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #eef4ff;
+            color: #334155;
+            font-size: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        tbody tr:hover {
+            background: #f0fdf4;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .SCHEDULED {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .PROCESSING {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .PARTIAL {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .SENT,
+        .SUCCESS {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .FAILED {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .CANCELLED {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .toggle {
+            width: 34px;
+            height: 18px;
+            border-radius: 999px;
+            background: #cbd5e1;
+            display: inline-block;
+            position: relative;
+        }
+
+        .toggle::after {
+            content: '';
+            width: 14px;
+            height: 14px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+        }
+
+        .toggle.on {
+            background: #22c55e;
+        }
+
+        .toggle.on::after {
+            left: 18px;
+        }
+
+        .action {
+            background: transparent;
+            padding: 4px 6px;
+            font-size: 16px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .form-card {
+            background: #fff;
+            border: 1px solid #dbe3ef;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .col {
+            flex: 1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .help {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .response {
+            text-align: center;
+            font-weight: 800;
+            margin-top: 12px;
+        }
+
+        .number-chip {
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+            padding: 6px 10px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 999px;
+            margin: 4px;
+            font-size: 13px;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, .55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 95%;
+            max-width: 920px;
+            max-height: 90vh;
+            overflow: auto;
+            background: #fff;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .25);
+        }
+
+        @media (max-width:1000px) {
+            .app {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .topbar {
+                grid-template-columns: 1fr;
+                height: auto;
+                padding: 12px;
+            }
+
+            .cards,
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>Scheduler Pro</h1>
+                <span>Enterprise Messaging</span>
+            </div>
+            <div class="nav">
+                <button id="navDetails" class="active" onclick="switchTab('details')">▦ Scheduled Report</button>
+                <button id="navSchedule" onclick="switchTab('schedule')">＋ Add Scheduler</button>
+                <button id="navNumbers" onclick="switchTab('numbers')">☷ WhatsApp List</button>
+                <button id="navHistory" onclick="switchTab('history')">☰ Scheduler Logs</button>
+                <button id="navSendNow" onclick="switchTab('sendNow')">➤ Quick Send</button>
+            </div>
+            <div class="side-footer">
+                <button class="btn-white" style="width:100%;">⚙ Settings</button>
+            </div>
+        </aside>
+
+        <main class="main">
+            <div class="topbar">
+                <div class="title">WhatsApp<br>Scheduler</div>
+                <input id="userIdInput" placeholder="User ID (U001)"
+                    style="height:38px;border-radius:8px;border:1px solid #ccc;padding:0 10px;">
+                <button class="btn-blue" onclick="loginUser()">Login</button>
+                <input id="globalSearch" placeholder="Global search..." oninput="syncGlobalSearch(this.value)">
+                <button class="btn-white" onclick="quickExportSchedules()">Quick Export</button>
+                <button class="btn-blue" onclick="bulkQuickSend()">Quick Send</button>
+                <button class="btn-green" onclick="switchTab('schedule')">Create New Schedule</button>
+            </div>
+
+            <div class="content">
+                <div id="statusBadge" class="status-bar disconnected">Connecting to WhatsApp server...</div>
+                <div id="qrWrapper" class="qr-box">
+                    <p>Scan to connect WhatsApp:</p>
+                    <div id="qrcode"></div>
+                </div>
+
+                <!-- Scheduled Report -->
+                <section id="detailsSection" class="section active">
+                    <div class="cards">
+                        <div class="card"><span class="metric-icon">📣</span>
+                            <div class="metric-label">Total Schedules</div>
+                            <div id="metricTotal" class="metric-value">0</div>
+                        </div>
+                        <div class="card"><span class="metric-icon">🗓</span>
+                            <div class="metric-label">Scheduled</div>
+                            <div id="metricScheduled" class="metric-value">0</div>
+                        </div>
+                        <div class="card"><span class="metric-icon">✓</span>
+                            <div class="metric-label">Sent</div>
+                            <div id="metricSent" class="metric-value">0</div>
+                        </div>
+                        <div class="card"><span class="metric-icon red">!</span>
+                            <div class="metric-label">Failed</div>
+                            <div id="metricFailed" class="metric-value">0</div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-head">
+                            <div class="toolbar">
+                                <button class="btn-orange" onclick="bulkDisableSchedules()">Disable</button>
+                                <button class="btn-green" onclick="bulkEnableSchedules()">Enable</button>
+                                <button class="btn-blue" onclick="bulkQuickSend()">Quick Send</button>
+                                <button class="btn-dark" onclick="switchTab('schedule')">Add</button>
+                            </div>
+                            <input id="scheduleSearchInput" class="search" placeholder="Search..."
+                                oninput="renderScheduleTable()">
+                        </div>
+
+                        <div class="filter-tabs">
+                            <button id="filterALL" class="filter-tab active" onclick="setScheduleFilter('ALL')">All
+                                (0)</button>
+                            <button id="filterSCHEDULED" class="filter-tab"
+                                onclick="setScheduleFilter('SCHEDULED')">Scheduled (0)</button>
+                            <button id="filterPROCESSING" class="filter-tab"
+                                onclick="setScheduleFilter('PROCESSING')">Processing (0)</button>
+                            <button id="filterPARTIAL" class="filter-tab" onclick="setScheduleFilter('PARTIAL')">Partial
+                                (0)</button>
+                            <button id="filterSENT" class="filter-tab" onclick="setScheduleFilter('SENT')">Sent
+                                (0)</button>
+                            <button id="filterFAILED" class="filter-tab" onclick="setScheduleFilter('FAILED')">Failed
+                                (0)</button>
+                            <button id="filterCANCELLED" class="filter-tab"
+                                onclick="setScheduleFilter('CANCELLED')">Cancelled (0)</button>
+                        </div>
+
+                        <div id="scheduleList"></div>
+                    </div>
+                </section>
+
+                <!-- Add Scheduler -->
+                <section id="scheduleSection" class="section">
+                    <div class="form-card">
+                        <h3>Create Scheduler</h3>
+                        <div class="form-grid">
+                            <div>
+                                <label>Scheduler Name</label>
+                                <input id="schedulerName" placeholder="Example: Daily Stock Report">
+                            </div>
+                            <div>
+                                <label>Schedule Type</label>
+                                <select id="scheduleMode" onchange="handleScheduleModeChange()">
+                                    <option value="CUSTOM">Custom Date Only</option>
+                                    <option value="DAILY">Daily</option>
+                                    <option value="WEEKLY">Weekly</option>
+                                    <option value="MONTHLY">Monthly</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="scheduleAtGroup" style="margin-top:14px;">
+                            <label>Scheduled Time</label>
+                            <input type="datetime-local" id="scheduleAt">
+                        </div>
+
+                        <div class="form-grid hidden" id="dailyGroup" style="margin-top:14px;">
+                            <div><label>Daily Start Date</label><input type="date" id="dailyStartDate"></div>
+                            <div><label>Daily Time</label><input type="time" id="dailyTime" value="09:30"></div>
+                        </div>
+
+                        <div class="form-grid hidden" id="weeklyGroup" style="margin-top:14px;">
+                            <div><label>Weekly Start Date</label><input type="date" id="weeklyStartDate"></div>
+                            <div><label>Weekly Day</label><select id="weeklyDay">
+                                    <option value="0">Sunday</option>
+                                    <option value="1">Monday</option>
+                                    <option value="2">Tuesday</option>
+                                    <option value="3">Wednesday</option>
+                                    <option value="4">Thursday</option>
+                                    <option value="5">Friday</option>
+                                    <option value="6">Saturday</option>
+                                </select></div>
+                            <div><label>Weekly Time</label><input type="time" id="weeklyTime" value="09:30"></div>
+                        </div>
+
+                        <div class="form-grid hidden" id="monthlyGroup" style="margin-top:14px;">
+                            <div><label>Monthly Start Date</label><input type="date" id="monthlyStartDate"></div>
+                            <div><label>Month Day</label><input type="number" id="monthlyDay" min="1" max="31"
+                                    value="1"></div>
+                            <div><label>Monthly Time</label><input type="time" id="monthlyTime" value="09:30"></div>
+                        </div>
+
+                        <div style="margin-top:14px;">
+                            <label>Message</label>
+                            <textarea id="scheduleCaption" placeholder="Actual WhatsApp message"></textarea>
+                        </div>
+
+                        <div style="margin-top:14px;">
+                            <label>Receiver Number</label>
+                            <textarea id="schedulePhone"
+                                placeholder="Enter numbers with country code. One per line or comma separated."></textarea>
+                            <div class="help"><span id="schedulePhoneCount">0 / 20</span></div>
+                            <div class="row" style="margin-top:8px;">
+                                <button class="btn-white col" onclick="loadSavedNumbersToSchedule()">Get Numbers From
+                                    List</button>
+                                <button class="btn-orange col" onclick="appendSelectedSavedNumbers()">Add Selected
+                                    Numbers</button>
+                            </div>
+                            <div id="savedNumberCheckboxes"></div>
+                        </div>
+
+                        <div class="form-grid" style="margin-top:14px;">
+                            <div>
+                                <label>Attachment Source</label>
+                                <select id="sourceType" onchange="handleSourceTypeChange()">
+                                    <option value="UPLOAD">Client Side Upload</option>
+                                    <option value="SERVER_FOLDER">Server Side Folder Location</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>File Type Optional</label>
+                                <select id="fileType">
+                                    <option value="">All Type</option>
+                                    <option value=".pdf">PDF</option>
+                                    <option value=".txt">TXT</option>
+                                    <option value=".jpg">JPG</option>
+                                    <option value=".jpeg">JPEG</option>
+                                    <option value=".png">PNG</option>
+                                    <option value=".xls">XLS</option>
+                                    <option value=".xlsx">XLSX</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="uploadSourceBox" style="margin-top:14px;">
+                            <label>Attachment From Client Side</label>
+                            <input type="file" id="scheduleFiles" multiple>
+                            <div class="help">Files are uploaded to Node server first, then sent at scheduled time.
+                            </div>
+                        </div>
+
+                        <div id="serverFolderSourceBox" class="hidden" style="margin-top:14px;">
+                            <div style="margin:10px 0;">
+                                <label>
+                                    <input type="checkbox" id="allowEmptyFile" checked>
+                                    Allow sending without attachment
+                                </label>
+                            </div>
+                            <label>Folder Location</label>
+                            <input id="folderPath" placeholder="C:\Reports">
+                            <div class="form-grid" style="margin-top:14px;">
+                                <div><label>File Name Optional</label><input id="fileName"
+                                        placeholder="Exact file name optional"></div>
+                                <div><label>Max Files</label><input type="number" id="maxFiles" value="1" min="1"
+                                        max="10"></div>
+                            </div>
+                            <div style="margin-top:10px;"><label><input type="checkbox" id="useLatestFiles" checked>
+                                    Auto-send latest file from folder</label></div>
+                            <button class="btn-dark" style="margin-top:10px;" onclick="scanLocationFiles()">Scan
+                                Files</button>
+                            <div id="locationFiles"></div>
+                        </div>
+
+                        <div style="margin-top:18px;">
+                            <button class="btn-green" onclick="createLocationSchedule()">Create Schedule</button>
+                            <button class="btn-light" onclick="clearSchedulerForm()">Clear</button>
+                        </div>
+                        <div id="scheduleResponse" class="response"></div>
+                    </div>
+                </section>
+
+                <!-- WhatsApp List -->
+                <section id="numbersSection" class="section">
+                    <div class="form-card">
+                        <h3>WhatsApp List</h3>
+                        <label>Add WhatsApp Numbers</label>
+                        <textarea id="numberListInput" placeholder="Enter max 20 numbers"></textarea>
+                        <div class="help"><span id="numberListInputCount">0 / 20</span></div>
+                        <div class="row" style="margin-top:10px;">
+                            <button class="btn-green" onclick="addNumbersToList(false)">Add To List</button>
+                            <button class="btn-dark" onclick="addNumbersToList(true)">Replace Full List</button>
+                            <button class="btn-red" onclick="clearNumberList()">Clear List</button>
+                        </div>
+                        <h3>Saved WhatsApp Numbers</h3>
+                        <div id="numberListDisplay"></div>
+                        <div id="numberListResponse" class="response"></div>
+                    </div>
+                </section>
+
+                <!-- Scheduler Logs -->
+                <section id="historySection" class="section">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h3 style="margin:0;">Scheduler Logs</h3>
+                            <div class="toolbar">
+                                <button class="btn-white" onclick="setHistoryFilter('ALL')">All</button>
+                                <button class="btn-green" onclick="setHistoryFilter('SUCCESS')">Success</button>
+                                <button class="btn-red" onclick="setHistoryFilter('FAILED')">Failed</button>
+                                <input id="historySearchInput" class="search" placeholder="Search logs..."
+                                    oninput="loadHistoryReport()">
+                                <button class="btn-dark" onclick="loadHistoryReport()">Refresh</button>
+                            </div>
+                        </div>
+                        <div id="historySummary" style="padding:12px 16px; font-weight:800;"></div>
+                        <div id="historyList"></div>
+                    </div>
+                </section>
+
+                <!-- Quick Send -->
+                <section id="sendNowSection" class="section">
+                    <div class="form-card">
+                        <h3>Quick Send</h3>
+                        <label>Receiver Number</label>
+                        <textarea id="sendNowPhone"></textarea>
+                        <div class="help"><span id="sendNowPhoneCount">0 / 20</span></div>
+                        <button class="btn-white" style="margin-top:8px;" onclick="loadSavedNumbersToSendNow()">Get
+                            Numbers From List</button>
+                        <div style="margin-top:14px;"><label>Message</label><textarea id="sendNowCaption"></textarea>
+                        </div>
+                        <div style="margin-top:14px;"><label>Attachment</label><input type="file" id="sendNowFiles"
+                                multiple></div>
+                        <button class="btn-green" style="margin-top:14px;" onclick="sendNow()">Send via
+                            WhatsApp</button>
+                        <div id="sendNowResponse" class="response"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div id="editScheduleModal" class="modal">
+        <div class="modal-box">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <h3>Edit Scheduler</h3>
+                <button class="btn-light" onclick="closeEditScheduleModal()">Close</button>
+            </div>
+            <input type="hidden" id="editScheduleId">
+            <div class="form-grid">
+                <div><label>Scheduler Name</label><input id="editSchedulerName"></div>
+                <div><label>Scheduled Time</label><input type="datetime-local" id="editScheduleAt"></div>
+            </div>
+            <div style="margin-top:14px;"><label>Message</label><textarea id="editScheduleCaption"></textarea></div>
+            <div style="margin-top:14px;"><label>Receiver Number</label><textarea id="editSchedulePhone"></textarea>
+                <div class="help"><span id="editSchedulePhoneCount">0 / 20</span></div>
+            </div>
+            <div class="form-grid" style="margin-top:14px;">
+                <div><label>Folder Location</label><input id="editFolderPath"></div>
+                <div><label>File Name Optional</label><input id="editFileName"></div>
+                <div><label>File Type Optional</label><select id="editFileType">
+                        <option value="">All Type</option>
+                        <option value=".pdf">PDF</option>
+                        <option value=".txt">TXT</option>
+                        <option value=".jpg">JPG</option>
+                        <option value=".jpeg">JPEG</option>
+                        <option value=".png">PNG</option>
+                        <option value=".xls">XLS</option>
+                        <option value=".xlsx">XLSX</option>
+                    </select></div>
+                <div><label>Max Files</label><input type="number" id="editMaxFiles" min="1" max="10" value="1"></div>
+            </div>
+            <div style="margin-top:14px;"><label><input type="checkbox" id="editUseLatestFiles"> Auto-send latest
+                    file</label></div>
+            <div style="margin-top:16px;">
+                <button class="btn-green" onclick="updateSchedule()">Update</button>
+                <button class="btn-light" onclick="closeEditScheduleModal()">Cancel</button>
+            </div>
+            <div id="editScheduleResponse" class="response"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        let currentUserId = null;
+
+        const MAX_PHONE_NUMBERS = 20;
+        const MAX_FILES = 10;
+
+        let isWhatsappReady = false;
+        let savedNumbers = [];
+        let scannedFiles = [];
+        let allLoadedSchedules = [];
+        let currentScheduleFilter = 'ALL';
+        let currentHistoryFilter = 'ALL';
+        let selectedScheduleIds = new Set();
+
+        function parsePhoneNumbers(value) {
+            return String(value || '').split(/[\n,;]+/).map(p => p.replace(/\D/g, '')).filter(p => p.length >= 10).filter((p, i, a) => a.indexOf(p) === i);
+        }
+        function escapeHtml(value) {
+            return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+        async function parseJsonResponse(res) {
+            const text = await res.text();
+            try { return JSON.parse(text); } catch (e) { return { success: false, error: `HTTP ${res.status}: ${text.slice(0, 160)}` }; }
+        }
+        function setMsg(id, text, success) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = text || '';
+            el.style.color = success ? '#166534' : '#c62828';
+        }
+        function updateCount(textareaId, countId) {
+            const list = parsePhoneNumbers(document.getElementById(textareaId).value);
+            const el = document.getElementById(countId);
+            if (el) el.textContent = list.length + ' / ' + MAX_PHONE_NUMBERS;
+            return list;
+        }
+        function todayDateOnly() { return new Date().toISOString().slice(0, 10); }
+        function toDatetimeLocalValue(dateValue) {
+            if (!dateValue) return '';
+            const d = new Date(dateValue);
+            if (isNaN(d.getTime())) return '';
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+        }
+        function getScheduleConfig() {
+            const mode = document.getElementById('scheduleMode').value;
+            if (mode === 'CUSTOM') return { scheduleMode: 'CUSTOM', scheduleAt: document.getElementById('scheduleAt').value };
+            if (mode === 'DAILY') return { scheduleMode: 'DAILY', startDate: document.getElementById('dailyStartDate').value, time: document.getElementById('dailyTime').value };
+            if (mode === 'WEEKLY') return { scheduleMode: 'WEEKLY', startDate: document.getElementById('weeklyStartDate').value, weeklyDay: document.getElementById('weeklyDay').value, time: document.getElementById('weeklyTime').value };
+            if (mode === 'MONTHLY') return { scheduleMode: 'MONTHLY', startDate: document.getElementById('monthlyStartDate').value, monthlyDay: document.getElementById('monthlyDay').value, time: document.getElementById('monthlyTime').value };
+            return { scheduleMode: 'CUSTOM' };
+        }
+        function handleScheduleModeChange() {
+            const mode = document.getElementById('scheduleMode').value;
+            document.getElementById('scheduleAtGroup').classList.toggle('hidden', mode !== 'CUSTOM');
+            document.getElementById('dailyGroup').classList.toggle('hidden', mode !== 'DAILY');
+            document.getElementById('weeklyGroup').classList.toggle('hidden', mode !== 'WEEKLY');
+            document.getElementById('monthlyGroup').classList.toggle('hidden', mode !== 'MONTHLY');
+            const today = todayDateOnly();
+            ['dailyStartDate', 'weeklyStartDate', 'monthlyStartDate'].forEach(id => {
+                if (!document.getElementById(id).value)
+                    document.getElementById(id).value = today;
+            });
+        }
+        function handleSourceTypeChange() {
+            const source = document.getElementById('sourceType').value;
+            document.getElementById('uploadSourceBox').classList.toggle('hidden', source !== 'UPLOAD');
+            document.getElementById('serverFolderSourceBox').classList.toggle('hidden', source !== 'SERVER_FOLDER');
+        }
+        function switchTab(tab) {
+            ['schedule', 'numbers', 'details', 'history', 'sendNow'].forEach(name => {
+                document.getElementById(name + 'Section').classList.remove('active');
+                const nav = document.getElementById('nav' + name.charAt(0).toUpperCase() + name.slice(1));
+                if (nav) nav.classList.remove('active');
+            });
+            document.getElementById(tab + 'Section').classList.add('active');
+            const nav = document.getElementById('nav' + tab.charAt(0).toUpperCase() + tab.slice(1));
+            if (nav) nav.classList.add('active');
+            if (tab === 'details') loadSchedules();
+            if (tab === 'numbers') loadNumberList();
+            if (tab === 'history') loadHistoryReport();
+        }
+        function syncGlobalSearch(value) {
+            const scheduleInput = document.getElementById('scheduleSearchInput');
+            const historyInput = document.getElementById('historySearchInput');
+            if (document.getElementById('detailsSection').classList.contains('active') && scheduleInput) {
+                scheduleInput.value = value;
+                renderScheduleTable();
+            }
+            if (document.getElementById('historySection').classList.contains('active') && historyInput) {
+                historyInput.value = value;
+                loadHistoryReport();
+            }
+        }
+        async function checkWhatsAppStatus() {
+            try {
+                const res = await fetch(`/api/whatsapp-status/${currentUserId}`);
+                const data = await parseJsonResponse(res);
+                const badge = document.getElementById('statusBadge');
+                const qrWrapper = document.getElementById('qrWrapper');
+                const qrDiv = document.getElementById('qrcode');
+                if (data.ready) {
+                    isWhatsappReady = true;
+                    badge.textContent = 'WhatsApp Online';
+                    badge.className = 'status-bar connected';
+                    qrWrapper.style.display = 'none';
+                    qrDiv.innerHTML = '';
+                } else if (data.qr) {
+                    isWhatsappReady = false;
+                    badge.textContent = 'Scan QR to connect WhatsApp';
+                    badge.className = 'status-bar disconnected';
+                    qrWrapper.style.display = 'block';
+                    qrDiv.innerHTML = '';
+                    new QRCode(qrDiv, { text: data.qr, width: 180, height: 180 });
+                } else {
+                    isWhatsappReady = false;
+                    badge.textContent = 'Booting WhatsApp Driver...';
+                    badge.className = 'status-bar disconnected';
+                    qrWrapper.style.display = 'none';
+                }
+            } catch (e) { }
+        }
+        async function loadNumberList() {
+            const res = await fetch('/api/number-list');
+            const data = await parseJsonResponse(res);
+            if (!data.success) return;
+            savedNumbers = data.numbers || [];
+            renderNumberList();
+            renderSavedNumberCheckboxes();
+        }
+        function renderNumberList() {
+            const box = document.getElementById('numberListDisplay');
+            if (!savedNumbers.length) { box.innerHTML = '<p>No numbers saved.</p>'; return; }
+            box.innerHTML = savedNumbers.map(p => `<span class="number-chip">${escapeHtml(p)} <button class="btn-red" onclick="deleteNumber('${p}')">x</button></span>`).join('');
+        }
+        function renderSavedNumberCheckboxes() {
+            const box = document.getElementById('savedNumberCheckboxes');
+            if (!box) return;
+            box.innerHTML = savedNumbers.map(p => `<label class="number-chip"><input type="checkbox" class="saved-number-check" value="${p}">${escapeHtml(p)}</label>`).join('');
+        }
+        async function addNumbersToList(replace) {
+            const phones = document.getElementById('numberListInput').value;
+            const list = updateCount('numberListInput', 'numberListInputCount');
+            if (!list.length) return setMsg('numberListResponse', 'Please enter valid number.', false);
+            if (list.length > MAX_PHONE_NUMBERS) return setMsg('numberListResponse', 'Maximum 20 numbers allowed.', false);
+            const res = await fetch('/api/number-list', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phones, replace }) });
+            const data = await parseJsonResponse(res);
+            setMsg('numberListResponse', data.message || data.error, data.success);
+            if (data.success) { document.getElementById('numberListInput').value = ''; loadNumberList(); updateCount('numberListInput', 'numberListInputCount'); }
+        }
+        async function deleteNumber(phone) { await fetch('/api/number-list/' + phone, { method: 'DELETE' }); loadNumberList(); }
+        async function clearNumberList() { if (confirm('Clear all saved numbers?')) { await fetch('/api/number-list', { method: 'DELETE' }); loadNumberList(); } }
+        function loadSavedNumbersToSchedule() { document.getElementById('schedulePhone').value = savedNumbers.join('\n'); updateCount('schedulePhone', 'schedulePhoneCount'); }
+        function loadSavedNumbersToSendNow() { document.getElementById('sendNowPhone').value = savedNumbers.join('\n'); updateCount('sendNowPhone', 'sendNowPhoneCount'); }
+        function appendSelectedSavedNumbers() {
+            const selected = Array.from(document.querySelectorAll('.saved-number-check:checked')).map(x => x.value);
+            const current = parsePhoneNumbers(document.getElementById('schedulePhone').value);
+            document.getElementById('schedulePhone').value = parsePhoneNumbers([...current, ...selected].join('\n')).join('\n');
+            updateCount('schedulePhone', 'schedulePhoneCount');
+        }
+        async function scanLocationFiles() {
+            const folderPath = document.getElementById('folderPath').value.trim();
+            const fileName = document.getElementById('fileName').value.trim();
+            const fileType = document.getElementById('fileType').value;
+            const maxFiles = document.getElementById('maxFiles').value || 1;
+            const box = document.getElementById('locationFiles');
+            box.innerHTML = '<p>Scanning...</p>';
+            const res = await fetch('/api/location-files?folderPath=' + encodeURIComponent(folderPath) + '&fileName=' + encodeURIComponent(fileName) + '&fileType=' + encodeURIComponent(fileType) + '&maxFiles=' + encodeURIComponent(maxFiles));
+            const data = await parseJsonResponse(res);
+            if (!data.success) { box.innerHTML = `<p style="color:#dc2626;">${escapeHtml(data.error)}</p>`; return; }
+            box.innerHTML = (data.files || []).map((f, i) => `<div class="number-chip"><input type="checkbox" class="location-file-check" value="${escapeHtml(f.filePath)}" ${i === 0 ? 'checked' : ''}> ${escapeHtml(f.fileName)}</div>`).join('') || '<p>No files found.</p>';
+        }
+        function clearSchedulerForm() {
+            ['schedulerName', 'scheduleAt', 'scheduleCaption', 'schedulePhone', 'folderPath', 'fileName'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+            document.getElementById('scheduleMode').value = 'CUSTOM';
+            document.getElementById('sourceType').value = 'UPLOAD';
+            document.getElementById('fileType').value = '';
+            document.getElementById('maxFiles').value = '1';
+            document.getElementById('scheduleFiles').value = '';
+            document.getElementById('locationFiles').innerHTML = '';
+            handleScheduleModeChange(); handleSourceTypeChange(); updateCount('schedulePhone', 'schedulePhoneCount');
+        }
+        async function createLocationSchedule() {
+
+            const phoneList = updateCount('schedulePhone', 'schedulePhoneCount');
+
+            if (!phoneList.length) {
+                return setMsg('scheduleResponse', 'Please enter receiver number.', false);
+            }
+
+            if (phoneList.length > MAX_PHONE_NUMBERS) {
+                return setMsg('scheduleResponse', 'Maximum 20 numbers allowed.', false);
+            }
+
+            const schedulerName = document.getElementById('schedulerName').value.trim();
+            const caption = document.getElementById('scheduleCaption').value.trim();
+            const sourceType = document.getElementById('sourceType').value;
+
+            const config = getScheduleConfig();
+
+            let res;
+
+            if (sourceType === 'UPLOAD') {
+
+                const allowEmptyFile = document.getElementById('allowEmptyFile').checked;
+                const files = Array.from(document.getElementById('scheduleFiles').files || []);
+
+                if (!allowEmptyFile && files.length === 0) {
+                    return setMsg('scheduleResponse', 'Please select attachment or enable allow empty.', false);
+                }
+
+                if (files.length > MAX_FILES) {
+                    return setMsg('scheduleResponse', 'Maximum 10 files allowed.', false);
+                }
+
+                const form = new FormData();
+
+                form.append('phone', phoneList.join('')); 
+                form.append('userId', currentUserId);
+                form.append('caption', caption);
+                form.append('schedulerName', schedulerName);
+
+                // FIX: send schedule config
+                Object.keys(config).forEach(k => form.append(k, config[k]));
+
+                files.forEach(file => form.append('documents', file));
+
+                setMsg('scheduleResponse', 'Uploading and creating schedule...', true);
+
+                res = await fetch('/api/upload-and-schedule-whatsapp', {
+                    method: 'POST',
+                    body: form
+                });
+
+            } else {
+
+                const folderPath = document.getElementById('folderPath').value.trim();
+                const fileName = document.getElementById('fileName').value.trim();
+                const fileType = document.getElementById('fileType').value;
+                const maxFiles = document.getElementById('maxFiles').value || 1;
+
+                const selectedFiles = Array.from(
+                    document.querySelectorAll('.location-file-check:checked')
+                ).map(x => x.value);
+
+                const useLatestFiles = document.getElementById('useLatestFiles').checked;
+
+                const hasMessage = caption && caption.trim().length > 0;
+                const hasFolder = folderPath && folderPath.trim().length > 0;
+                const hasSelectedFiles = selectedFiles.length > 0;
+
+                if (!hasFolder && !hasSelectedFiles && !hasMessage) {
+                    return setMsg('scheduleResponse', 'Please provide message OR folder OR files.', false);
+                }
+
+                setMsg('scheduleResponse', 'Creating schedule...', true);
+
+                res = await fetch('/api/schedule-location-report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        phone: phoneList.join(''), userId: currentUserId,
+                        caption,
+                        schedulerName,
+
+                        scheduleMode: config.scheduleMode,
+                        scheduleAt: config.scheduleAt || null,
+                        startDate: config.startDate || null,
+                        time: config.time || null,
+                        weeklyDay: config.weeklyDay || null,
+                        monthlyDay: config.monthlyDay || null,
+
+                        folderPath,
+                        fileName,
+                        fileType,
+                        maxFiles,
+                        selectedFiles,
+                        useLatestFiles,
+
+                        ...config
+                    })
+                });
+            }
+
+            const data = await parseJsonResponse(res);
+
+            setMsg('scheduleResponse', data.message || data.error, data.success);
+
+            if (data.success) {
+                clearSchedulerForm();
+                loadSchedules();
+                switchTab('details');
+            }
+        }
+        function getDisplayStatus(status) { return status === 'PENDING' ? 'SCHEDULED' : (status || '-'); }
+        function setScheduleFilter(status) {
+            currentScheduleFilter = status;
+            ['ALL', 'SCHEDULED', 'PROCESSING', 'PARTIAL', 'SENT', 'FAILED', 'CANCELLED'].forEach(s => {
+                const el = document.getElementById('filter' + s);
+                if (el) el.classList.toggle('active', s === status);
+            });
+            loadSchedules();
+        }
+        function updateScheduleCountTabs(c) {
+            c = c || {};
+            const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+            set('filterALL', 'All (' + (c.ALL || 0) + ')');
+            set('filterSCHEDULED', 'Scheduled (' + (c.SCHEDULED || 0) + ')');
+            set('filterPROCESSING', 'Processing (' + (c.PROCESSING || 0) + ')');
+            set('filterPARTIAL', 'Partial (' + (c.PARTIAL || 0) + ')');
+            set('filterSENT', 'Sent (' + (c.SENT || 0) + ')');
+            set('filterFAILED', 'Failed (' + (c.FAILED || 0) + ')');
+            set('filterCANCELLED', 'Cancelled (' + (c.CANCELLED || 0) + ')');
+            set('metricTotal', (c.ALL || 0).toLocaleString());
+            set('metricScheduled', (c.SCHEDULED || 0).toLocaleString());
+            set('metricSent', (c.SENT || 0).toLocaleString());
+            set('metricFailed', (c.FAILED || 0).toLocaleString());
+        }
+        function getAttachmentText(item) {
+            if (item.uploadedFiles && item.uploadedFiles.length) return item.uploadedFiles.map(f => f.originalName || f.fileName).join(', ');
+            if (item.fileName) return item.fileName;
+            if (item.folderPath) return item.folderPath;
+            return '-';
+        }
+        function getScheduleSearchText(item) {
+            return JSON.stringify(item).toLowerCase();
+        }
+        function toggleScheduleSelection(id, checked) {
+            if (checked) selectedScheduleIds.add(id); else selectedScheduleIds.delete(id);
+        }
+        function renderScheduleTable() {
+            const box = document.getElementById('scheduleList');
+            const search = String(document.getElementById('scheduleSearchInput').value || '').toLowerCase();
+            let rows = allLoadedSchedules || [];
+            if (search) rows = rows.filter(item => getScheduleSearchText(item).includes(search));
+            if (!rows.length) { box.innerHTML = '<div style="padding:16px;">No schedules found.</div>'; return; }
+
+            box.innerHTML = `<div class="table-wrap"><table>
+                    <thead><tr>
+                               <th><input id="selectAllSchedules" type="checkbox"></th>
+                                <th>Sr No</th>
+                                <th>Scheduler Id</th>
+                                <th>Scheduler Name</th>
+                                <th>Message</th>
+                                <th>Attachment</th>
+                                <th>Receiver Number</th>
+                                <th>Is Active</th>
+                                <th>Scheduled Time</th>
+                                <th>Action</th>
+                    </tr></thead>
+                <tbody>${rows.map((item, i) => {
+                const status = getDisplayStatus(item.status);
+                const phones = Array.isArray(item.phones) ? item.phones.join(', ') : item.phone || '-';
+                const active = item.isActive !== false && status !== 'CANCELLED';
+                return `<tr><td><input class="row-checkbox" type="checkbox" data-id="${item.id}">
+                <td>${i + 1}</td>
+                <td><b style="color:#00843d;">${escapeHtml(item.id || '-')}</b></td>
+                <td>${escapeHtml(item.schedulerName || item.fileName || item.scheduleMode || '-')}</td>
+                <td title="${escapeHtml(item.message || '')}">${escapeHtml((item.message || '-').slice(0, 50))}</td>
+                <td title="${escapeHtml(getAttachmentText(item))}">${escapeHtml(getAttachmentText(item).slice(0, 55))}</td>
+                <td>${escapeHtml(phones)}</td>
+                <td><span class="toggle ${active ? 'on' : ''}" onclick="toggleActive('${item.id}', ${!active})"></span> <span class="status-pill ${status}">${escapeHtml(status)}</span></td>
+                <td>${item.scheduleAt ? new Date(item.scheduleAt).toLocaleString() : '-'}</td>
+                <td>
+                    <button class="action" title="Update" onclick="openEditScheduleModal('${item.id}')">✎</button>
+                    <button class="action" title="Quick Send" onclick="quickSendSchedule('${item.id}')">➤</button>
+                    <button class="action" title="Delete" onclick="deleteSchedule('${item.id}')">🗑</button>
+                </td>
+            </tr>`;
+            }).join('')}</tbody></table></div>`;
+        }
+        async function loginUser() {
+            currentUserId = document.getElementById('userIdInput').value;
+            if (!currentUserId)
+                return alert('Enter User ID');
+            await fetch(`/api/whatsapp/init/${currentUserId}`, { method: 'POST' });
+            setInterval(checkWhatsAppStatus, 3000);
+        }
+        function loadSchedules() {
+            const res =  fetch(`/api/schedules?userId=${currentUserId}&status=` + encodeURIComponent(currentScheduleFilter));
+            const data = parseJsonResponse(res);
+            if (data.success) {
+                allLoadedSchedules = data.schedules || [];
+                updateScheduleCountTabs(data.counts);
+                renderScheduleTable();
+            }
+        }
+        async function toggleActive(id, isActive) {
+            const res = await fetch('/api/schedules/' + encodeURIComponent(id) + '/status', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ isActive }) });
+            const data = await parseJsonResponse(res);
+            if (!data.success) alert(data.error || 'Update failed.');
+            loadSchedules();
+        }
+        async function quickSendSchedule(id) {
+            if (!confirm('Send this schedule now?')) return;
+            const res = await fetch('/api/schedules/' + encodeURIComponent(id) + '/quick-send', { method: 'POST' });
+            const data = await parseJsonResponse(res);
+            alert(data.message || data.error);
+            loadSchedules();
+        }
+        async function bulkQuickSend() {
+            if (!selectedScheduleIds.size) return alert('Please select at least one schedule.');
+            for (const id of Array.from(selectedScheduleIds)) await quickSendSchedule(id);
+            selectedScheduleIds.clear();
+        }
+        async function bulkDisableSchedules() {
+            if (!selectedScheduleIds.size) return alert('Please select at least one schedule.');
+            for (const id of Array.from(selectedScheduleIds)) await fetch('/api/schedules/' + encodeURIComponent(id) + '/status', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ isActive: false }) });
+            selectedScheduleIds.clear(); loadSchedules();
+        }
+        async function bulkEnableSchedules() {
+            if (!selectedScheduleIds.size) return alert('Please select at least one schedule.');
+            for (const id of Array.from(selectedScheduleIds)) await fetch('/api/schedules/' + encodeURIComponent(id) + '/status', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ isActive: true }) });
+            selectedScheduleIds.clear(); loadSchedules();
+        }
+        function quickExportSchedules() {
+            const header = ['Sr No', 'Scheduler Id', 'Scheduler Name', 'Message', 'Attachment', 'Receiver Number', 'Is Active', 'Scheduled Time', 'Status'];
+            const csv = [header.join(',')];
+            (allLoadedSchedules || []).forEach((item, i) => {
+                const status = getDisplayStatus(item.status);
+                const phones = Array.isArray(item.phones) ? item.phones.join(' | ') : item.phone || '-';
+                const active = item.isActive !== false && status !== 'CANCELLED' ? 'Yes' : 'No';
+                const row = [i + 1, item.id, item.schedulerName || '', item.message || '', getAttachmentText(item), phones, active, item.scheduleAt ? new Date(item.scheduleAt).toLocaleString() : '', status].map(v => '"' + String(v || '').replace(/"/g, '""') + '"');
+                csv.push(row.join(','));
+            });
+            const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = 'scheduled_report.csv'; a.click(); URL.revokeObjectURL(url);
+        }
+        function openEditScheduleModal(id) {
+            const item = allLoadedSchedules.find(x => x.id === id);
+            if (!item) return alert('Schedule not found.');
+            document.getElementById('editScheduleId').value = item.id;
+            document.getElementById('editSchedulerName').value = item.schedulerName || '';
+            document.getElementById('editScheduleAt').value = toDatetimeLocalValue(item.scheduleAt);
+            document.getElementById('editScheduleCaption').value = item.message || '';
+            document.getElementById('editSchedulePhone').value = Array.isArray(item.phones) ? item.phones.join('\n') : item.phone || '';
+            document.getElementById('editFolderPath').value = item.folderPath || '';
+            document.getElementById('editFileName').value = item.fileName || '';
+            document.getElementById('editFileType').value = item.fileType || '';
+            document.getElementById('editMaxFiles').value = item.maxFiles || 1;
+            document.getElementById('editUseLatestFiles').checked = item.useLatestFiles !== false;
+            updateCount('editSchedulePhone', 'editSchedulePhoneCount');
+            document.getElementById('editScheduleModal').classList.add('active');
+        }
+        function closeEditScheduleModal() { document.getElementById('editScheduleModal').classList.remove('active'); }
+        async function updateSchedule() {
+            const id = document.getElementById('editScheduleId').value;
+            const phoneList = updateCount('editSchedulePhone', 'editSchedulePhoneCount');
+            if (!phoneList.length) return setMsg('editScheduleResponse', 'Please enter receiver number.', false);
+            const res = await fetch('/api/schedules/' + encodeURIComponent(id), {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    phone: phoneList.join('\n'),
+                    schedulerName: document.getElementById('editSchedulerName').value.trim(),
+                    caption: document.getElementById('editScheduleCaption').value.trim(),
+                    scheduleMode: 'CUSTOM',
+                    scheduleAt: document.getElementById('editScheduleAt').value,
+                    folderPath: document.getElementById('editFolderPath').value.trim(),
+                    fileName: document.getElementById('editFileName').value.trim(),
+                    fileType: document.getElementById('editFileType').value,
+                    maxFiles: document.getElementById('editMaxFiles').value,
+                    useLatestFiles: document.getElementById('editUseLatestFiles').checked
+                })
+            });
+            const data = await parseJsonResponse(res);
+            setMsg('editScheduleResponse', data.message || data.error, data.success);
+            if (data.success) { closeEditScheduleModal(); loadSchedules(); }
+        }
+        async function deleteSchedule(id) {
+            if (!confirm('Delete this schedule permanently?')) return;
+            const res = await fetch('/api/schedules/' + encodeURIComponent(id) + '?action=delete', { method: 'DELETE' });
+            const data = await parseJsonResponse(res);
+            if (!data.success) alert(data.error || 'Delete failed.');
+            loadSchedules();
+        }
+        async function cancelSchedule(id) {
+            await fetch('/api/schedules/' + encodeURIComponent(id), { method: 'DELETE' });
+            loadSchedules();
+        }
+        async function sendNow() {
+            if (!isWhatsappReady) return setMsg('sendNowResponse', 'WhatsApp is not online.', false);
+            const phoneList = updateCount('sendNowPhone', 'sendNowPhoneCount');
+            if (!phoneList.length) return setMsg('sendNowResponse', 'Please enter receiver number.', false);
+            const files = document.getElementById('sendNowFiles').files;
+            const form = new FormData();
+            form.append('phone', phoneList.join('\n'));
+            form.append('caption', document.getElementById('sendNowCaption').value.trim());
+            for (const file of files) form.append('documents', file);
+            const res = await fetch('/api/send-whatsapp', { method: 'POST', body: form });
+            const data = await parseJsonResponse(res);
+            setMsg('sendNowResponse', data.message || data.error, data.success);
+        }
+        function setHistoryFilter(status) { currentHistoryFilter = status; loadHistoryReport(); }
+        async function loadHistoryReport() {
+            const res = await fetch(`/api/history?userId=${currentUserId}&status=` + encodeURIComponent(currentHistoryFilter));
+            const data = await parseJsonResponse(res);
+            const listBox = document.getElementById('historyList');
+            const summaryBox = document.getElementById('historySummary');
+            if (!data.success) { listBox.innerHTML = '<div style="padding:16px;color:#dc2626;">Failed to load logs.</div>'; return; }
+            const s = data.summary || {};
+            summaryBox.innerHTML = `Total: ${s.total || 0} | Success: ${s.success || 0} | Failed: ${s.failed || 0}`;
+            let rows = data.history || [];
+            const search = String(document.getElementById('historySearchInput') ? document.getElementById('historySearchInput').value : '').toLowerCase();
+            if (search) rows = rows.filter(r => JSON.stringify(r).toLowerCase().includes(search));
+            if (!rows.length) { listBox.innerHTML = '<div style="padding:16px;">No logs found.</div>'; return; }
+            listBox.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Sr No</th><th>Scheduler Id</th><th>Scheduler Name</th><th>Scheduler Type</th><th>Receiver Number</th><th>Scheduled Time</th><th>Status</th></tr></thead><tbody>${rows.map((r, i) => `<tr><td>${i + 1}</td><td>${escapeHtml(r.scheduleId || '-')}</td><td>${escapeHtml(r.schedulerName || r.message || '-')}</td><td>${escapeHtml(r.scheduleMode || '-')}</td><td>${escapeHtml(r.phone || '-')}</td><td>${r.runAt ? new Date(r.runAt).toLocaleString() : '-'}</td><td><span class="status-pill ${r.success ? 'SUCCESS' : 'FAILED'}">${r.success ? 'Success' : 'Failed'}</span></td></tr>`).join('')}</tbody></table></div>`;
+        }
+        document.getElementById('schedulePhone').addEventListener('input', () => updateCount('schedulePhone', 'schedulePhoneCount'));
+        document.getElementById('sendNowPhone').addEventListener('input', () => updateCount('sendNowPhone', 'sendNowPhoneCount'));
+        document.getElementById('numberListInput').addEventListener('input', () => updateCount('numberListInput', 'numberListInputCount'));
+        document.getElementById('editSchedulePhone').addEventListener('input', () => updateCount('editSchedulePhone', 'editSchedulePhoneCount'));
+
+        checkWhatsAppStatus();
+        setInterval(checkWhatsAppStatus, 3000);
+        loadNumberList();
+        loadSchedules();
+        handleScheduleModeChange();
+        handleSourceTypeChange();
+    </script>
+
+    <script>
+        function initSelectAllFix() {
+            const selectAll = document.getElementById('selectAllSchedules');
+            if (!selectAll) return;
+
+            selectAll.addEventListener('change', function () {
+                const checked = this.checked;
+
+                document.querySelectorAll('.row-checkbox').forEach(cb => {
+                    cb.checked = checked;
+
+                    const id = cb.getAttribute('data-id');
+                    if (id) {
+                        if (checked) selectedScheduleIds.add(id);
+                        else selectedScheduleIds.delete(id);
+                    }
+                });
+            });
+
+            document.addEventListener('change', (e) => {
+                if (e.target.classList.contains('row-checkbox')) {
+                    if (!e.target.dataset.id) return;
+
+                    if (id) {
+                        if (e.target.checked) selectedScheduleIds.add(id);
+                        else selectedScheduleIds.delete(id);
+                    }
+
+                    const all = document.querySelectorAll('.row-checkbox').length;
+                    const checked = document.querySelectorAll('.row-checkbox:checked').length;
+
+                    selectAll.checked = all === checked;
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', initSelectAllFix);
+    </script>
+</body>
+
+</html>
