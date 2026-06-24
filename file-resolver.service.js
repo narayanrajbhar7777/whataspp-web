@@ -1,42 +1,74 @@
-// LOCAL FILE SYSTEM DIAGNOSTICS & RESOLUTION SERVICE
-const path = require('path');
+// =================================================================
+// MODULE 3: SERVER-SIDE FOLDER ATTACHMENT DISCOVERY & RESOLUTION
+// =================================================================
+
 const fs = require('fs');
+const path = require('path');
 
-const isAllowedFile = (f, allowed) => allowed.includes(path.extname(f).toLowerCase());
-const isSameOrInsideFolder = (fold, f) => path.resolve(f).toLowerCase().startsWith(path.resolve(fold).toLowerCase() + path.sep.toLowerCase());
-const matchFileName = (f, input) => !input || path.parse(f).name.toLowerCase() === String(input).trim().toLowerCase() || path.basename(f).toLowerCase() === String(input).trim().toLowerCase();
+/**
+ * Lists files inside a server folder matching the optional name/type filters,
+ * newest-first, capped at maxFiles. Used by the "Scan Files" UI action and as
+ * the building block for resolveFilesFromLocation() below.
+ */
+function listFolderFiles({ folderPath, fileName, fileType, maxFiles }) {
+    const cleanPath = String(folderPath || '').trim();
+    if (!cleanPath) return { success: false, error: 'Folder path is required.' };
 
-function resolveFilesFromLocation({ folderPath, fileName, fileType, maxFiles, selectedFiles, useLatestFiles, config }) {
-    const fold = String(folderPath || '').trim();
-    if (!fold || !fs.existsSync(fold) || !fs.statSync(fold).isDirectory()) {
-        return { success: false, error: 'Target scanning path configuration represents an invalid local folder directory.', files: [] };
+    if (!fs.existsSync(cleanPath)) return { success: false, error: `Folder path does not exist: ${cleanPath}` };
+    if (!fs.statSync(cleanPath).isDirectory()) return { success: false, error: `Path is not a directory: ${cleanPath}` };
+
+    let entries;
+    try {
+        entries = fs.readdirSync(cleanPath)
+            .map((name) => ({ name, full: path.join(cleanPath, name) }))
+            .filter((e) => {
+                try { return fs.statSync(e.full).isFile(); } catch (err) { return false; }
+            });
+    } catch (e) {
+        return { success: false, error: 'Unable to read folder contents: ' + e.message };
     }
 
-    const maxCount = Math.min(Math.max(parseInt(maxFiles || 1, 10), 1), config.MAX_FILES_PER_SCHEDULE);
-    const targetExt = fileType ? (fileType.startsWith('.') ? fileType.toLowerCase() : '.' + fileType.toLowerCase()) : '';
-    let files = [];
-
-    if (!useLatestFiles && Array.isArray(selectedFiles) && selectedFiles.length > 0) {
-        files = selectedFiles.map(i => String(i || '').trim()).filter(f => fs.existsSync(f) && 
-        fs.statSync(f).isFile() && 
-        isSameOrInsideFolder(fold, f) && 
-        isAllowedFile(f, config.ALLOWED_EXTENSIONS) && 
-        (!targetExt || path.extname(f).toLowerCase() === targetExt) && 
-        matchFileName(f, fileName)).slice(0, maxCount);
-    } else {
-        files = fs.readdirSync(fold).map(f => path.join(fold, f)).filter(f => fs.existsSync(f) && 
-        fs.statSync(f).isFile() && 
-        isAllowedFile(f, config.ALLOWED_EXTENSIONS) && 
-        (!targetExt || path.extname(f).toLowerCase() === targetExt) && 
-        matchFileName(f, fileName)).sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs).slice(0, maxCount);
+    const cleanFileName = String(fileName || '').trim();
+    if (cleanFileName) {
+        entries = entries.filter((e) => e.name.toLowerCase() === cleanFileName.toLowerCase());
     }
 
-    return { success: true, error: null, files };
+    const cleanFileType = String(fileType || '').trim();
+    if (cleanFileType) {
+        const ext = cleanFileType.startsWith('.') ? cleanFileType.toLowerCase() : '.' + cleanFileType.toLowerCase();
+        entries = entries.filter((e) => path.extname(e.name).toLowerCase() === ext);
+    }
+
+    entries.sort((a, b) => fs.statSync(b.full).mtimeMs - fs.statSync(a.full).mtimeMs);
+
+    const limit = Math.max(1, parseInt(maxFiles || 1, 10) || 1);
+    entries = entries.slice(0, limit);
+
+    return { success: true, files: entries.map((e) => ({ fileName: e.name, filePath: e.full })) };
 }
 
-function getFileInfo(f) {
-    const stat = fs.statSync(f);
-    return { filePath: f, fileName: path.basename(f), extension: path.extname(f).toLowerCase(), sizeBytes: stat.size, modifiedAt: stat.mtime.toISOString() };
+/**
+ * Resolves the actual attachment file paths that should be sent for a
+ * LOCATION-type schedule at send time. Prefers explicitly selected files
+ * (when "Auto-send latest file" is turned off), otherwise re-scans the
+ * folder for the freshest matching files.
+ */
+function resolveFilesFromLocation(task) {
+    const { folderPath, fileName, fileType, maxFiles, selectedFiles, useLatestFiles } = task;
+
+    if (Array.isArray(selectedFiles) && selectedFiles.length && useLatestFiles === false) {
+        const existing = selectedFiles.filter((f) => { try { return fs.existsSync(f); } catch (e) { return false; } });
+        if (!existing.length) return { success: false, error: 'Previously selected files no longer exist on disk.' };
+        return { success: true, files: existing };
+    }
+
+    const scanned = listFolderFiles({ folderPath, fileName, fileType, maxFiles });
+    if (!scanned.success) return scanned;
+    if (!scanned.files.length) return { success: false, error: 'No matching files found in folder at send time.' };
+    return { success: true, files: scanned.files.map((f) => f.filePath) };
 }
 
-module.exports = {resolveFilesFromLocation,getFileInfo};
+module.exports = {
+    listFolderFiles,
+    resolveFilesFromLocation
+};
