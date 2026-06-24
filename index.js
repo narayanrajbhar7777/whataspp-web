@@ -4,9 +4,9 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-
+const port = process.env.PORT || 3000;
 const CONFIG = {
-    PORT: 3000,
+    PORT: port,
     MAX_RECIPIENTS_PER_REQUEST: 20,
     MAX_FILES_PER_SCHEDULE: 10,
     ALLOWED_EXTENSIONS: ['.xlsx', '.xls', '.pdf', '.txt', '.jpg', '.jpeg', '.png'],
