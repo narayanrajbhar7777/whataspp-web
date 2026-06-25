@@ -20,7 +20,17 @@ function initWhatsAppClient(userId) {
     console.log(`[Engine] Spawning profile container sandbox for User Account: ${cleanId}`);
     const client = new Client({
         authStrategy: new LocalAuth({ clientId: cleanId }),
-        puppeteer: { headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'] }
+        puppeteer: { 
+            headless: true, 
+            args: [
+                '--no-sandbox', 
+                '--disable-setuid-sandbox', 
+                '--disable-dev-shm-usage', 
+                '--disable-gpu',
+                '--no-zygote',
+                '--single-process' // Optimizes low-memory footprints inside Render free limits
+            ] 
+        }
     });
 
     qrStore[cleanId] = '';
@@ -30,6 +40,7 @@ function initWhatsAppClient(userId) {
         qrStore[cleanId] = qr;
         clientStatus[cleanId] = false;
         console.log(`\n--- [QR Code Generated for User Partition Session: ${cleanId}] ---`);
+        console.log(`[Render Fallback] If terminal formatting fails, open: /api/whatsapp/view-qr/${cleanId}`);
         qrcode.generate(qr, { small: true });
     });
 
@@ -125,7 +136,54 @@ async function sendWhatsAppToMultiple({ userId, phones, message, filePaths, reci
     };
 }
 
+/**
+ * Express integration route method to output scannable canvas layout directly in browser window
+ */
+function registerQrViewerRoute(app) {
+    app.get('/api/whatsapp/view-qr/:userId', (req, res) => {
+        const targetUser = String(req.params.userId || '').trim();
+        const rawQr = qrStore[targetUser];
+
+        if (clientStatus[targetUser] === true) {
+            return res.send(`<div style="text-align:center; font-family:sans-serif; margin-top:100px;">
+                <h2 style="color:#2ce69b;">✓ Session Active</h2>
+                <p>User [${targetUser}] is authenticated and ready.</p>
+            </div>`);
+        }
+
+        if (!rawQr) {
+            return res.send(`<div style="text-align:center; font-family:sans-serif; margin-top:100px;">
+                <h2 style="color:#ff3d71;">⌛ No QR String Detected</h2>
+                <p>Ensure client initialization was triggered for user ID: <strong>${targetUser}</strong></p>
+                <p style="color:#8f9bb3; font-size:0.9rem;">Refresh this browser window in a few moments.</p>
+            </div>`);
+        }
+
+        // Returns an auto-refreshing visual dashboard that transforms the string into an image anchor
+        res.send(`
+            <html>
+                <head>
+                    <title>Scan WhatsApp Authorization</title>
+                    <meta http-equiv="refresh" content="20">
+                </head>
+                <body style="background:#151a30; color:#fff; font-family:sans-serif; text-align:center; padding-top:50px;">
+                    <h2>📱 Link WhatsApp Device Instance</h2>
+                    <p style="color:#8f9bb3;">Session Identifier Reference: <strong>${targetUser}</strong></p>
+                    
+                    <div style="background:#fff; display:inline-block; padding:20px; border-radius:10px; margin:20px auto; box-shadow:0 4px 15px rgba(0,0,0,0.5);">
+                        <img src="https://qrserver.com{encodeURIComponent(rawQr)}" alt="WhatsApp QR Code Container" />
+                    </div>
+                    
+                    <p style="color:#a6b1c9; font-size:0.95rem;">Open WhatsApp → Linked Devices → Link a Device</p>
+                    <p style="color:#647396; font-size:0.8rem;">This link reloads automatically every 20 seconds to prevent expiration logs.</p>
+                </body>
+            </html>
+        `);
+    });
+}
+
 module.exports = {
     initWhatsAppClient,
-    sendWhatsAppToMultiple
+    sendWhatsAppToMultiple,
+    registerQrViewerRoute // Added export assignment tag reference
 };

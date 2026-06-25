@@ -14,7 +14,7 @@ app.use(cors({
     credentials: true
 }));
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 30001;
 const CONFIG = {
     PORT: port,
     MAX_RECIPIENTS_PER_REQUEST: 20,
@@ -45,7 +45,7 @@ const { clients, clientStatus, qrStore } = require('./whatsapp-store');
 const whatsAppService = require('./whatsapp.service');
 const fileService = require('./file-resolver.service');
 const mathService = require('./scheduler-math');
-
+whatsAppService.registerQrViewerRoute(app);
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
