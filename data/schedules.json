@@ -1,465 +1,7 @@
 [
   {
-    "id": "SCH-1781935311403-20304",
-    "sourceType": "UPLOAD",
-    "scheduleType": "UPLOADED_FILES",
-    "scheduleMode": "CUSTOM",
-    "phones": [
-      "917309871694"
-    ],
-    "phone": "917309871694",
-    "totalNumbers": 1,
-    "schedulerName": "Without Attachments",
-    "message": "Without Attachment",
-    "isActive": true,
-    "scheduleAt": "2026-06-20T06:05:00.000Z",
-    "startDate": null,
-    "time": null,
-    "weeklyDay": null,
-    "monthlyDay": null,
-    "uploadedFiles": [],
-    "maxFiles": 0,
-    "status": "SENT",
-    "createdAt": "2026-06-20T06:01:51.403Z",
-    "updatedAt": null,
-    "lastRunAt": "2026-06-20T06:05:30.560Z",
-    "sentAt": "2026-06-20T06:05:30.560Z",
-    "failedAt": null,
-    "cancelledAt": null,
-    "successCount": 1,
-    "failedCount": 0,
-    "filesSent": [],
-    "error": null,
-    "results": [
-      {
-        "phone": "917309871694",
-        "success": true,
-        "error": null,
-        "files": []
-      }
-    ],
-    "runHistory": [
-      {
-        "runAt": "2026-06-20T06:05:30.560Z",
-        "successCount": 1,
-        "failedCount": 0,
-        "total": 1,
-        "filesSent": [],
-        "results": [
-          {
-            "phone": "917309871694",
-            "success": true,
-            "error": null,
-            "files": []
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "SCH-1781935358972-39848",
-    "sourceType": "UPLOAD",
-    "scheduleType": "UPLOADED_FILES",
-    "scheduleMode": "CUSTOM",
-    "phones": [
-      "917309871694"
-    ],
-    "phone": "917309871694",
-    "totalNumbers": 1,
-    "schedulerName": "With Attachments",
-    "message": "With Attachments",
-    "isActive": true,
-    "scheduleAt": "2026-06-20T06:06:00.000Z",
-    "startDate": null,
-    "time": null,
-    "weeklyDay": null,
-    "monthlyDay": null,
-    "uploadedFiles": [
-      {
-        "originalName": "1b7f26ef-432d-4a80-a7b4-f945bd481f36.png",
-        "fileName": "1781935358938-247761463-1b7f26ef-432d-4a80-a7b4-f945bd481f36.png",
-        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935358938-247761463-1b7f26ef-432d-4a80-a7b4-f945bd481f36.png",
-        "sizeBytes": 1637818,
-        "extension": ".png",
-        "uploadedAt": "2026-06-20T06:02:38.972Z"
-      }
-    ],
-    "maxFiles": 1,
-    "status": "SENT",
-    "createdAt": "2026-06-20T06:02:38.973Z",
-    "updatedAt": null,
-    "lastRunAt": "2026-06-20T06:06:40.178Z",
-    "sentAt": "2026-06-20T06:06:40.178Z",
-    "failedAt": null,
-    "cancelledAt": null,
-    "successCount": 1,
-    "failedCount": 0,
-    "filesSent": [
-      {
-        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935358938-247761463-1b7f26ef-432d-4a80-a7b4-f945bd481f36.png",
-        "fileName": "1781935358938-247761463-1b7f26ef-432d-4a80-a7b4-f945bd481f36.png",
-        "extension": ".png",
-        "sizeBytes": 1637818,
-        "modifiedAt": "2026-06-20T06:02:38.972Z"
-      }
-    ],
-    "error": null,
-    "results": [
-      {
-        "phone": "917309871694",
-        "success": true,
-        "error": null,
-        "files": [
-          {
-            "fileName": "1781935358938-247761463-1b7f26ef-432d-4a80-a7b4-f945bd481f36.png",
-            "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935358938-247761463-1b7f26ef-432d-4a80-a7b4-f945bd481f36.png",
-            "success": true,
-            "error": null
-          }
-        ]
-      }
-    ],
-    "runHistory": [
-      {
-        "runAt": "2026-06-20T06:06:40.178Z",
-        "successCount": 1,
-        "failedCount": 0,
-        "total": 1,
-        "filesSent": [
-          {
-            "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935358938-247761463-1b7f26ef-432d-4a80-a7b4-f945bd481f36.png",
-            "fileName": "1781935358938-247761463-1b7f26ef-432d-4a80-a7b4-f945bd481f36.png",
-            "extension": ".png",
-            "sizeBytes": 1637818,
-            "modifiedAt": "2026-06-20T06:02:38.972Z"
-          }
-        ],
-        "results": [
-          {
-            "phone": "917309871694",
-            "success": true,
-            "error": null,
-            "files": [
-              {
-                "fileName": "1781935358938-247761463-1b7f26ef-432d-4a80-a7b4-f945bd481f36.png",
-                "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935358938-247761463-1b7f26ef-432d-4a80-a7b4-f945bd481f36.png",
-                "success": true,
-                "error": null
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "SCH-1781935393478-29906",
-    "sourceType": "SERVER_FOLDER",
-    "scheduleType": "LOCATION",
-    "scheduleMode": "CUSTOM",
-    "phones": [
-      "917309871694"
-    ],
-    "phone": "917309871694",
-    "totalNumbers": 1,
-    "schedulerName": "Failed Test",
-    "message": "Faild Task Testing",
-    "isActive": true,
-    "scheduleAt": "2026-06-20T06:07:00.000Z",
-    "startDate": null,
-    "time": null,
-    "weeklyDay": null,
-    "monthlyDay": null,
-    "folderPath": "C:\\Users\\spc1\\Desktop\\Reports\\Schedular_Repo",
-    "fileName": "",
-    "fileType": "",
-    "maxFiles": 1,
-    "selectedFiles": [],
-    "useLatestFiles": true,
-    "phoneFileMap": {},
-    "status": "FAILED",
-    "createdAt": "2026-06-20T06:03:13.478Z",
-    "updatedAt": null,
-    "lastRunAt": null,
-    "sentAt": null,
-    "failedAt": "2026-06-20T06:07:23.274Z",
-    "cancelledAt": null,
-    "successCount": 0,
-    "failedCount": 0,
-    "filesSent": [],
-    "error": "Folder not found: C:\\Users\\spc1\\Desktop\\Reports\\Schedular_Repo",
-    "results": [],
-    "runHistory": []
-  },
-  {
-    "id": "SCH-1781935436418-69124",
-    "sourceType": "UPLOAD",
-    "scheduleType": "UPLOADED_FILES",
-    "scheduleMode": "DAILY",
-    "phones": [
-      "917309871694"
-    ],
-    "phone": "917309871694",
-    "totalNumbers": 1,
-    "schedulerName": "Daily Reports",
-    "message": "Daily Report Schedular at 11:35",
-    "isActive": true,
-    "scheduleAt": "2026-06-24T06:05:00.000Z",
-    "startDate": "2026-06-20",
-    "time": "11:35",
-    "weeklyDay": null,
-    "monthlyDay": null,
-    "uploadedFiles": [
-      {
-        "originalName": "_83_-_Trybe_Signer_Wages_Summary_Export (3).xlsx",
-        "fileName": "1781935436417-112380411-_83_-_Trybe_Signer_Wages_Summary_Export_(3).xlsx",
-        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935436417-112380411-_83_-_Trybe_Signer_Wages_Summary_Export_(3).xlsx",
-        "sizeBytes": 23635,
-        "extension": ".xlsx",
-        "uploadedAt": "2026-06-20T06:03:56.418Z"
-      }
-    ],
-    "maxFiles": 1,
-    "status": "SCHEDULED",
-    "createdAt": "2026-06-20T06:03:56.418Z",
-    "updatedAt": null,
-    "lastRunAt": "2026-06-23T06:05:24.732Z",
-    "sentAt": "2026-06-20T06:05:45.414Z",
-    "failedAt": "2026-06-23T06:05:24.732Z",
-    "cancelledAt": null,
-    "successCount": 0,
-    "failedCount": 1,
-    "filesSent": [
-      {
-        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935436417-112380411-_83_-_Trybe_Signer_Wages_Summary_Export_(3).xlsx",
-        "fileName": "1781935436417-112380411-_83_-_Trybe_Signer_Wages_Summary_Export_(3).xlsx",
-        "extension": ".xlsx",
-        "sizeBytes": 23635,
-        "modifiedAt": "2026-06-20T06:03:56.418Z"
-      }
-    ],
-    "error": "Cannot read properties of undefined (reading 'getNumberId')",
-    "results": [
-      {
-        "phone": "917309871694",
-        "success": false,
-        "error": "Cannot read properties of undefined (reading 'getNumberId')",
-        "files": []
-      }
-    ],
-    "runHistory": [
-      {
-        "runAt": "2026-06-20T06:05:45.414Z",
-        "successCount": 1,
-        "failedCount": 0,
-        "total": 1,
-        "filesSent": [
-          {
-            "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935436417-112380411-_83_-_Trybe_Signer_Wages_Summary_Export_(3).xlsx",
-            "fileName": "1781935436417-112380411-_83_-_Trybe_Signer_Wages_Summary_Export_(3).xlsx",
-            "extension": ".xlsx",
-            "sizeBytes": 23635,
-            "modifiedAt": "2026-06-20T06:03:56.418Z"
-          }
-        ],
-        "results": [
-          {
-            "phone": "917309871694",
-            "success": true,
-            "error": null,
-            "files": [
-              {
-                "fileName": "1781935436417-112380411-_83_-_Trybe_Signer_Wages_Summary_Export_(3).xlsx",
-                "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935436417-112380411-_83_-_Trybe_Signer_Wages_Summary_Export_(3).xlsx",
-                "success": true,
-                "error": null
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "runAt": "2026-06-23T05:40:54.330Z",
-        "successCount": 0,
-        "failedCount": 1,
-        "total": 1,
-        "filesSent": [
-          {
-            "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935436417-112380411-_83_-_Trybe_Signer_Wages_Summary_Export_(3).xlsx",
-            "fileName": "1781935436417-112380411-_83_-_Trybe_Signer_Wages_Summary_Export_(3).xlsx",
-            "extension": ".xlsx",
-            "sizeBytes": 23635,
-            "modifiedAt": "2026-06-20T06:03:56.418Z"
-          }
-        ],
-        "results": [
-          {
-            "phone": "917309871694",
-            "success": false,
-            "error": "Cannot read properties of undefined (reading 'getNumberId')",
-            "files": []
-          }
-        ]
-      },
-      {
-        "runAt": "2026-06-23T06:05:24.732Z",
-        "successCount": 0,
-        "failedCount": 1,
-        "total": 1,
-        "filesSent": [
-          {
-            "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935436417-112380411-_83_-_Trybe_Signer_Wages_Summary_Export_(3).xlsx",
-            "fileName": "1781935436417-112380411-_83_-_Trybe_Signer_Wages_Summary_Export_(3).xlsx",
-            "extension": ".xlsx",
-            "sizeBytes": 23635,
-            "modifiedAt": "2026-06-20T06:03:56.418Z"
-          }
-        ],
-        "results": [
-          {
-            "phone": "917309871694",
-            "success": false,
-            "error": "Cannot read properties of undefined (reading 'getNumberId')",
-            "files": []
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "SCH-1781935485277-9035",
-    "sourceType": "UPLOAD",
-    "scheduleType": "UPLOADED_FILES",
-    "scheduleMode": "CUSTOM",
-    "phones": [
-      "917309871694"
-    ],
-    "phone": "917309871694",
-    "totalNumbers": 1,
-    "schedulerName": "Weekly Report Scheduler",
-    "message": "Weekly Report Scheduler",
-    "isActive": true,
-    "scheduleAt": "2026-06-20T06:08:00.000Z",
-    "startDate": null,
-    "time": null,
-    "weeklyDay": null,
-    "monthlyDay": null,
-    "uploadedFiles": [
-      {
-        "originalName": "_83_-_Trybe_Signer_Wages_Summary_Export (1).xlsx",
-        "fileName": "1781935485276-63091246-_83_-_Trybe_Signer_Wages_Summary_Export_(1).xlsx",
-        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935485276-63091246-_83_-_Trybe_Signer_Wages_Summary_Export_(1).xlsx",
-        "sizeBytes": 20090,
-        "extension": ".xlsx",
-        "uploadedAt": "2026-06-20T06:04:45.277Z"
-      }
-    ],
-    "maxFiles": 1,
-    "status": "SENT",
-    "createdAt": "2026-06-20T06:04:45.277Z",
-    "updatedAt": null,
-    "lastRunAt": "2026-06-20T06:08:38.538Z",
-    "sentAt": "2026-06-20T06:08:38.538Z",
-    "failedAt": null,
-    "cancelledAt": null,
-    "successCount": 1,
-    "failedCount": 0,
-    "filesSent": [
-      {
-        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935485276-63091246-_83_-_Trybe_Signer_Wages_Summary_Export_(1).xlsx",
-        "fileName": "1781935485276-63091246-_83_-_Trybe_Signer_Wages_Summary_Export_(1).xlsx",
-        "extension": ".xlsx",
-        "sizeBytes": 20090,
-        "modifiedAt": "2026-06-20T06:04:45.277Z"
-      }
-    ],
-    "error": null,
-    "results": [
-      {
-        "phone": "917309871694",
-        "success": true,
-        "error": null,
-        "files": [
-          {
-            "fileName": "1781935485276-63091246-_83_-_Trybe_Signer_Wages_Summary_Export_(1).xlsx",
-            "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935485276-63091246-_83_-_Trybe_Signer_Wages_Summary_Export_(1).xlsx",
-            "success": true,
-            "error": null
-          }
-        ]
-      }
-    ],
-    "runHistory": [
-      {
-        "runAt": "2026-06-20T06:08:38.538Z",
-        "successCount": 1,
-        "failedCount": 0,
-        "total": 1,
-        "filesSent": [
-          {
-            "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935485276-63091246-_83_-_Trybe_Signer_Wages_Summary_Export_(1).xlsx",
-            "fileName": "1781935485276-63091246-_83_-_Trybe_Signer_Wages_Summary_Export_(1).xlsx",
-            "extension": ".xlsx",
-            "sizeBytes": 20090,
-            "modifiedAt": "2026-06-20T06:04:45.277Z"
-          }
-        ],
-        "results": [
-          {
-            "phone": "917309871694",
-            "success": true,
-            "error": null,
-            "files": [
-              {
-                "fileName": "1781935485276-63091246-_83_-_Trybe_Signer_Wages_Summary_Export_(1).xlsx",
-                "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1781935485276-63091246-_83_-_Trybe_Signer_Wages_Summary_Export_(1).xlsx",
-                "success": true,
-                "error": null
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "userId": "ADMIN",
-    "id": "SCH-1782203748204-63032",
-    "sourceType": "UPLOAD",
-    "scheduleType": "UPLOADED_FILES",
-    "scheduleMode": "CUSTOM",
-    "phones": [
-      "917309871694"
-    ],
-    "phone": "917309871694",
-    "totalNumbers": 1,
-    "schedulerName": "fsdf",
-    "message": "fsdf",
-    "isActive": true,
-    "scheduleAt": "2026-06-23T08:38:00.000Z",
-    "startDate": null,
-    "time": null,
-    "weeklyDay": null,
-    "monthlyDay": null,
-    "uploadedFiles": [],
-    "maxFiles": 0,
-    "status": "FAILED",
-    "createdAt": "2026-06-23T08:35:48.204Z",
-    "updatedAt": null,
-    "lastRunAt": null,
-    "sentAt": null,
-    "failedAt": "2026-06-23T08:38:24.175Z",
-    "cancelledAt": null,
-    "successCount": 0,
-    "failedCount": 0,
-    "filesSent": [],
-    "error": "No file found for sending.",
-    "results": [],
-    "runHistory": []
-  },
-  {
     "userId": "FP16145",
-    "id": "SCH-1782289230233",
+    "id": "SCH-1782363161104",
     "sourceType": "UPLOAD",
     "scheduleType": "UPLOADED_FILES",
     "scheduleMode": "DAILY",
@@ -468,45 +10,21 @@
     ],
     "phone": "917309871694",
     "totalNumbers": 1,
-    "schedulerName": "Test",
-    "message": "TEst",
+    "schedulerName": "Daily Schedular Report",
+    "message": "Dear Team,\r\n\r\nHere is the daily team report.\r\n\r\nThanks & Regards\r\n+ 917309871694\r\nnarayanrajbhar7777@gmail.com",
     "isActive": true,
-    "scheduleAt": "2026-06-25T08:20:00.000Z",
+    "scheduleAt": "2026-06-26T04:55:00.000Z",
     "status": "SCHEDULED",
     "uploadedFiles": [
       {
-        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782289230225-672058008-StoneLab.xlsx",
-        "fileName": "StoneLab.xlsx"
-      }
-    ],
-    "runHistory": []
-  },
-  {
-    "userId": "FP16145",
-    "id": "SCH-1782289454158",
-    "sourceType": "UPLOAD",
-    "scheduleType": "UPLOADED_FILES",
-    "scheduleMode": "DAILY",
-    "phones": [
-      "917309871694"
-    ],
-    "phone": "917309871694",
-    "totalNumbers": 1,
-    "schedulerName": "Test",
-    "message": "Test",
-    "isActive": true,
-    "scheduleAt": "2026-06-25T08:28:00.000Z",
-    "status": "SCHEDULED",
-    "uploadedFiles": [
-      {
-        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782289454148-786930924-StoneLab.xlsx",
-        "fileName": "StoneLab.xlsx"
+        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782363161097-243249261-stocktallywhatsapp.xlsx",
+        "fileName": "stocktallywhatsapp.xlsx"
       }
     ],
     "runHistory": [
       {
-        "runId": "RUN-1782289700783",
-        "runAt": "2026-06-24T08:28:20.783Z",
+        "runId": "RUN-1782363335822",
+        "runAt": "2026-06-25T04:55:35.822Z",
         "status": "SCHEDULED",
         "successCount": 1,
         "failedCount": 0,
@@ -518,8 +36,8 @@
             "error": null,
             "files": [
               {
-                "fileName": "1782289454148-786930924-StoneLab.xlsx",
-                "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782289454148-786930924-StoneLab.xlsx",
+                "fileName": "1782363161097-243249261-stocktallywhatsapp.xlsx",
+                "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782363161097-243249261-stocktallywhatsapp.xlsx",
                 "success": true,
                 "error": null
               }
@@ -530,190 +48,62 @@
         "error": null
       }
     ],
-    "lastRunAt": "2026-06-24T08:28:20.783Z"
+    "lastRunAt": "2026-06-25T04:55:35.822Z"
   },
   {
     "userId": "FP16145",
-    "id": "SCH-1782289509956",
-    "sourceType": "UPLOAD",
-    "scheduleType": "UPLOADED_FILES",
-    "scheduleMode": "DAILY",
-    "phones": [
-      "917309871694"
-    ],
-    "phone": "917309871694",
-    "totalNumbers": 1,
-    "schedulerName": "Hello",
-    "message": "Hello Brother",
-    "isActive": true,
-    "scheduleAt": "2026-06-25T08:26:00.000Z",
-    "status": "SCHEDULED",
-    "uploadedFiles": [],
-    "runHistory": [
-      {
-        "runId": "RUN-1782289573151",
-        "runAt": "2026-06-24T08:26:13.151Z",
-        "status": "SCHEDULED",
-        "successCount": 1,
-        "failedCount": 0,
-        "total": 1,
-        "results": [
-          {
-            "phone": "917309871694",
-            "success": true,
-            "error": null,
-            "files": []
-          }
-        ],
-        "filesSent": [],
-        "error": null
-      }
-    ],
-    "lastRunAt": "2026-06-24T08:26:13.151Z"
-  },
-  {
-    "userId": "FP16145",
-    "id": "SCH-1782289704018",
-    "sourceType": "UPLOAD",
-    "scheduleType": "UPLOADED_FILES",
-    "scheduleMode": "DAILY",
-    "phones": [
-      "120363425525562305@g.us"
-    ],
-    "phone": "120363425525562305@g.us",
-    "totalNumbers": 1,
-    "schedulerName": "Test",
-    "message": "Test",
-    "isActive": true,
-    "scheduleAt": "2026-06-25T07:30:00.000Z",
-    "status": "SCHEDULED",
-    "uploadedFiles": [],
-    "runHistory": []
-  },
-  {
-    "userId": "FP16145",
-    "id": "SCH-1782290142713",
-    "sourceType": "UPLOAD",
-    "scheduleType": "UPLOADED_FILES",
-    "scheduleMode": "DAILY",
-    "phones": [
-      "120363425525562305@g.us"
-    ],
-    "phone": "120363425525562305@g.us",
-    "totalNumbers": 1,
-    "schedulerName": "Doc",
-    "message": "Docs",
-    "isActive": true,
-    "scheduleAt": "2026-06-25T08:37:00.000Z",
-    "status": "SCHEDULED",
-    "uploadedFiles": [
-      {
-        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782290142697-446138530-StoneLab.xlsx",
-        "fileName": "StoneLab.xlsx"
-      }
-    ],
-    "runHistory": [
-      {
-        "runId": "RUN-1782290239786",
-        "runAt": "2026-06-24T08:37:19.786Z",
-        "status": "SCHEDULED",
-        "successCount": 1,
-        "failedCount": 0,
-        "total": 1,
-        "results": [
-          {
-            "phone": "120363425525562305@g.us",
-            "success": true,
-            "error": null,
-            "files": [
-              {
-                "fileName": "1782290142697-446138530-StoneLab.xlsx",
-                "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782290142697-446138530-StoneLab.xlsx",
-                "success": true,
-                "error": null
-              }
-            ]
-          }
-        ],
-        "filesSent": [],
-        "error": null
-      }
-    ],
-    "lastRunAt": "2026-06-24T08:37:19.786Z"
-  },
-  {
-    "userId": "FP16145",
-    "id": "SCH-1782290360227",
-    "sourceType": "UPLOAD",
-    "scheduleType": "UPLOADED_FILES",
-    "scheduleMode": "DAILY",
-    "phones": [
-      "120363425525562305@g.us"
-    ],
-    "phone": "120363425525562305@g.us",
-    "totalNumbers": 1,
-    "schedulerName": "TEST",
-    "message": "TEST",
-    "isActive": true,
-    "scheduleAt": "2026-06-25T08:41:00.000Z",
-    "status": "SCHEDULED",
-    "uploadedFiles": [
-      {
-        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782290360198-563472558-StoneLab.xlsx",
-        "fileName": "StoneLab.xlsx"
-      }
-    ],
-    "runHistory": [
-      {
-        "runId": "RUN-1782290479854",
-        "runAt": "2026-06-24T08:41:19.854Z",
-        "status": "SCHEDULED",
-        "successCount": 1,
-        "failedCount": 0,
-        "total": 1,
-        "results": [
-          {
-            "phone": "120363425525562305@g.us",
-            "success": true,
-            "error": null,
-            "files": [
-              {
-                "fileName": "1782290360198-563472558-StoneLab.xlsx",
-                "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782290360198-563472558-StoneLab.xlsx",
-                "success": true,
-                "error": null
-              }
-            ]
-          }
-        ],
-        "filesSent": [],
-        "error": null
-      }
-    ],
-    "lastRunAt": "2026-06-24T08:41:19.854Z"
-  },
-  {
-    "userId": "FP16145",
-    "id": "SCH-1782291980227",
+    "id": "SCH-1782363277363",
     "sourceType": "UPLOAD",
     "scheduleType": "UPLOADED_FILES",
     "scheduleMode": "WEEKLY",
     "phones": [
-      "919253303172"
+      "917309871694"
     ],
-    "phone": "919253303172",
+    "phone": "917309871694",
     "totalNumbers": 1,
-    "schedulerName": "Weekly",
-    "message": "Weekky",
+    "schedulerName": "Weekly Schedular Report",
+    "message": "Dear Team,\r\n\r\nHere is the team attachments.\r\n\r\nThanks & Regards\r\nNarayan Rajbhar\r\n+91 7309871694\r\nnarayanrajbhar7777@gmail.com",
     "isActive": true,
-    "scheduleAt": "2026-06-28T09:10:00.000Z",
+    "scheduleAt": "2026-07-02T05:00:00.000Z",
     "status": "SCHEDULED",
-    "uploadedFiles": [],
-    "runHistory": []
+    "uploadedFiles": [
+      {
+        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782363277360-867062196-stocktallywhatsapp.xlsx",
+        "fileName": "stocktallywhatsapp.xlsx"
+      }
+    ],
+    "runHistory": [
+      {
+        "runId": "RUN-1782363650679",
+        "runAt": "2026-06-25T05:00:50.679Z",
+        "status": "SCHEDULED",
+        "successCount": 1,
+        "failedCount": 0,
+        "total": 1,
+        "results": [
+          {
+            "phone": "917309871694",
+            "success": true,
+            "error": null,
+            "files": [
+              {
+                "fileName": "1782363277360-867062196-stocktallywhatsapp.xlsx",
+                "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782363277360-867062196-stocktallywhatsapp.xlsx",
+                "success": true,
+                "error": null
+              }
+            ]
+          }
+        ],
+        "filesSent": [],
+        "error": null
+      }
+    ],
+    "lastRunAt": "2026-06-25T05:00:50.678Z"
   },
   {
     "userId": "FP16145",
-    "id": "SCH-1782292011492",
+    "id": "SCH-1782363465367",
     "sourceType": "UPLOAD",
     "scheduleType": "UPLOADED_FILES",
     "scheduleMode": "MONTHLY",
@@ -722,78 +112,34 @@
     ],
     "phone": "917309871694",
     "totalNumbers": 1,
-    "schedulerName": "Mothly",
-    "message": "Monthly",
+    "schedulerName": "Monthly Schedular Report",
+    "message": "Dear Team,\r\n\r\nHere is the team attachments.\r\n\r\nThanks & Regards\r\nNarayan Rajbhar\r\n+91 7309871694\r\nnarayanrajbhar7777@gmail.com",
     "isActive": true,
-    "scheduleAt": "2026-07-01T09:11:00.000Z",
+    "scheduleAt": "2026-07-25T05:05:00.000Z",
     "status": "SCHEDULED",
-    "uploadedFiles": [],
-    "runHistory": []
-  },
-  {
-    "userId": "admin",
-    "id": "SCH-1782325170255",
-    "sourceType": "UPLOAD",
-    "scheduleType": "UPLOADED_FILES",
-    "scheduleMode": "CUSTOM",
-    "phones": [
-      "120363425525562305@g.us"
-    ],
-    "phone": "120363425525562305@g.us",
-    "totalNumbers": 1,
-    "schedulerName": "fdd",
-    "message": "fdd",
-    "isActive": true,
-    "scheduleAt": "2026-06-24T18:21:00.000Z",
-    "status": "SENT",
     "uploadedFiles": [
       {
-        "filePath": "C:\\Users\\r_aje\\Downloads\\whataspp-web-main\\uploads\\scheduled\\1782325170230-868458114-photo.jpg",
-        "fileName": "photo.jpg"
+        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782363465365-890143724-stocktallywhatsapp.xlsx",
+        "fileName": "stocktallywhatsapp.xlsx"
       }
     ],
     "runHistory": [
       {
-        "runId": "RUN-1782325267381",
-        "runAt": "2026-06-24T18:21:07.381Z",
+        "runId": "RUN-1782363935835",
+        "runAt": "2026-06-25T05:05:35.835Z",
         "status": "SCHEDULED",
         "successCount": 1,
         "failedCount": 0,
         "total": 1,
         "results": [
           {
-            "phone": "120363425525562305@g.us",
+            "phone": "917309871694",
             "success": true,
             "error": null,
             "files": [
               {
-                "fileName": "1782325170230-868458114-photo.jpg",
-                "filePath": "C:\\Users\\r_aje\\Downloads\\whataspp-web-main\\uploads\\scheduled\\1782325170230-868458114-photo.jpg",
-                "success": true,
-                "error": null
-              }
-            ]
-          }
-        ],
-        "filesSent": [],
-        "error": null
-      },
-      {
-        "runId": "RUN-1782325293015",
-        "runAt": "2026-06-24T18:21:33.015Z",
-        "status": "SENT",
-        "successCount": 1,
-        "failedCount": 0,
-        "total": 1,
-        "results": [
-          {
-            "phone": "120363425525562305@g.us",
-            "success": true,
-            "error": null,
-            "files": [
-              {
-                "fileName": "1782325170230-868458114-photo.jpg",
-                "filePath": "C:\\Users\\r_aje\\Downloads\\whataspp-web-main\\uploads\\scheduled\\1782325170230-868458114-photo.jpg",
+                "fileName": "1782363465365-890143724-stocktallywhatsapp.xlsx",
+                "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782363465365-890143724-stocktallywhatsapp.xlsx",
                 "success": true,
                 "error": null
               }
@@ -804,6 +150,340 @@
         "error": null
       }
     ],
-    "lastRunAt": "2026-06-24T18:21:33.014Z"
+    "lastRunAt": "2026-06-25T05:05:35.835Z"
+  },
+  {
+    "userId": "FP16145",
+    "id": "SCH-1782365659805",
+    "sourceType": "UPLOAD",
+    "scheduleType": "UPLOADED_FILES",
+    "scheduleMode": "CUSTOM",
+    "phones": [
+      "917309871694"
+    ],
+    "phone": "917309871694",
+    "totalNumbers": 1,
+    "schedulerName": "One Day Scheduar Report",
+    "message": "Dear Team,\r\n\r\nHere is one day report\r\n\r\nThanks and Regards",
+    "isActive": true,
+    "scheduleAt": "2026-06-25T05:35:00.000Z",
+    "status": "FAILED",
+    "uploadedFiles": [
+      {
+        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782365659802-698075074-stocktallywhatsapp.xlsx",
+        "fileName": "stocktallywhatsapp.xlsx"
+      }
+    ],
+    "runHistory": [],
+    "error": "Server reboot execution crash transaction recovery."
+  },
+  {
+    "userId": "FP16145",
+    "id": "SCH-1782365839112",
+    "sourceType": "UPLOAD",
+    "scheduleType": "UPLOADED_FILES",
+    "scheduleMode": "CUSTOM",
+    "phones": [
+      "917309871694"
+    ],
+    "phone": "917309871694",
+    "totalNumbers": 1,
+    "schedulerName": "One Day Scheduar Report",
+    "message": "Hi",
+    "isActive": true,
+    "scheduleAt": "2026-06-25T05:38:00.000Z",
+    "status": "SENT",
+    "uploadedFiles": [
+      {
+        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782365839110-473747921-stocktallywhatsapp.xlsx",
+        "fileName": "stocktallywhatsapp.xlsx"
+      }
+    ],
+    "runHistory": [
+      {
+        "runId": "RUN-1782365906401",
+        "runAt": "2026-06-25T05:38:26.401Z",
+        "status": "SENT",
+        "successCount": 1,
+        "failedCount": 0,
+        "total": 1,
+        "results": [
+          {
+            "phone": "917309871694",
+            "success": true,
+            "error": null,
+            "files": [
+              {
+                "fileName": "1782365839110-473747921-stocktallywhatsapp.xlsx",
+                "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782365839110-473747921-stocktallywhatsapp.xlsx",
+                "success": true,
+                "error": null
+              }
+            ]
+          }
+        ],
+        "filesSent": [],
+        "error": null
+      }
+    ],
+    "lastRunAt": "2026-06-25T05:38:26.401Z"
+  },
+  {
+    "userId": "FP16145",
+    "id": "SCH-1782368940513",
+    "sourceType": "UPLOAD",
+    "scheduleType": "UPLOADED_FILES",
+    "scheduleMode": "CUSTOM",
+    "phones": [
+      "917309871694"
+    ],
+    "phone": "917309871694",
+    "totalNumbers": 1,
+    "schedulerName": "Schedular Report Testing",
+    "message": "Send Schdeular Report",
+    "isActive": true,
+    "scheduleAt": "2026-06-25T06:30:00.000Z",
+    "status": "SENT",
+    "uploadedFiles": [
+      {
+        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782368940510-712076363-stocktallywhatsapp.xlsx",
+        "fileName": "stocktallywhatsapp.xlsx"
+      }
+    ],
+    "runHistory": [
+      {
+        "runId": "RUN-1782369082487",
+        "runAt": "2026-06-25T06:31:22.487Z",
+        "status": "SENT",
+        "successCount": 1,
+        "failedCount": 0,
+        "total": 1,
+        "results": [
+          {
+            "phone": "917309871694",
+            "success": true,
+            "error": null,
+            "files": [
+              {
+                "fileName": "1782368940510-712076363-stocktallywhatsapp.xlsx",
+                "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782368940510-712076363-stocktallywhatsapp.xlsx",
+                "success": true,
+                "error": null
+              }
+            ]
+          }
+        ],
+        "filesSent": [],
+        "error": null
+      }
+    ],
+    "lastRunAt": "2026-06-25T06:31:22.487Z"
+  },
+  {
+    "userId": "FP16145",
+    "id": "SCH-1782377833336",
+    "sourceType": "UPLOAD",
+    "scheduleType": "UPLOADED_FILES",
+    "scheduleMode": "DAILY",
+    "phones": [
+      "917309871694"
+    ],
+    "phone": "917309871694",
+    "totalNumbers": 1,
+    "schedulerName": "Ji",
+    "message": "TRYBE STOCK TALLY REPORT\r\n--------------------------------\r\nVoucher ID : 4417853\r\nVoucher : MFGSERVICE-tally-65001/2026\r\nDepartment : MFG SERVICE\r\nPCS : 850\r\nDate : 24-06-2026 17:42\r\n--------------------------------\r\nVoucher ID : 4409085\r\nVoucher : GalaxyScanning-tally-3403/2026\r\nDepartment : Galaxy Scanning\r\nPCS : 122\r\nDate : 23-06-2026 18:22\r\n--------------------------------\r\nVoucher ID : 4400163\r\nVoucher : FacetPlanningStockControl-tally-59437/2026\r\nDepartment : Facet Planning Stock Control\r\nPCS : 132\r\nDate : 22-06-2026 18:24\r\n--------------------------------\r\nVoucher ID : 4399156\r\nVoucher : suratRoughStoneBank-tally-43689/2026\r\nDepartment : surat Rough Stone Bank\r\nPCS : 1025\r\nDate : 22-06-2026 17:15\r\n--------------------------------\r\nVoucher ID : 4399517\r\nVoucher : FacetDNAStockControl-tally-60417/2026\r\nDepartment : Facet DNA Stock Control\r\nPCS : 79\r\nDate : 22-06-2026 17:34\r\n--------------------------------\r\nVoucher ID : 4400327\r\nVoucher : DiamondLab-tally-18556/2026\r\nDepartment : Diamond Lab\r\nPCS : 407\r\nDate : 22-06-2026 18:46\r\n--------------------------------\r\nVoucher ID : 4400531\r\nVoucher : DigitalImaging-tally-2315/2026\r\nDepartment : Digital Imaging\r\nPCS : 444\r\nDate : 22-06-2026 19:08\r\n--------------------------------\r\nVoucher ID : 4400542\r\nVoucher : GalaxyScanning-tally-3400/2026\r\nDepartment : Galaxy Scanning\r\nPCS : 99\r\nDate : 22-06-2026 19:09\r\n--------------------------------\r\nVoucher ID : 4400623\r\nVoucher : QC-tally-13491/2026\r\nDepartment : QC\r\nPCS : 596\r\nDate : 22-06-2026 19:20\r\n--------------------------------\r\nVoucher ID : 4400722\r\nVoucher : RoundManual-tally-14774/2026\r\nDepartment : Round Manual\r\nPCS : 83\r\nDate : 22-06-2026 19:48\r\n--------------------------------\r\nVoucher ID : 4400728\r\nVoucher : MFG SERVICE POLISH STOCK-tally-1152/2026\r\nDepartment : MFG SERVICE POLISH STOCK\r\nPCS : 439\r\nDate : 22-06-2026 19:50\r\n--------------------------------\r\nVoucher ID : 4400732\r\nVoucher : RoundGalahad-tally-44637/2026\r\nDepartment : Round Galahad\r\nPCS : 448\r\nDate : 22-06-2026 19:54\r\n--------------------------------\r\nVoucher ID : 4400735\r\nVoucher : X-RayDepartment-tally-7540/2026\r\nDepartment : X-Ray Department\r\nPCS : 477\r\nDate : 22-06-2026 19:56\r\n--------------------------------\r\nVoucher ID : 4400752\r\nVoucher : FancyManualDepartment-tally-16627/2026\r\nDepartment : Fancy Manual Department\r\nPCS : 745\r\nDate : 22-06-2026 20:03\r\n--------------------------------\r\nVoucher ID : 4400759\r\nVoucher : LaserCuttingDepartment-tally-6681/2026\r\nDepartment : Laser Cutting Department\r\nPCS : 2085\r\nDate : 22-06-2026 20:12\r\n--------------------------------\r\nVoucher ID : 4400841\r\nVoucher : Checker-tally-24617/2026\r\nDepartment : Checker\r\nPCS : 758\r\nDate : 22-06-2026 20:38\r\n--------------------------------\r\nVoucher ID : 4408857\r\nVoucher : DigitalImaging-tally-2316/2026\r\nDepartment : Digital Imaging\r\nPCS : 388\r\nDate : 23-06-2026 18:02\r\n--------------------------------\r\nVoucher ID : 4409576\r\nVoucher : FacetDNAStockControl-tally-60418/2026\r\nDepartment : Facet DNA Stock Control\r\nPCS : 231\r\nDate : 23-06-2026 19:08\r\n--------------------------------\r\nVoucher ID : 4409949\r\nVoucher : LaserCuttingDepartment-tally-6683/2026\r\nDepartment : Laser Cutting Department\r\nPCS : 2044\r\nDate : 23-06-2026 20:38\r\n--------------------------------\r\nVoucher ID : 4418644\r\nVoucher : DiamondLab-tally-18560/2026\r\nDepartment : Diamond Lab\r\nPCS : 432\r\nDate : 24-06-2026 19:11\r\n--------------------------------\r\nVoucher ID : 4418022\r\nVoucher : Checker-tally-24620/2026\r\nDepartment : Checker\r\nPCS : 573\r\nDate : 24-06-2026 18:02\r\n--------------------------------\r\nVoucher ID : 4409736\r\nVoucher : X-RaySemi-Polish-tally-8650/2026\r\nDepartment : X-Ray Semi-Polish\r\nPCS : 478\r\nDate : 23-06-2026 19:47\r\n--------------------------------\r\nVoucher ID : 4409737\r\nVoucher : X-RayDepartment-tally-7541/2026\r\nDepartment : X-Ray Department\r\nPCS : 504\r\nDate : 23-06-2026 19:49\r\n--------------------------------\r\nVoucher ID : 4418069\r\nVoucher : GalaxyScanning-tally-3405/2026\r\nDepartment : Galaxy Scanning\r\nPCS : 74\r\nDate : 24-06-2026 18:06\r\n--------------------------------\r\nVoucher ID : 4418089\r\nVoucher : GalaxyScanning-tally-3406/2026\r\nDepartment : Galaxy Scanning\r\nPCS : 76\r\nDate : 24-06-2026 18:09\r\n--------------------------------\r\nVoucher ID : 4418090\r\nVoucher : QC-tally-13495/2026\r\nDepartment : QC\r\nPCS : 629\r\nDate : 24-06-2026 18:09\r\n--------------------------------\r\nVoucher ID : 4419218\r\nVoucher : RoundManual-tally-14776/2026\r\nDepartment : Round Manual\r\nPCS : 147\r\nDate : 24-06-2026 21:36\r\n--------------------------------\r\nVoucher ID : 4409187\r\nVoucher : QC-tally-13493/2026\r\nDepartment : QC\r\nPCS : 469\r\nDate : 23-06-2026 18:31\r\n--------------------------------\r\nVoucher ID : 4417700\r\nVoucher : FacetPlanningStockControl-tally-59441/2026\r\nDepartment : Facet Planning Stock Control\r\nPCS : 36\r\nDate : 24-06-2026 17:26\r\n--------------------------------\r\nVoucher ID : 4407956\r\nVoucher : suratRoughStoneBank-tally-43691/2026\r\nDepartment : surat Rough Stone Bank\r\nPCS : 1005\r\nDate : 23-06-2026 17:01\r\n--------------------------------\r\nVoucher ID : 4417759\r\nVoucher : DigitalImaging-tally-2317/2026\r\nDepartment : Digital Imaging\r\nPCS : 172\r\nDate : 24-06-2026 17:32\r\n--------------------------------\r\nVoucher ID : 4417789\r\nVoucher : FacetDNAStockControl-tally-60419/2026\r\nDepartment : Facet DNA Stock Control\r\nPCS : 52\r\nDate : 24-06-2026 17:34\r\n--------------------------------\r\nVoucher ID : 4418925\r\nVoucher : LaserCuttingDepartment-tally-6684/2026\r\nDepartment : Laser Cutting Department\r\nPCS : 2208\r\nDate : 24-06-2026 20:10\r\n--------------------------------\r\nVoucher ID : 4419229\r\nVoucher : MFG SERVICE POLISH STOCK-tally-1157/2026\r\nDepartment : MFG SERVICE POLISH STOCK\r\nPCS : 345\r\nDate : 24-06-2026 21:47\r\n--------------------------------\r\nVoucher ID : 4419232\r\nVoucher : FancyManualDepartment-tally-16632/2026\r\nDepartment : Fancy Manual Department\r\nPCS : 813\r\nDate : 24-06-2026 21:48\r\n--------------------------------\r\nVoucher ID : 4419233\r\nVoucher : RoundGalahad-tally-44640/2026\r\nDepartment : Round Galahad\r\nPCS : 402\r\nDate : 24-06-2026 21:50\r\n--------------------------------\r\nVoucher ID : 4409659\r\nVoucher : Checker-tally-24619/2026\r\nDepartment : Checker\r\nPCS : 814\r\nDate : 23-06-2026 19:20\r\n--------------------------------\r\nVoucher ID : 4409692\r\nVoucher : DiamondLab-tally-18557/2026\r\nDepartment : Diamond Lab\r\nPCS : 285\r\nDate : 23-06-2026 19:23\r\n--------------------------------\r\nVoucher ID : 4410149\r\nVoucher : RoundManual-tally-14775/2026\r\nDepartment : Round Manual\r\nPCS : 104\r\nDate : 23-06-2026 21:52\r\n--------------------------------\r\nVoucher ID : 4410153\r\nVoucher : FancyManualDepartment-tally-16629/2026\r\nDepartment : Fancy Manual Department\r\nPCS : 716\r\nDate : 23-06-2026 21:54\r\n--------------------------------\r\nVoucher ID : 4410154\r\nVoucher : MFG SERVICE POLISH STOCK-tally-1154/2026\r\nDepartment : MFG SERVICE POLISH STOCK\r\nPCS : 393\r\nDate : 23-06-2026 21:55\r\n--------------------------------\r\nVoucher ID : 4410155\r\nVoucher : RoundGalahad-tally-44638/2026\r\nDepartment : Round Galahad\r\nPCS : 383\r\nDate : 23-06-2026 21:55\r\n--------------------------------\r\nVoucher ID : 4417343\r\nVoucher : suratRoughStoneBank-tally-43692/2026\r\nDepartment : surat Rough Stone Bank\r\nPCS : 1223\r\nDate : 24-06-2026 17:00\r\n--------------------------------\r\nVoucher ID : 4409328\r\nVoucher : FacetPlanningStockControl-tally-59439/2026\r\nDepartment : Facet Planning Stock Control\r\nPCS : 91\r\nDate : 23-06-2026 18:41\r\n--------------------------------\r\nVoucher ID : 4418864\r\nVoucher : X-RaySemi-Polish-tally-8651/2026\r\nDepartment : X-Ray Semi-Polish\r\nPCS : 508\r\nDate : 24-06-2026 19:50\r\n--------------------------------\r\nVoucher ID : 4418880\r\nVoucher : X-RayDepartment-tally-7542/2026\r\nDepartment : X-Ray Department\r\nPCS : 371\r\nDate : 24-06-2026 19:53\r\n--------------------------------\r\n",
+    "isActive": true,
+    "scheduleAt": "2026-06-26T09:00:00.000Z",
+    "status": "SCHEDULED",
+    "uploadedFiles": [],
+    "runHistory": [
+      {
+        "runId": "RUN-1782378017576",
+        "runAt": "2026-06-25T09:00:17.576Z",
+        "status": "SCHEDULED",
+        "successCount": 1,
+        "failedCount": 0,
+        "total": 1,
+        "results": [
+          {
+            "phone": "917309871694",
+            "success": true,
+            "error": null,
+            "files": []
+          }
+        ],
+        "filesSent": [],
+        "error": null
+      }
+    ],
+    "lastRunAt": "2026-06-25T09:00:17.575Z"
+  },
+  {
+    "userId": "FP16145",
+    "id": "SCH-1782379368555",
+    "sourceType": "UPLOAD",
+    "scheduleType": "UPLOADED_FILES",
+    "scheduleMode": "CUSTOM",
+    "phones": [
+      "917309871694"
+    ],
+    "phone": "917309871694",
+    "totalNumbers": 1,
+    "schedulerName": "Mobile Report",
+    "message": "Daily Whatsapp Mobile Report",
+    "isActive": true,
+    "scheduleAt": "2026-06-25T09:25:00.000Z",
+    "status": "SENT",
+    "uploadedFiles": [
+      {
+        "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782379368553-479658656-Stone_Lab_Records_20260611.xlsx",
+        "fileName": "Stone_Lab_Records_20260611.xlsx"
+      }
+    ],
+    "runHistory": [
+      {
+        "runId": "RUN-1782379520176",
+        "runAt": "2026-06-25T09:25:20.176Z",
+        "status": "SENT",
+        "successCount": 1,
+        "failedCount": 0,
+        "total": 1,
+        "results": [
+          {
+            "phone": "917309871694",
+            "success": true,
+            "error": null,
+            "files": [
+              {
+                "fileName": "1782379368553-479658656-Stone_Lab_Records_20260611.xlsx",
+                "filePath": "C:\\Users\\spc1\\Desktop\\Reports\\whatsapp-uploader\\uploads\\scheduled\\1782379368553-479658656-Stone_Lab_Records_20260611.xlsx",
+                "success": true,
+                "error": null
+              }
+            ]
+          }
+        ],
+        "filesSent": [],
+        "error": null
+      }
+    ],
+    "lastRunAt": "2026-06-25T09:25:20.176Z"
+  },
+  {
+    "userId": "FP16145",
+    "id": "SCH-1782379532443",
+    "sourceType": "UPLOAD",
+    "scheduleType": "UPLOADED_FILES",
+    "scheduleMode": "DAILY",
+    "phones": [
+      "917309871694"
+    ],
+    "phone": "917309871694",
+    "totalNumbers": 1,
+    "schedulerName": "Test Scheduler Report -1",
+    "message": "Test Scheduler Report -1",
+    "isActive": true,
+    "scheduleAt": "2026-06-26T09:29:00.000Z",
+    "status": "SCHEDULED",
+    "uploadedFiles": [],
+    "runHistory": [
+      {
+        "runId": "RUN-1782379751648",
+        "runAt": "2026-06-25T09:29:11.648Z",
+        "status": "SCHEDULED",
+        "successCount": 1,
+        "failedCount": 0,
+        "total": 1,
+        "results": [
+          {
+            "phone": "917309871694",
+            "success": true,
+            "error": null,
+            "files": []
+          }
+        ],
+        "filesSent": [],
+        "error": null
+      }
+    ],
+    "lastRunAt": "2026-06-25T09:29:11.647Z"
+  },
+  {
+    "userId": "FP16145",
+    "id": "SCH-1782379552111",
+    "sourceType": "UPLOAD",
+    "scheduleType": "UPLOADED_FILES",
+    "scheduleMode": "CUSTOM",
+    "phones": [
+      "917309871694"
+    ],
+    "phone": "917309871694",
+    "totalNumbers": 1,
+    "schedulerName": "Test Scheduler Report -2",
+    "message": "",
+    "isActive": true,
+    "scheduleAt": "2026-06-25T09:28:00.000Z",
+    "status": "SENT",
+    "uploadedFiles": [],
+    "runHistory": [
+      {
+        "runId": "RUN-1782379692262",
+        "runAt": "2026-06-25T09:28:12.262Z",
+        "status": "SENT",
+        "successCount": 1,
+        "failedCount": 0,
+        "total": 1,
+        "results": [
+          {
+            "phone": "917309871694",
+            "success": true,
+            "error": null,
+            "files": []
+          }
+        ],
+        "filesSent": [],
+        "error": null
+      }
+    ],
+    "lastRunAt": "2026-06-25T09:28:12.262Z"
+  },
+  {
+    "userId": "FP16145",
+    "id": "SCH-1782379570903",
+    "sourceType": "UPLOAD",
+    "scheduleType": "UPLOADED_FILES",
+    "scheduleMode": "CUSTOM",
+    "phones": [
+      "917309871694"
+    ],
+    "phone": "917309871694",
+    "totalNumbers": 1,
+    "schedulerName": "Test Scheduler Report -3",
+    "message": "Test Scheduler Report -1",
+    "isActive": true,
+    "scheduleAt": "2026-06-25T09:27:00.000Z",
+    "status": "SENT",
+    "uploadedFiles": [],
+    "runHistory": [
+      {
+        "runId": "RUN-1782379631590",
+        "runAt": "2026-06-25T09:27:11.590Z",
+        "status": "SENT",
+        "successCount": 1,
+        "failedCount": 0,
+        "total": 1,
+        "results": [
+          {
+            "phone": "917309871694",
+            "success": true,
+            "error": null,
+            "files": []
+          }
+        ],
+        "filesSent": [],
+        "error": null
+      }
+    ],
+    "lastRunAt": "2026-06-25T09:27:11.590Z"
   }
 ]

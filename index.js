@@ -2,8 +2,18 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-
+const session = require('express-session');
+const cors = require('cors');
 const app = express();
+app.use(cors({
+    origin: [
+        'http://localhost:3000', 
+        'http://localhost:8501/',
+        'http://172.16.37.219:3000/'
+    ],
+    credentials: true
+}));
+
 const port = process.env.PORT || 3000;
 const CONFIG = {
     PORT: port,
@@ -15,27 +25,27 @@ const CONFIG = {
     DELETE_SENT_AFTER_DAYS: 100
 };
 
-// Mount Independent Local File Directories Layout
 const UPLOAD_DIR = path.join(__dirname, 'uploads');
 const SCHEDULED_UPLOAD_DIR = path.join(UPLOAD_DIR, 'scheduled');
 const SEND_NOW_UPLOAD_DIR = path.join(UPLOAD_DIR, 'send-now');
 const DATA_DIR = path.join(__dirname, 'data');
 const SCHEDULE_FILE = path.join(DATA_DIR, 'schedules.json');
 const NUMBER_LIST_FILE = path.join(DATA_DIR, 'whatsapp_numbers.json');
+const USERS_FILE = path.join(DATA_DIR, 'users.json');
 
 [UPLOAD_DIR, SCHEDULED_UPLOAD_DIR, SEND_NOW_UPLOAD_DIR, DATA_DIR].forEach(d => {
     if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });
 });
 if (!fs.existsSync(SCHEDULE_FILE)) fs.writeFileSync(SCHEDULE_FILE, '[]');
 if (!fs.existsSync(NUMBER_LIST_FILE)) fs.writeFileSync(NUMBER_LIST_FILE, '[]');
+if (!fs.existsSync(USERS_FILE)) 
+    fs.writeFileSync(USERS_FILE, JSON.stringify([{ username: 'admin', password: 'admin@123', displayName: 'Administrator', role: 'admin' }], null, 2));
 
-// Load Modular Service Components
 const { clients, clientStatus, qrStore } = require('./whatsapp-store');
 const whatsAppService = require('./whatsapp.service');
 const fileService = require('./file-resolver.service');
 const mathService = require('./scheduler-math');
 
-// Enable Server Cross-Origin Allocation Parameters Middleware
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -44,13 +54,85 @@ app.use((req, res, next) => {
     next();
 });
 
-// Configure Multer Disk Storage Engines
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true }));
+
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'whatsapp-scheduler-secret-key-2026',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 8 * 60 * 60 * 1000 }
+}));
+
+const loadUsers = () => { try { return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8')); } catch(e) { return []; } };
+
+const PUBLIC_PATHS = ['/login', '/auth/login', '/login.html'];
+
+// app.use((req, res, next) => {
+//     if (PUBLIC_PATHS.includes(req.path)) return next();
+//     if (req.session && req.session.user) return next();
+//     // Allow static assets (css/js/images) on the login page itself
+//     const ext = path.extname(req.path);
+//     if (ext && ['.css','.js','.png','.jpg','.ico','.svg','.woff','.woff2'].includes(ext)) return next();
+//     if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
+//         return res.status(401).json({ success: false, error: 'Session expired. Please log in again.', redirect: '/login' });
+//     }
+//     return res.redirect('/login');
+// });
+
+app.use((req, res, next) => {
+    if (PUBLIC_PATHS.includes(req.path) || 
+        req.path.startsWith('/groups/') || 
+        req.path.startsWith('/contacts/') || 
+        req.path.startsWith('/api/') || 
+        (req.session && req.session.user)) 
+        return next();
+
+    if (req.session && req.session.user)
+        return next();
+
+    return res.redirect('/login');
+});
+app.use(express.static('public'));
+
+app.get('/login', (req, res) => {
+    if (req.session && req.session.user) return res.redirect('/');
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+app.post('/auth/login', (req, res) => {
+    const { username, password } = req.body;
+    if (!username || !password) return res.json({ success: false, error: 'Username and password are required.' });
+
+    const users = loadUsers();
+    const user = users.find(u => u.username === username && u.password === password);
+    if (!user) return res.json({ success: false, error: 'Invalid username or password.' });
+
+    req.session.user = { username: user.username, displayName: user.displayName, role: user.role };
+    console.log(`[Auth] User "${user.username}" logged in successfully.`);
+    res.json({ success: true, user: req.session.user });
+});
+
+app.get('/auth/logout', (req, res) => {
+    const who = req.session.user ? req.session.user.username : 'unknown';
+    req.session.destroy(() => {
+        console.log(`[Auth] User "${who}" logged out.`);
+        res.redirect('/login');
+    });
+});
+
+app.get('/auth/me', (req, res) => {
+    if (!req.session.user) return res.status(401).json({ success: false });
+    res.json({ success: true, user: req.session.user });
+});
+
 function createStorage(fPath) {
     return multer.diskStorage({
         destination: (req, file, cb) => cb(null, fPath),
         filename: (req, file, cb) => cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}-${file.originalname.replace(/[^a-zA-Z0-9.]/g, '_')}`)
     });
 }
+
 function uploadFileFilter(req, file, cb) {
     cb(null, CONFIG.ALLOWED_EXTENSIONS.includes(path.extname(file.originalname).toLowerCase()));
 }
@@ -58,21 +140,12 @@ function uploadFileFilter(req, file, cb) {
 const uploadSendNow = multer({ storage: createStorage(SEND_NOW_UPLOAD_DIR), limits: { fileSize: 50 * 1024 * 1024, files: CONFIG.MAX_FILES_PER_SCHEDULE }, fileFilter: uploadFileFilter });
 const uploadScheduled = multer({ storage: createStorage(SCHEDULED_UPLOAD_DIR), limits: { fileSize: 50 * 1024 * 1024, files: CONFIG.MAX_FILES_PER_SCHEDULE }, fileFilter: uploadFileFilter });
 
-app.use(express.json({ limit: '5mb' }));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
-// =================================================================
-// INDEX.JS - PART 2: DATA HELPER METHOD PIPELINES & VALIDATION GATES
-// =================================================================
-
-// Reusable Core JSON Read/Write Persistence Helpers
 const loadJson = (file, def) => {
     try { return JSON.parse(fs.readFileSync(file, 'utf8') || JSON.stringify(def)); } catch(e) { return def; }
 };
 const saveJson = (file, data) => fs.writeFileSync(file, JSON.stringify(data, null, 2));
 const deleteFileSafe = (f) => { try { if (f && fs.existsSync(f)) fs.unlinkSync(f); } catch (e) {} };
 
-// 🟢 GROUP-AWARE PARSING UTILITIES: Preserves group signatures ending with @g.us
 function parsePhoneNumbers(input) {
     return String(input || '').split(/[\n,;]+/).map(p => p.trim()).filter(Boolean)
         .map(p => p.endsWith('@g.us') ? p : p.replace(/\D/g, ''))
@@ -112,25 +185,12 @@ const HELPERS = {
     normalizePhoneFileMap,
     getMappedFilesForPhone
 };
-// =================================================================
-// INDEX.JS - PART 3: CLIENT ROUTING CONTROL & GROUP SYNC ENDPOINTS
-// =================================================================
 
-/**
- * Control API to boot or resume a dynamic user browser instance pipeline
- */
 app.post('/api/whatsapp/init/:userId', (req, res) => {
     whatsAppService.initWhatsAppClient(req.params.userId);
     res.json({ success: true, message: 'Dynamic initialization loop triggered successfully.' });
 });
 
-/**
- * Polling node for dashboards to track connection states and QR codes per user.
- * NOTE: the dashboard polls this exact path (/api/whatsapp/status/:userId) to
- * pull the live QR string and render it on the page — this is what lets the
- * person scan "Linked Devices" from their phone instead of needing the
- * server terminal.
- */
 app.get('/api/whatsapp/status/:userId', (req, res) => {
     res.json({
         success: true,
@@ -140,16 +200,10 @@ app.get('/api/whatsapp/status/:userId', (req, res) => {
     });
 });
 
-/**
- * Dedicated standalone QR login page — lets a phone/operator open just
- * http://localhost:3000/loginqr (optionally http://localhost:3000/loginqr?userId=U001
- * to auto-start) to scan and link WhatsApp without loading the full dashboard.
- */
 app.get('/loginqr', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'loginqr.html'));
 });
 
-/** GROUP FETCH ENGINE */
 app.get('/groups/:sessionName', async (req, res) => {
     const sId = req.params.sessionName;
     if (!clients[sId] || !clientStatus[sId]) {
@@ -256,13 +310,10 @@ app.post('/api/send-whatsapp', uploadSendNow.array('documents', CONFIG.MAX_FILES
     }
 });
 
-// Scheduling Creation API
 app.post('/api/upload-and-schedule-whatsapp', uploadScheduled.array('documents', CONFIG.MAX_FILES_PER_SCHEDULE), (req, res) => {
 
-    const { phone, caption, scheduleMode, scheduleAt, startDate, time, weeklyDay, monthlyDay, userId } = req.body;
-    console.log(`{ phone, caption, scheduleMode, scheduleAt, startDate, time, weeklyDay, monthlyDay, userId } =`, { phone, caption, scheduleMode, scheduleAt, startDate, time, weeklyDay, monthlyDay, userId });
+    const { phone, caption, scheduleMode, scheduleAt, startDate, time, weeklyDay, monthlyDay, userId } = req.body;   
     const files = req.files || [];
-    console.log(`Uploaded files:`, files.map(f => ({ originalname: f.originalname, path: f.path })));
     const mode = String(scheduleMode || 'CUSTOM').toUpperCase();
     const list = parsePhoneNumbers(phone);
 
@@ -293,14 +344,6 @@ app.post('/api/schedule-location-report', (req, res) => {
     schedules.push(task); saveSchedules(schedules);
     res.json({ success: true, message: 'Schedule created successfully.', schedule: task });
 });
-
-// =================================================================
-// INDEX.JS - PART 3.5: NUMBER LIST, FOLDER SCAN & SCHEDULE CRUD/HISTORY
-// (previously missing — the dashboard called these endpoints but the
-// server never implemented them, so the WhatsApp List, Scheduled
-// Report counters/toggles, Edit modal, and Scheduler Logs panels all
-// silently failed)
-// =================================================================
 
 app.get('/api/number-list', (req, res) => {
     res.json({ success: true, numbers: loadNumberList() });
@@ -395,42 +438,59 @@ app.put('/api/schedules/:id', (req, res) => {
     saveSchedules(schedules);
     res.json({ success: true, message: 'Schedule updated successfully.' });
 });
-
 app.get('/api/history', (req, res) => {
     const { userId, status } = req.query;
     const schedules = loadSchedules().filter(s => !userId || s.userId === userId);
 
     let rows = [];
     schedules.forEach(s => {
-        (s.runHistory || []).forEach(run => {
-            if (Array.isArray(run.results) && run.results.length) {
-                run.results.forEach(r => rows.push({
-                    scheduleId: s.id,
-                    schedulerName: s.schedulerName,
-                    scheduleMode: s.scheduleMode,
-                    phone: r.phone,
-                    runAt: run.runAt,
-                    success: !!r.success
-                }));
-            } else {
-                rows.push({
-                    scheduleId: s.id,
-                    schedulerName: s.schedulerName,
-                    scheduleMode: s.scheduleMode,
-                    phone: s.phone,
-                    runAt: run.runAt,
-                    success: (run.failedCount || 0) === 0
-                });
-            }
-        });
+       
+        if (s.runHistory && s.runHistory.length > 0) {
+            s.runHistory.forEach(run => {
+                if (Array.isArray(run.results) && run.results.length) {
+                    run.results.forEach(r => rows.push({
+                        scheduleId: s.id,
+                        schedulerName: s.schedulerName,
+                        scheduleMode: s.scheduleMode,
+                        phone: r.phone,
+                        runAt: run.runAt,
+                        success: !!r.success,
+                        error: r.error || s.error || null
+                    }));
+                } else {
+                    rows.push({
+                        scheduleId: s.id,
+                        schedulerName: s.schedulerName,
+                        scheduleMode: s.scheduleMode,
+                        phone: s.phone,
+                        runAt: run.runAt,
+                        success: (run.failedCount || 0) === 0,
+                        error: run.error || s.error || null
+                    });
+                }
+            });
+        } else if (s.status === 'FAILED') {
+            rows.push({
+                scheduleId: s.id,
+                schedulerName: s.schedulerName,
+                scheduleMode: s.scheduleMode,
+                phone: s.phone,
+                runAt: s.scheduleAt || s.createdAt || new Date().toISOString(),
+                success: false,
+                error: s.error || 'Task tracking failed completely.'
+            });
+        }
     });
-
     rows.sort((a, b) => new Date(b.runAt) - new Date(a.runAt));
-
     if (status === 'SUCCESS') rows = rows.filter(r => r.success);
     if (status === 'FAILED') rows = rows.filter(r => !r.success);
 
-    const summary = { total: rows.length, success: rows.filter(r => r.success).length, failed: rows.filter(r => !r.success).length };
+    const summary = { 
+        total: rows.length, 
+        success: rows.filter(r => r.success).length, 
+        failed: rows.filter(r => !r.success).length 
+    };
+
     res.json({ success: true, history: rows, summary });
 });
 
@@ -485,11 +545,9 @@ function deleteOldSentSchedules() {
     if(clean.length !== schedules.length) saveSchedules(clean);
 }
 
-// Global Core Micro Interval Registration Setup Loops
 setInterval(processDueSchedules, 30000);
 setInterval(deleteOldSentSchedules, 24 * 60 * 60 * 1000);
 
-// ===================== MASTER APPLICATION SERVER DEPLOYMENT =====================
 app.listen(CONFIG.PORT, '0.0.0.0', () => {
     console.log(`================================================================`);
     console.log(` Master Gateway Operational at: http://localhost:${CONFIG.PORT}`);

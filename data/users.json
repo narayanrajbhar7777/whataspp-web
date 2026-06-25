@@ -1,8 +1,15 @@
 [
   {
-    "username": "admin",
-    "password": "admin@123",
+    "username": "FP16145",
+    "password": "abcd",
+    "displayName": "Administrator",
+    "role": "admin"
+  },
+  {
+    "username": "FP16867",
+    "password": "abcd",
     "displayName": "Administrator",
     "role": "admin"
   }
+
 ]

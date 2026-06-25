@@ -1699,9 +1699,9 @@
                 <button id="navDetails" onclick="switchTab('details')">
                     <span class="nav-icon">📋</span> Scheduler Reports
                 </button>
-                <button id="navHistory" onclick="switchTab('history')">
+                <!-- <button id="navHistory" onclick="switchTab('history')">
                     <span class="nav-icon">🕐</span> Scheduler Logs
-                </button>
+                </button> -->
                 <button id="navContacts" onclick="switchTab('contacts')">
                     <span class="nav-icon">🔄</span> Sync Groups &amp; Contacts
                 </button>
@@ -1732,12 +1732,11 @@
             <!-- ════ TOPBAR ════ -->
             <div class="topbar">
                 <!-- Search -->
-                <div class="topbar-search-wrap">
-                    <span class="topbar-search-icon">🔍</span>
+                <!-- <div class="topbar-search-wrap">
                     <input id="globalSearch" placeholder="Search schedules... (Press /)"
                         oninput="syncGlobalSearch(this.value)"
                         onkeydown="if(event.key==='/'){this.focus();}">
-                </div>
+                </div> -->
 
                 <div class="topbar-spacer"></div>
 
@@ -2785,6 +2784,7 @@
         }
         function updateScheduleCountTabs(c) {
             c = c || {};
+            console.log('Schedule counts:', c);
             const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
             set('filterALL', 'All (' + (c.ALL || 0) + ')');
             set('filterSCHEDULED', 'Scheduled (' + (c.SCHEDULED || 0) + ')');
@@ -2833,10 +2833,12 @@
                                 <th>Attachment</th>
                                 <th>Receiver Number</th>
                                 <th>Is Active</th>
+                                <th>Result</th>
                                 <th>Scheduled Time</th>
                                 <th>Action</th>
                     </tr></thead>
                 <tbody>${rows.map((item, i) => {
+                    console.log("Item: ",item);
                 const status = getDisplayStatus(item.status);
                 const phones = Array.isArray(item.phones) ? item.phones.join(', ') : item.phone || '-';
                 const active = item.isActive !== false && status !== 'CANCELLED';
@@ -2848,6 +2850,7 @@
                 <td title="${escapeHtml(getAttachmentText(item))}">${escapeHtml(getAttachmentText(item).slice(0, 55))}</td>
                 <td>${escapeHtml(phones)}</td>
                 <td><span class="toggle ${active ? 'on' : ''}" onclick="toggleActive('${item.id}', ${!active})"></span> <span class="status-pill ${status}">${escapeHtml(status)}</span></td>
+                <td>${escapeHtml(item.error || item.error || item.error || 'Success')}</td>
                 <td>${item.scheduleAt ? new Date(item.scheduleAt).toLocaleString() : '-'}</td>
                 <td>
                     <button class="action" title="Update" onclick="openEditScheduleModal('${item.id}')">✎</button>
@@ -2879,6 +2882,7 @@
             // actual server response and silently failed every time
             const uid = currentUserId || '';
             const res = await fetch(`/api/schedules?userId=${encodeURIComponent(uid)}&status=` + encodeURIComponent(currentScheduleFilter));
+            console.log('loadSchedules() response:', res);
             const data = await parseJsonResponse(res);
             if (data.success) {
                 allLoadedSchedules = data.schedules || [];
@@ -2981,6 +2985,7 @@
             loadSchedules();
         }
         async function sendNow() {
+            alert('Send successfully!'); // Temporary alert for testing
             if (!isWhatsappReady) return setMsg('sendNowResponse', 'WhatsApp is not online.', false);
             const phoneList = updateCount('sendNowPhone', 'sendNowPhoneCount');
             if (!phoneList.length) return setMsg('sendNowResponse', 'Please enter receiver number.', false);
@@ -2990,9 +2995,17 @@
             form.append('userId', currentUserId);
             form.append('caption', document.getElementById('sendNowCaption').value.trim());
             for (const file of files) form.append('documents', file);
+             clearData();
             const res = await fetch('/api/send-whatsapp', { method: 'POST', body: form });
             const data = await parseJsonResponse(res);
             setMsg('sendNowResponse', data.message || data.error, data.success);
+        }
+        
+        function clearData() {
+            document.getElementById('sendNowPhone').value = '';
+            document.getElementById('sendNowCaption').value = '';
+            document.getElementById('sendNowFiles').value = '';
+            updateCount('sendNowPhone', 'sendNowPhoneCount');
         }
         function setHistoryFilter(status) { currentHistoryFilter = status; loadHistoryReport(); }
         async function loadHistoryReport() {
@@ -3005,6 +3018,7 @@
             const s = data.summary || {};
             summaryBox.innerHTML = `Total: ${s.total || 0} | Success: ${s.success || 0} | Failed: ${s.failed || 0}`;
             let rows = data.history || [];
+            console.log('History rows:', rows);
             const search = String(document.getElementById('historySearchInput') ? document.getElementById('historySearchInput').value : '').toLowerCase();
             if (search) rows = rows.filter(r => JSON.stringify(r).toLowerCase().includes(search));
             if (!rows.length) { listBox.innerHTML = '<div style="padding:16px;">No logs found.</div>'; return; }
@@ -3168,7 +3182,8 @@
 
             const c = data.counts || {};
             // Update dashboard metric cards
-            ['Total','Scheduled','Sent','Failed'].forEach(k => {
+            console.log('Dashboard counts:', c);
+            ['Total Schedules','Scheduled','Sent','Failed'].forEach(k => {
                 const el = document.getElementById('dbMetric' + k);
                 if (el) el.textContent = (c[k.toUpperCase()] || 0).toLocaleString();
             });
