@@ -729,5 +729,81 @@
     "status": "SCHEDULED",
     "uploadedFiles": [],
     "runHistory": []
+  },
+  {
+    "userId": "admin",
+    "id": "SCH-1782325170255",
+    "sourceType": "UPLOAD",
+    "scheduleType": "UPLOADED_FILES",
+    "scheduleMode": "CUSTOM",
+    "phones": [
+      "120363425525562305@g.us"
+    ],
+    "phone": "120363425525562305@g.us",
+    "totalNumbers": 1,
+    "schedulerName": "fdd",
+    "message": "fdd",
+    "isActive": true,
+    "scheduleAt": "2026-06-24T18:21:00.000Z",
+    "status": "SENT",
+    "uploadedFiles": [
+      {
+        "filePath": "C:\\Users\\r_aje\\Downloads\\whataspp-web-main\\uploads\\scheduled\\1782325170230-868458114-photo.jpg",
+        "fileName": "photo.jpg"
+      }
+    ],
+    "runHistory": [
+      {
+        "runId": "RUN-1782325267381",
+        "runAt": "2026-06-24T18:21:07.381Z",
+        "status": "SCHEDULED",
+        "successCount": 1,
+        "failedCount": 0,
+        "total": 1,
+        "results": [
+          {
+            "phone": "120363425525562305@g.us",
+            "success": true,
+            "error": null,
+            "files": [
+              {
+                "fileName": "1782325170230-868458114-photo.jpg",
+                "filePath": "C:\\Users\\r_aje\\Downloads\\whataspp-web-main\\uploads\\scheduled\\1782325170230-868458114-photo.jpg",
+                "success": true,
+                "error": null
+              }
+            ]
+          }
+        ],
+        "filesSent": [],
+        "error": null
+      },
+      {
+        "runId": "RUN-1782325293015",
+        "runAt": "2026-06-24T18:21:33.015Z",
+        "status": "SENT",
+        "successCount": 1,
+        "failedCount": 0,
+        "total": 1,
+        "results": [
+          {
+            "phone": "120363425525562305@g.us",
+            "success": true,
+            "error": null,
+            "files": [
+              {
+                "fileName": "1782325170230-868458114-photo.jpg",
+                "filePath": "C:\\Users\\r_aje\\Downloads\\whataspp-web-main\\uploads\\scheduled\\1782325170230-868458114-photo.jpg",
+                "success": true,
+                "error": null
+              }
+            ]
+          }
+        ],
+        "filesSent": [],
+        "error": null
+      }
+    ],
+    "lastRunAt": "2026-06-24T18:21:33.014Z"
   }
 ]

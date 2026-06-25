@@ -6,52 +6,80 @@
     <title>WhatsApp Scheduler Pro</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
             height: 100vh;
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #f4f7fb;
+            background: #f8fafc;
             color: #0f172a;
         }
 
         .app {
             height: 100vh;
             display: grid;
-            grid-template-columns: 230px 1fr;
+            grid-template-columns: 260px 1fr;
         }
 
+        /* ═══════════════ SIDEBAR ═══════════════ */
         .sidebar {
             background: #fff;
-            border-right: 1px solid #e5e7eb;
+            border-right: 1px solid #e8edf3;
             display: flex;
             flex-direction: column;
+            box-shadow: 2px 0 8px rgba(15,23,42,.05);
         }
 
         .brand {
-            padding: 24px 18px 18px;
-            border-bottom: 1px solid #eef2f7;
+            padding: 20px 18px 18px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .brand h1 {
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            background: #00843d;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,132,61,.25);
+        }
+
+        .brand-text h1 {
             margin: 0;
-            color: #00843d;
-            font-size: 20px;
-            line-height: 1.05;
+            font-size: 15px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
         }
 
-        .brand span {
+        .brand-text span {
             font-size: 11px;
-            color: #64748b;
+            color: #94a3b8;
+            font-weight: 500;
         }
 
         .nav {
-            padding: 16px 12px;
+            padding: 16px 10px;
             flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-section-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            padding: 8px 10px 6px;
         }
 
         .nav button {
@@ -59,23 +87,790 @@
             border: 0;
             background: transparent;
             text-align: left;
-            padding: 12px 14px;
-            border-radius: 12px;
-            color: #334155;
-            font-weight: 700;
+            padding: 10px 12px;
+            border-radius: 9px;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 13.5px;
             cursor: pointer;
-            margin-bottom: 6px;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background .15s, color .15s;
+            position: relative;
         }
 
-        .nav button.active {
-            background: #99f0df;
+        .nav button:hover {
+            background: #f0fdf4;
             color: #065f46;
         }
 
-        .side-footer {
-            border-top: 1px solid #eef2f7;
-            padding: 14px 12px 24px;
+        .nav button.active {
+            background: #f0fdf4;
+            color: #065f46;
+            font-weight: 700;
         }
+
+        .nav button.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 6px;
+            bottom: 6px;
+            width: 3px;
+            background: #00843d;
+            border-radius: 0 3px 3px 0;
+        }
+
+        .nav-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+            background: #f1f5f9;
+            transition: background .15s;
+        }
+
+        .nav button:hover .nav-icon,
+        .nav button.active .nav-icon {
+            background: #dcfce7;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: #00843d;
+            color: #fff;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 7px;
+        }
+
+        .side-footer {
+            border-top: 1px solid #f1f5f9;
+            padding: 14px 10px 16px;
+        }
+
+        .side-footer-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: #f8fafc;
+            margin-bottom: 8px;
+        }
+
+        .side-footer-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #00843d;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .side-footer-info { flex: 1; min-width: 0; }
+        .side-footer-name { font-size: 13px; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .side-footer-role { font-size: 11px; color: #94a3b8; }
+
+        .side-footer-signout {
+            width: 100%;
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background .15s, color .15s, border-color .15s;
+        }
+        .side-footer-signout:hover { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
+
+        /* ═══════════════ TOPBAR ═══════════════ */
+        .main {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            background: #f8fafc;
+        }
+
+        .topbar {
+            height: 62px;
+            background: #fff;
+            border-bottom: 1px solid #e8edf3;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 22px;
+            flex-shrink: 0;
+            box-shadow: 0 1px 4px rgba(15,23,42,.04);
+        }
+
+        .topbar-search-wrap {
+            flex: 1;
+            max-width: 460px;
+            position: relative;
+        }
+
+        .topbar-search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 15px;
+            pointer-events: none;
+        }
+
+        .topbar-search-wrap input {
+            width: 100%;
+            height: 38px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 0 12px 0 36px;
+            background: #f8fafc;
+            font-size: 13px;
+            color: #0f172a;
+            outline: none;
+            transition: border-color .15s, box-shadow .15s;
+        }
+
+        .topbar-search-wrap input:focus {
+            border-color: #00843d;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(0,132,61,.1);
+        }
+
+        .topbar-spacer { flex: 1; }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .wa-connect-pill {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1.5px solid transparent;
+            cursor: pointer;
+            transition: all .15s;
+        }
+
+        .wa-connect-pill.idle {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1d4ed8;
+        }
+
+        .wa-connect-pill.booting {
+            background: #fefce8;
+            border-color: #fde68a;
+            color: #92400e;
+        }
+
+        .wa-connect-pill.scanning {
+            background: #fff7ed;
+            border-color: #fed7aa;
+            color: #9a3412;
+        }
+
+        .wa-connect-pill.connected {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #166534;
+        }
+
+        .wa-connect-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .wa-connect-pill.idle     .wa-connect-dot { background: #93c5fd; }
+        .wa-connect-pill.booting  .wa-connect-dot { background: #fbbf24; animation: blink .8s infinite; }
+        .wa-connect-pill.scanning .wa-connect-dot { background: #fb923c; animation: blink .8s infinite; }
+        .wa-connect-pill.connected .wa-connect-dot { background: #22c55e; animation: pulse-green 2s infinite; }
+
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+        @keyframes pulse-green { 0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5)} 50%{box-shadow:0 0 0 5px rgba(34,197,94,0)} }
+
+        .btn-new-schedule {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 16px;
+            background: #00843d;
+            color: #fff;
+            border: 0;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background .15s, transform .1s;
+            box-shadow: 0 2px 8px rgba(0,132,61,.25);
+        }
+
+        .btn-new-schedule:hover { background: #065f46; }
+        .btn-new-schedule:active { transform: scale(.97); }
+
+        .topbar-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #00843d;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            border: 2px solid #bbf7d0;
+            transition: border-color .15s;
+        }
+
+        .topbar-avatar:hover { border-color: #00843d; }
+
+        .content {
+            padding: 22px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        /* ═══════════════ BUTTONS ═══════════════ */
+        button { border: 0; border-radius: 8px; padding: 10px 12px; font-weight: 800; cursor: pointer; font-family: inherit; }
+
+        .btn-blue    { background: #3b82f6; color: #fff; }
+        .btn-green   { background: #22c55e; color: #fff; }
+        .btn-red     { background: #dc2626; color: #fff; }
+        .btn-orange  { background: #f97316; color: #fff; }
+        .btn-dark    { background: #0f172a; color: #fff; }
+        .btn-white   { background: #fff; color: #0f172a; border: 1px solid #cbd5e1; }
+        .btn-light   { background: #e2e8f0; color: #334155; }
+        .btn-logout  { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+
+        /* ═══════════════ METRIC CARDS ═══════════════ */
+        .cards {
+            display: flex;
+            flex-direction: row;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e8edf3;
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 1px 4px rgba(15,23,42,.05);
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .card-icon-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .metric-body { flex: 1; min-width: 0; }
+
+        .metric-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            white-space: nowrap;
+            margin-bottom: 2px;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 900;
+            color: #0f172a;
+            line-height: 1;
+        }
+
+        .metric-sub {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 3px;
+        }
+
+        .metric-icon { display: none; }
+
+        /* ═══════════════ PANELS & TABLES ═══════════════ */
+        .panel {
+            background: #fff;
+            border: 1px solid #e8edf3;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(15,23,42,.05);
+        }
+
+        .panel-head {
+            padding: 14px 18px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f1f5f9;
+            background: #fff;
+        }
+
+        .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+        .search, .filter-search {
+            height: 36px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0 12px;
+            font-size: 13px;
+            background: #f8fafc;
+            outline: none;
+        }
+
+        .search:focus { border-color: #00843d; background: #fff; }
+
+        .filter-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 12px 18px;
+            background: #fafcff;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .filter-tab {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .12s;
+        }
+
+        .filter-tab:hover { border-color: #00843d; color: #065f46; }
+
+        .filter-tab.active {
+            background: #0f172a;
+            color: #fff;
+            border-color: #0f172a;
+        }
+
+        .table-wrap {
+            overflow: auto;
+            max-height: 440px;
+        }
+
+        table { width: 100%; border-collapse: collapse; min-width: 1100px; font-size: 13px; }
+
+        th, td {
+            padding: 11px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            text-align: left;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        tbody tr:hover { background: #f0fdf4; }
+
+        .status-pill {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .SCHEDULED  { background: #fef3c7; color: #92400e; }
+        .PROCESSING { background: #dbeafe; color: #1d4ed8; }
+        .PARTIAL    { background: #ffedd5; color: #9a3412; }
+        .SENT, .SUCCESS { background: #dcfce7; color: #166534; }
+        .FAILED     { background: #fee2e2; color: #991b1b; }
+        .CANCELLED  { background: #e5e7eb; color: #374151; }
+
+        .toggle {
+            width: 36px; height: 19px;
+            border-radius: 999px; background: #cbd5e1;
+            display: inline-block; position: relative; cursor: pointer;
+        }
+        .toggle::after {
+            content: ''; width: 15px; height: 15px;
+            background: #fff; border-radius: 50%;
+            position: absolute; top: 2px; left: 2px;
+            transition: left .15s;
+        }
+        .toggle.on { background: #22c55e; }
+        .toggle.on::after { left: 19px; }
+
+        .action {
+            background: transparent;
+            padding: 5px 7px;
+            font-size: 15px;
+            border-radius: 7px;
+            transition: background .12s;
+        }
+        .action:hover { background: #f1f5f9; }
+
+        /* ═══════════════ FORMS ═══════════════ */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(220px, 1fr));
+            gap: 14px;
+        }
+
+        .form-card {
+            background: #fff;
+            border: 1px solid #e8edf3;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 1px 4px rgba(15,23,42,.05);
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #475569;
+            display: block;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 9px 11px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            color: #0f172a;
+            background: #f8fafc;
+            outline: none;
+            transition: border-color .15s, box-shadow .15s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: #00843d;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(0,132,61,.1);
+        }
+
+        textarea { resize: vertical; min-height: 80px; }
+
+        .row  { display: flex; gap: 10px; }
+        .col  { flex: 1; }
+
+        .hidden { display: none !important; }
+
+        .help {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .response {
+            text-align: center;
+            font-weight: 700;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .number-chip {
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+            padding: 5px 10px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 999px;
+            margin: 3px;
+            font-size: 13px;
+            color: #065f46;
+        }
+
+        /* ═══════════════ MODAL ═══════════════ */
+        .modal {
+            position: fixed; inset: 0;
+            background: rgba(15,23,42,.45);
+            display: none; align-items: center; justify-content: center; z-index: 9999;
+        }
+        .modal.active { display: flex; }
+        .modal-box {
+            width: 95%; max-width: 920px; max-height: 90vh;
+            overflow: auto; background: #fff; border-radius: 16px;
+            padding: 22px; box-shadow: 0 20px 40px rgba(0,0,0,.2);
+        }
+
+        /* ═══════════════ STATUS BANNER (compact) ═══════════════ */
+        .status-bar { display: none; }
+        .connected {}
+        .disconnected {}
+
+        .qr-box { display: none; }
+
+        /* WA status banner – removed, replaced by topbar pill */
+        .wa-status-banner { display: none !important; }
+
+        /* ═══════════════ DASHBOARD ═══════════════ */
+        .db-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 18px;
+            align-items: start;
+        }
+
+        /* ═══════════════ GC Panel ═══════════════ */
+        .gc-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .gc-panel {
+            background: #fff;
+            border: 1px solid #e8edf3;
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 1px 4px rgba(15,23,42,.05);
+        }
+
+        .gc-panel-head {
+            padding: 14px 16px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 10px; flex-wrap: wrap;
+        }
+
+        .gc-panel-title { font-size: 14px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+
+        .gc-count-badge {
+            background: #dcfce7; color: #166534;
+            border-radius: 999px; padding: 2px 8px;
+            font-size: 11px; font-weight: 800;
+        }
+
+        .gc-toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+        .gc-search {
+            height: 32px; border: 1px solid #e2e8f0; border-radius: 7px;
+            padding: 0 10px; font-size: 12px; width: 160px; background: #f8fafc;
+        }
+
+        .gc-list { flex: 1; overflow-y: auto; max-height: 420px; }
+
+        .gc-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 14px; border-bottom: 1px solid #f8fafc;
+            cursor: pointer; transition: background .1s;
+        }
+        .gc-item:hover { background: #f0fdf4; }
+        .gc-item:last-child { border-bottom: 0; }
+        .gc-item input[type="checkbox"] { width: 15px; height: 15px; accent-color: #00843d; flex-shrink: 0; }
+
+        .gc-avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 800; flex-shrink: 0;
+        }
+        .gc-avatar.group   { background: #dbeafe; color: #1d4ed8; }
+        .gc-avatar.contact { background: #dcfce7; color: #065f46; }
+
+        .gc-info { flex: 1; min-width: 0; }
+        .gc-name { font-size: 13px; font-weight: 700; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .gc-id   { font-size: 11px; color: #94a3b8; }
+
+        .gc-copy-btn {
+            background: #f1f5f9; border: 1px solid #e2e8f0;
+            border-radius: 6px; padding: 4px 8px;
+            font-size: 11px; font-weight: 700; cursor: pointer; color: #475569;
+        }
+        .gc-copy-btn:hover { background: #e2e8f0; }
+
+        .gc-footer {
+            padding: 10px 12px; border-top: 1px solid #f1f5f9;
+            background: #fafcff; display: flex; gap: 8px; flex-wrap: wrap;
+        }
+
+        .gc-empty { padding: 28px; text-align: center; color: #94a3b8; font-size: 13px; }
+        .gc-loading { padding: 24px; text-align: center; color: #64748b; font-size: 13px; animation: gc-pulse 1.2s infinite; }
+        @keyframes gc-pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+        /* ═══════════════ QR Login Modal ═══════════════ */
+        #qrLoginModal .modal-box { max-width: 420px; text-align: center; padding: 28px; }
+        #qrLoginModal h2 { margin: 0 0 4px; font-size: 20px; color: #00843d; }
+        #qrLoginModal .qr-sub { margin: 0 0 18px; font-size: 13px; color: #64748b; }
+        #qrLoginModal .qr-status-bar { padding: 10px 14px; border-radius: 10px; margin-bottom: 14px; font-weight: 800; font-size: 13px; }
+        #qrLoginModal .qr-status-bar.connected  { background: #dcfce7; color: #166534; }
+        #qrLoginModal .qr-status-bar.disconnected { background: #fef3c7; color: #92400e; }
+        #qrLoginModalCode { display: inline-block; padding: 12px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; margin-bottom: 12px; }
+        #qrLoginModal .qr-hint { font-size: 12px; color: #64748b; margin-bottom: 14px; }
+        #qrLoginModal .qr-user-label { font-size: 13px; color: #334155; margin-bottom: 12px; }
+        #qrLoginModal .qr-user-label b { color: #00843d; }
+        #qrLoginModal .qr-close-row { margin-top: 14px; }
+        #qrLoginModal .qr-close-row button { width:100%; padding:11px; border-radius:10px; font-size:14px; font-weight:800; background:#e2e8f0; color:#334155; border:0; cursor:pointer; }
+
+        /* ═══════════════ USER CHIP ═══════════════ */
+        .user-chip { display:none; }
+        .btn-logout-old { display: none; }
+
+        /* ═══════════════ RESPONSIVE ═══════════════ */
+        @media (max-width: 1000px) {
+            .app { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+            .topbar { height: auto; flex-wrap: wrap; padding: 10px 14px; }
+            .topbar-spacer { display: none; }
+            .cards { flex-wrap: wrap; }
+            .cards .card { min-width: 140px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .gc-layout { grid-template-columns: 1fr; }
+            .db-grid { grid-template-columns: 1fr; }
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #064e3b 0%, #065f46 60%, #047857 100%);
+            border-right: none;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 16px rgba(6,78,59,.18);
+        }
+
+        .brand {
+            padding: 24px 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+        }
+
+        .brand h1 {
+            margin: 0;
+            color: #fff;
+            font-size: 18px;
+            line-height: 1.1;
+        }
+
+        .brand span {
+            font-size: 11px;
+            color: rgba(255,255,255,.55);
+        }
+
+        .nav {
+            padding: 14px 12px;
+            flex: 1;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: rgba(255,255,255,.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 10px 10px 6px;
+        }
+
+        .nav button {
+            width: 100%;
+            border: 0;
+            background: transparent;
+            text-align: left;
+            padding: 11px 14px;
+            border-radius: 10px;
+            color: rgba(255,255,255,.75);
+            font-weight: 700;
+            font-size: 13.5px;
+            cursor: pointer;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background .15s, color .15s;
+        }
+
+        .nav button:hover {
+            background: rgba(255,255,255,.12);
+            color: #fff;
+        }
+
+        .nav button.active {
+            background: rgba(255,255,255,.18);
+            color: #fff;
+            box-shadow: inset 3px 0 0 #6ee7b7;
+        }
+
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .side-footer {
+            border-top: 1px solid rgba(255,255,255,.1);
+            padding: 14px 12px 20px;
+        }
+
+        .side-footer button {
+            width: 100%;
+            background: rgba(255,255,255,.1);
+            color: rgba(255,255,255,.8);
+            border: 1px solid rgba(255,255,255,.15);
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .side-footer button:hover { background: rgba(255,255,255,.18); }
 
         .main {
             height: 100vh;
@@ -85,21 +880,50 @@
         }
 
         .topbar {
-            height: 64px;
             background: #fff;
             border-bottom: 1px solid #e5e7eb;
-            display: grid;
-            grid-template-columns: 1fr 280px 120px 120px 160px;
-            gap: 12px;
+            display: flex;
             align-items: center;
+            gap: 10px;
             padding: 0 20px;
+            height: 64px;
+            flex-wrap: nowrap;
+            min-width: 0;
+        }
+
+        .topbar-title {
+            flex-shrink: 0;
+        }
+
+        .topbar-divider {
+            width: 1px;
+            height: 32px;
+            background: #e5e7eb;
+            flex-shrink: 0;
+        }
+
+        .topbar-wa-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .topbar-spacer { flex: 1; }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
         }
 
         .title {
             color: #064e3b;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 900;
-            line-height: 1.05;
+            line-height: 1.1;
+            white-space: nowrap;
         }
 
         .topbar input {
@@ -167,23 +991,127 @@
             display: block;
         }
 
-        .status-bar {
-            padding: 10px 14px;
-            border-radius: 10px;
-            margin-bottom: 14px;
-            font-weight: 800;
-            text-align: center;
+        /* ── WhatsApp Connection Status Banner ── */
+        .wa-status-banner {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 13px 20px;
+            border-radius: 14px;
+            margin-bottom: 18px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1.5px solid transparent;
+            transition: all .35s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .connected {
-            background: #dcfce7;
+        .wa-status-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: .06;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                45deg,
+                #000 0px, #000 1px,
+                transparent 1px, transparent 10px
+            );
+        }
+
+        /* Idle / not connected yet */
+        .wa-status-banner.idle {
+            background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+            border-color: #bfdbfe;
+            color: #1e40af;
+        }
+
+        /* Booting driver */
+        .wa-status-banner.booting {
+            background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+            border-color: #fcd34d;
+            color: #92400e;
+        }
+
+        /* Waiting for QR scan */
+        .wa-status-banner.scanning {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            border-color: #fdba74;
+            color: #9a3412;
+        }
+
+        /* Connected */
+        .wa-status-banner.connected {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-color: #86efac;
             color: #166534;
         }
 
-        .disconnected {
-            background: #fee2e2;
-            color: #991b1b;
+        .wa-status-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+            line-height: 1;
         }
+
+        .wa-status-body { flex: 1; }
+
+        .wa-status-title {
+            font-size: 14px;
+            font-weight: 900;
+            margin-bottom: 2px;
+        }
+
+        .wa-status-sub {
+            font-size: 12px;
+            font-weight: 600;
+            opacity: .75;
+        }
+
+        .wa-status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .wa-status-banner.idle     .wa-status-dot { background: #93c5fd; }
+        .wa-status-banner.booting  .wa-status-dot { background: #fbbf24; animation: blink .8s ease-in-out infinite; }
+        .wa-status-banner.scanning .wa-status-dot { background: #fb923c; animation: blink .8s ease-in-out infinite; }
+        .wa-status-banner.connected .wa-status-dot { background: #22c55e; animation: pulse-green 2s ease-in-out infinite; }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: .3; transform: scale(.7); }
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,.5); }
+            50%       { box-shadow: 0 0 0 5px rgba(34,197,94,0); }
+        }
+
+        .wa-status-action {
+            flex-shrink: 0;
+            padding: 7px 16px;
+            border-radius: 999px;
+            border: 0;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: opacity .18s;
+        }
+
+        .wa-status-banner.idle     .wa-status-action { background: #3b82f6; color: #fff; }
+        .wa-status-banner.booting  .wa-status-action { background: #f59e0b; color: #fff; }
+        .wa-status-banner.scanning .wa-status-action { background: #ea580c; color: #fff; }
+        .wa-status-banner.connected .wa-status-action { background: #16a34a; color: #fff; }
+
+        .wa-status-action:hover { opacity: .85; }
+
+        /* status-bar kept for legacy JS references — hidden by default */
+        .status-bar { display: none; }
+        .connected  {}
+        .disconnected {}
 
         .qr-box {
             display: none;
@@ -196,8 +1124,8 @@
         }
 
         .cards {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(160px, 1fr));
+            display: flex;
+            flex-direction: row;
             gap: 16px;
             margin-bottom: 18px;
         }
@@ -208,16 +1136,19 @@
             border-radius: 12px;
             padding: 18px;
             box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+            flex: 1;
+            min-width: 0;
         }
 
         .metric-label {
             font-size: 12px;
             font-weight: 800;
             color: #475569;
+            white-space: nowrap;
         }
 
         .metric-value {
-            font-size: 30px;
+            font-size: 28px;
             font-weight: 900;
             margin-top: 4px;
         }
@@ -502,25 +1433,243 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, .25);
         }
 
-        @media (max-width:1000px) {
-            .app {
-                grid-template-columns: 1fr;
-            }
+        /* ── QR Login Modal ── */
+        #qrLoginModal .modal-box {
+            max-width: 420px;
+            text-align: center;
+            padding: 28px;
+        }
 
-            .sidebar {
-                display: none;
-            }
+        #qrLoginModal h2 {
+            margin: 0 0 4px;
+            font-size: 20px;
+            color: #00843d;
+        }
 
-            .topbar {
-                grid-template-columns: 1fr;
-                height: auto;
-                padding: 12px;
-            }
+        #qrLoginModal .qr-sub {
+            margin: 0 0 18px;
+            font-size: 13px;
+            color: #64748b;
+        }
 
-            .cards,
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
+        #qrLoginModal .qr-status-bar {
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        #qrLoginModal .qr-status-bar.connected  { background: #dcfce7; color: #166534; }
+        #qrLoginModal .qr-status-bar.disconnected { background: #fef3c7; color: #92400e; }
+
+        #qrLoginModalCode {
+            display: inline-block;
+            padding: 12px;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        #qrLoginModal .qr-hint {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 14px;
+        }
+
+        #qrLoginModal .qr-user-label {
+            font-size: 13px;
+            color: #334155;
+            margin-bottom: 12px;
+        }
+
+        #qrLoginModal .qr-user-label b { color: #00843d; }
+
+        #qrLoginModal .qr-close-row {
+            margin-top: 14px;
+        }
+
+        #qrLoginModal .qr-close-row button {
+            width: 100%;
+            padding: 11px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            background: #e2e8f0;
+            color: #334155;
+            border: 0;
+            cursor: pointer;
+        }
+
+        /* ── Groups & Contacts Panel ── */
+        .gc-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .gc-panel {
+            background: #fff;
+            border: 1px solid #dbe3ef;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(15,23,42,.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gc-panel-head {
+            padding: 14px 16px 12px;
+            border-bottom: 1px solid #eef2f7;
+            background: linear-gradient(135deg,#f8fafc,#f0fdf4);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .gc-panel-title {
+            font-size: 15px;
+            font-weight: 900;
+            color: #064e3b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .gc-count-badge {
+            display: inline-block;
+            background: #d1fae5;
+            color: #065f46;
+            border-radius: 999px;
+            padding: 2px 9px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .gc-toolbar {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .gc-search {
+            height: 34px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 0 10px;
+            font-size: 13px;
+            width: 180px;
+            background: #fff;
+        }
+
+        .gc-list {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 440px;
+        }
+
+        .gc-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: background .12s;
+        }
+
+        .gc-item:hover { background: #f0fdf4; }
+        .gc-item:last-child { border-bottom: 0; }
+
+        .gc-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #00843d;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .gc-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        .gc-avatar.group { background: #dbeafe; color: #1d4ed8; }
+        .gc-avatar.contact { background: #d1fae5; color: #065f46; }
+
+        .gc-info { flex: 1; min-width: 0; }
+
+        .gc-name {
+            font-size: 13px;
+            font-weight: 800;
+            color: #0f172a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .gc-id {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .gc-copy-btn {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            color: #475569;
+            flex-shrink: 0;
+            transition: background .12s;
+        }
+        .gc-copy-btn:hover { background: #e2e8f0; }
+
+        .gc-footer {
+            padding: 12px 14px;
+            border-top: 1px solid #eef2f7;
+            background: #f8fafc;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .gc-empty {
+            padding: 32px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .gc-loading {
+            padding: 28px;
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+            animation: gc-pulse 1.2s ease-in-out infinite;
+        }
+
+        @keyframes gc-pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+        @media (max-width:900px) {
+            .gc-layout { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -528,44 +1677,215 @@
 <body>
     <div class="app">
         <aside class="sidebar">
+            <!-- Brand -->
             <div class="brand">
-                <h1>Scheduler Pro</h1>
-                <span>Enterprise Messaging</span>
+                <div class="brand-logo">💬</div>
+                <div class="brand-text">
+                    <h1>WA Scheduler</h1>
+                    <span>Pro Dashboard</span>
+                </div>
             </div>
+
+            <!-- Navigation -->
             <div class="nav">
-                <button id="navDetails" class="active" onclick="switchTab('details')">▦ Scheduled Report</button>
-                <button id="navSchedule" onclick="switchTab('schedule')">＋ Add Scheduler</button>
-                <button id="navNumbers" onclick="switchTab('numbers')">☷ WhatsApp List</button>
-                <button id="navHistory" onclick="switchTab('history')">☰ Scheduler Logs</button>
-                <button id="navSendNow" onclick="switchTab('sendNow')">➤ Quick Send</button>
+                <div class="nav-section-label">Menu</div>
+
+                <button id="navDashboard" class="active" onclick="switchTab('dashboard')">
+                    <span class="nav-icon">📊</span> Dashboard
+                </button>
+                <button id="navSchedule" onclick="switchTab('schedule')">
+                    <span class="nav-icon">➕</span> Create Scheduler
+                </button>
+                <button id="navDetails" onclick="switchTab('details')">
+                    <span class="nav-icon">📋</span> Scheduler Reports
+                </button>
+                <button id="navHistory" onclick="switchTab('history')">
+                    <span class="nav-icon">🕐</span> Scheduler Logs
+                </button>
+                <button id="navContacts" onclick="switchTab('contacts')">
+                    <span class="nav-icon">🔄</span> Sync Groups &amp; Contacts
+                </button>
+                <button id="navSendNow" onclick="switchTab('sendNow')">
+                    <span class="nav-icon">➤</span> Quick Send
+                </button>
+                <button id="navNumbers" onclick="switchTab('numbers')">
+                    <span class="nav-icon">☷</span> WhatsApp List
+                </button>
             </div>
+
+            <!-- Footer: user + sign out -->
             <div class="side-footer">
-                <button class="btn-white" style="width:100%;">⚙ Settings</button>
+                <div class="side-footer-user">
+                    <div class="side-footer-avatar" id="userAvatar">A</div>
+                    <div class="side-footer-info">
+                        <div class="side-footer-name" id="userDisplayName">Administrator</div>
+                        <div class="side-footer-role">Admin</div>
+                    </div>
+                </div>
+                <button class="side-footer-signout" onclick="logoutUser()">
+                    <span>⏏</span> Sign Out
+                </button>
             </div>
         </aside>
 
         <main class="main">
+            <!-- ════ TOPBAR ════ -->
             <div class="topbar">
-                <div class="title">WhatsApp<br>Scheduler</div>
-                <input id="userIdInput" placeholder="User ID (U001)"
-                    style="height:38px;border-radius:8px;border:1px solid #ccc;padding:0 10px;">
-                <button class="btn-blue" onclick="loginUser()">Login</button>
-                <button class="btn-white" onclick="openLoginQrPage()" title="Open a standalone QR scan page">QR Page ↗</button>
-                <input id="globalSearch" placeholder="Global search..." oninput="syncGlobalSearch(this.value)">
-                <button class="btn-white" onclick="quickExportSchedules()">Quick Export</button>
-                <button class="btn-blue" onclick="bulkQuickSend()">Quick Send</button>
-                <button class="btn-green" onclick="switchTab('schedule')">Create New Schedule</button>
-            </div>
-
-            <div class="content">
-                <div id="statusBadge" class="status-bar disconnected">Enter a User ID above and click Login to connect WhatsApp</div>
-                <div id="qrWrapper" class="qr-box">
-                    <p>Scan to connect WhatsApp (WhatsApp app → Linked Devices → Link a Device):</p>
-                    <div id="qrcode"></div>
+                <!-- Search -->
+                <div class="topbar-search-wrap">
+                    <span class="topbar-search-icon">🔍</span>
+                    <input id="globalSearch" placeholder="Search schedules... (Press /)"
+                        oninput="syncGlobalSearch(this.value)"
+                        onkeydown="if(event.key==='/'){this.focus();}">
                 </div>
 
-                <!-- Scheduled Report -->
-                <section id="detailsSection" class="section active">
+                <div class="topbar-spacer"></div>
+
+                <!-- WhatsApp connection pill -->
+                <div id="waConnectPill" class="wa-connect-pill idle" onclick="openWaConnectModal()" title="Click to connect WhatsApp" style="cursor:pointer;">
+                    <div class="wa-connect-dot"></div>
+                    <span id="waConnectText">Not Connected</span>
+                </div>
+
+                <!-- New Schedule button -->
+                <button class="btn-new-schedule" onclick="switchTab('schedule')">
+                    ＋ New Schedule
+                </button>
+
+                <!-- Avatar -->
+                <div class="topbar-avatar" id="topbarAvatar" title="Account" onclick="logoutUser()">A</div>
+            </div>
+
+            <!-- ════ CONTENT ════ -->
+            <div class="content">
+                <!-- Legacy hidden refs -->
+                <div id="statusBadge" class="status-bar disconnected" style="display:none;"></div>
+                <div id="waBanner" class="wa-status-banner idle" style="display:none;">
+                    <div class="wa-status-dot"></div><div class="wa-status-icon" id="waBannerIcon">💬</div>
+                    <div class="wa-status-body">
+                        <div class="wa-status-title" id="waBannerTitle"></div>
+                        <div class="wa-status-sub" id="waBannerSub"></div>
+                    </div>
+                    <button class="wa-status-action" id="waBannerBtn"></button>
+                </div>
+                <!-- Hidden legacy refs (display:none - not visible) -->
+                <div id="statusBadge2" style="display:none;"></div>
+                <div id="qrWrapper" style="display:none;"><div id="qrcode"></div></div>
+
+                <!-- Hidden legacy inputs for JS compat -->
+                <input id="userIdInput" style="display:none;" placeholder="User ID">
+                <div style="display:none;"><div id="userAvatarOld">A</div><span id="userDisplayNameOld"></span></div>
+
+                <!-- ═══════════ DASHBOARD ═══════════ -->
+                <section id="dashboardSection" class="section active">
+
+                    <!-- Metric Cards -->
+                    <div class="cards">
+                        <div class="card">
+                            <div class="card-icon-wrap" style="background:#f0fdf4;">📅</div>
+                            <div class="metric-body">
+                                <div class="metric-label">Total Schedules</div>
+                                <div id="dbMetricTotal" class="metric-value">0</div>
+                                <div class="metric-sub">All time</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon-wrap" style="background:#eff6ff;">▶️</div>
+                            <div class="metric-body">
+                                <div class="metric-label">Scheduled</div>
+                                <div id="dbMetricScheduled" class="metric-value">0</div>
+                                <div class="metric-sub">Awaiting execution</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon-wrap" style="background:#fef9c3;">🕐</div>
+                            <div class="metric-body">
+                                <div class="metric-label">Processing</div>
+                                <div id="dbMetricProcessing" class="metric-value">0</div>
+                                <div class="metric-sub">Running now</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon-wrap" style="background:#f0fdf4;">✅</div>
+                            <div class="metric-body">
+                                <div class="metric-label">Sent</div>
+                                <div id="dbMetricSent" class="metric-value">0</div>
+                                <div class="metric-sub">Successfully delivered</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon-wrap" style="background:#fef2f2;">❌</div>
+                            <div class="metric-body">
+                                <div class="metric-label">Failed</div>
+                                <div id="dbMetricFailed" class="metric-value">0</div>
+                                <div class="metric-sub">Needs attention</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions + Recent Schedules -->
+                    <div class="db-grid">
+
+                        <!-- Quick Actions Panel -->
+                        <div class="panel" style="padding:18px;">
+                            <div style="font-size:14px;font-weight:800;color:#0f172a;margin-bottom:14px;">⚡ Quick Actions</div>
+                            <div style="display:flex;flex-direction:column;gap:8px;">
+                                <button style="width:100%;padding:11px 14px;font-size:13px;border-radius:10px;text-align:left;background:#f0fdf4;color:#065f46;border:1px solid #bbf7d0;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;" onclick="switchTab('schedule')">
+                                    <span style="font-size:16px;">➕</span> Create New Scheduler
+                                </button>
+                                <button style="width:100%;padding:11px 14px;font-size:13px;border-radius:10px;text-align:left;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;" onclick="switchTab('details')">
+                                    <span style="font-size:16px;">📋</span> Scheduler Reports
+                                </button>
+                                <button style="width:100%;padding:11px 14px;font-size:13px;border-radius:10px;text-align:left;background:#faf5ff;color:#7c3aed;border:1px solid #ddd6fe;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;" onclick="switchTab('history')">
+                                    <span style="font-size:16px;">🕐</span> Scheduler Logs
+                                </button>
+                                <button style="width:100%;padding:11px 14px;font-size:13px;border-radius:10px;text-align:left;background:#ecfeff;color:#0891b2;border:1px solid #a5f3fc;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;" onclick="switchTab('contacts')">
+                                    <span style="font-size:16px;">🔄</span> Sync WhatsApp Groups
+                                </button>
+                                <button style="width:100%;padding:11px 14px;font-size:13px;border-radius:10px;text-align:left;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;" onclick="switchTab('sendNow')">
+                                    <span style="font-size:16px;">➤</span> Quick Send Message
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Recent Schedules -->
+                        <div class="panel">
+                            <div class="panel-head">
+                                <span style="font-size:15px;font-weight:900;color:#064e3b;">🕐 Recent Schedules</span>
+                                <button class="btn-white" style="font-size:12px;padding:6px 12px;" onclick="switchTab('details')">View All →</button>
+                            </div>
+                            <div id="dbRecentSchedules" style="padding:8px 0;">
+                                <div style="padding:20px;text-align:center;color:#94a3b8;font-size:13px;">Loading…</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Send inline form -->
+                    <div class="panel" style="margin-top:16px;">
+                        <div class="panel-head">
+                            <span style="font-size:15px;font-weight:900;color:#064e3b;">➤ Quick Send WhatsApp Message</span>
+                        </div>
+                        <div style="padding:16px;display:grid;grid-template-columns:1fr 1fr 200px;gap:14px;align-items:end;">
+                            <div>
+                                <label style="font-size:12px;font-weight:800;color:#475569;margin-bottom:5px;display:block;">Receiver Numbers</label>
+                                <textarea id="dbSendPhone" placeholder="Enter phone numbers, one per line…" style="height:80px;resize:none;font-size:13px;"></textarea>
+                            </div>
+                            <div>
+                                <label style="font-size:12px;font-weight:800;color:#475569;margin-bottom:5px;display:block;">Message</label>
+                                <textarea id="dbSendCaption" placeholder="Type your message…" style="height:80px;resize:none;font-size:13px;"></textarea>
+                            </div>
+                            <div>
+                                <label style="font-size:12px;font-weight:800;color:#475569;margin-bottom:5px;display:block;">Attachment (optional)</label>
+                                <input type="file" id="dbSendFiles" multiple style="font-size:12px;margin-bottom:10px;">
+                                <button class="btn-green" style="width:100%;padding:10px;font-size:13px;" onclick="dbQuickSend()">➤ Send Now</button>
+                            </div>
+                        </div>
+                        <div id="dbSendResponse" class="response" style="padding:0 16px 14px;"></div>
+                    </div>
+                </section>
+
+                <!-- ═══════════ SCHEDULER REPORTS ═══════════ -->
+                <section id="detailsSection" class="section">
                     <div class="cards">
                         <div class="card"><span class="metric-icon">📣</span>
                             <div class="metric-label">Total Schedules</div>
@@ -588,12 +1908,13 @@
                     <div class="panel">
                         <div class="panel-head">
                             <div class="toolbar">
-                                <button class="btn-orange" onclick="bulkDisableSchedules()">Disable</button>
-                                <button class="btn-green" onclick="bulkEnableSchedules()">Enable</button>
-                                <button class="btn-blue" onclick="bulkQuickSend()">Quick Send</button>
-                                <button class="btn-dark" onclick="switchTab('schedule')">Add</button>
+                                <button class="btn-orange" onclick="bulkDisableSchedules()">⏸ Disable</button>
+                                <button class="btn-green" onclick="bulkEnableSchedules()">▶ Enable</button>
+                                <button class="btn-blue" onclick="bulkQuickSend()">➤ Quick Send</button>
+                                <button class="btn-dark" onclick="switchTab('schedule')">＋ New Schedule</button>
+                                <button class="btn-white" onclick="quickExportSchedules()">⬇ Export CSV</button>
                             </div>
-                            <input id="scheduleSearchInput" class="search" placeholder="Search..."
+                            <input id="scheduleSearchInput" class="search" placeholder="Search schedules..."
                                 oninput="renderScheduleTable()">
                         </div>
 
@@ -803,8 +2124,201 @@
                         <div id="sendNowResponse" class="response"></div>
                     </div>
                 </section>
+
+                <!-- Groups & Contacts -->
+                <section id="contactsSection" class="section">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+                        <div>
+                            <h2 style="margin:0;color:#064e3b;font-size:20px;font-weight:900;">🔄 Sync WhatsApp Groups & Contacts</h2>
+                            <p style="margin:4px 0 0;font-size:13px;color:#64748b;">Fetch live WhatsApp groups and contacts, add them to schedules or save to your number list.</p>
+                        </div>
+                        <button class="btn-green" onclick="fetchGroupsAndContacts()" style="height:40px;white-space:nowrap;">
+                            🔄 Fetch from WhatsApp
+                        </button>
+                    </div>
+
+                    <div class="gc-layout">
+                        <!-- Groups Panel -->
+                        <div class="gc-panel">
+                            <div class="gc-panel-head">
+                                <div class="gc-panel-title">
+                                    👥 Groups
+                                    <span class="gc-count-badge" id="groupCountBadge">0</span>
+                                </div>
+                                <div class="gc-toolbar">
+                                    <input class="gc-search" id="groupSearch" placeholder="🔍 Search groups…" oninput="filterGcList('group')">
+                                    <button class="btn-light" style="height:34px;font-size:12px;" onclick="selectAllGc('group')">Select All</button>
+                                    <button class="btn-light" style="height:34px;font-size:12px;" onclick="clearAllGc('group')">Clear</button>
+                                </div>
+                            </div>
+                            <div class="gc-list" id="groupList">
+                                <div class="gc-empty">Click <b>Fetch from WhatsApp</b> above to load groups.</div>
+                            </div>
+                            <div class="gc-footer">
+                                <button class="btn-blue" style="flex:1;font-size:13px;" onclick="addSelectedToSchedule('group')">➕ Add to Schedule</button>
+                                <button class="btn-green" style="flex:1;font-size:13px;" onclick="addSelectedToSendNow('group')">➤ Add to Quick Send</button>
+                            </div>
+                        </div>
+
+                        <!-- Contacts Panel -->
+                        <div class="gc-panel">
+                            <div class="gc-panel-head">
+                                <div class="gc-panel-title">
+                                    📋 Contacts
+                                    <span class="gc-count-badge" id="contactCountBadge">0</span>
+                                </div>
+                                <div class="gc-toolbar">
+                                    <input class="gc-search" id="contactSearch" placeholder="🔍 Search contacts…" oninput="filterGcList('contact')">
+                                    <button class="btn-light" style="height:34px;font-size:12px;" onclick="selectAllGc('contact')">Select All</button>
+                                    <button class="btn-light" style="height:34px;font-size:12px;" onclick="clearAllGc('contact')">Clear</button>
+                                </div>
+                            </div>
+                            <div class="gc-list" id="contactList">
+                                <div class="gc-empty">Click <b>Fetch from WhatsApp</b> above to load contacts.</div>
+                            </div>
+                            <div class="gc-footer">
+                                <button class="btn-blue" style="flex:1;font-size:13px;" onclick="addSelectedToSchedule('contact')">➕ Add to Schedule</button>
+                                <button class="btn-green" style="flex:1;font-size:13px;" onclick="addSelectedToSendNow('contact')">➤ Add to Quick Send</button>
+                                <button class="btn-dark" style="flex:1;font-size:13px;" onclick="saveSelectedToNumberList()">💾 Save to List</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="gcResponse" class="response" style="margin-top:12px;"></div>
+                </section>
             </div>
         </main>
+    </div>
+
+    <!-- ══════════ WA CONNECT MODAL ══════════ -->
+    <div id="waConnectModal" class="modal">
+        <div class="modal-box" style="max-width:680px;padding:0;border-radius:18px;overflow:hidden;">
+
+            <!-- Header -->
+            <div style="background:linear-gradient(135deg,#064e3b,#00843d);padding:24px 28px;display:flex;align-items:center;gap:14px;">
+                <div style="width:52px;height:52px;background:rgba(255,255,255,.15);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">💬</div>
+                <div>
+                    <h2 style="margin:0;color:#fff;font-size:20px;font-weight:900;">Connect WhatsApp Account</h2>
+                    <p style="margin:4px 0 0;color:rgba(255,255,255,.75);font-size:13px;">Link your phone to start sending scheduled & instant messages</p>
+                </div>
+                <button onclick="closeWaConnectModal()" style="margin-left:auto;background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:50%;width:34px;height:34px;font-size:18px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+
+                <!-- LEFT: Steps + Form -->
+                <div style="padding:24px;border-right:1px solid #f1f5f9;">
+
+                    <!-- Status alert -->
+                    <div id="waConnectStatus" style="display:none;padding:10px 14px;border-radius:10px;margin-bottom:16px;font-weight:700;font-size:13px;"></div>
+
+                    <!-- Step-by-step guide -->
+                    <div style="margin-bottom:20px;">
+                        <p style="margin:0 0 12px;font-size:13px;font-weight:800;color:#0f172a;">📋 How to Connect — 4 Simple Steps</p>
+
+                        <div style="display:flex;flex-direction:column;gap:10px;">
+                            <div style="display:flex;gap:10px;align-items:flex-start;">
+                                <div style="width:26px;height:26px;background:#00843d;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;">1</div>
+                                <div>
+                                    <div style="font-size:13px;font-weight:700;color:#0f172a;">Enter a User ID below</div>
+                                    <div style="font-size:12px;color:#64748b;">Any name you want (e.g. ADMIN, U001, MyPhone)</div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:10px;align-items:flex-start;">
+                                <div style="width:26px;height:26px;background:#00843d;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;">2</div>
+                                <div>
+                                    <div style="font-size:13px;font-weight:700;color:#0f172a;">Click "Generate QR Code"</div>
+                                    <div style="font-size:12px;color:#64748b;">QR code will appear on the right panel</div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:10px;align-items:flex-start;">
+                                <div style="width:26px;height:26px;background:#00843d;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;">3</div>
+                                <div>
+                                    <div style="font-size:13px;font-weight:700;color:#0f172a;">Open WhatsApp on your phone</div>
+                                    <div style="font-size:12px;color:#64748b;">Go to <b>Settings → Linked Devices → Link a Device</b></div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:10px;align-items:flex-start;">
+                                <div style="width:26px;height:26px;background:#00843d;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;">4</div>
+                                <div>
+                                    <div style="font-size:13px;font-weight:700;color:#0f172a;">Scan the QR code</div>
+                                    <div style="font-size:12px;color:#64748b;">Point your phone camera at the QR — done! ✅</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User ID Input + Connect Button -->
+                    <div id="waConnectForm">
+                        <label style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px;">Step 1 — Enter Your User ID</label>
+                        <input id="waConnectUserIdInput" placeholder="e.g. ADMIN, U001, MyPhone…"
+                            style="width:100%;height:42px;font-size:14px;margin-bottom:10px;"
+                            onkeydown="if(event.key==='Enter') connectWhatsApp()">
+                        <button id="waConnectBtn" onclick="connectWhatsApp()"
+                            style="width:100%;padding:12px;background:#00843d;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+                            <span id="waConnectBtnIcon">📱</span>
+                            <span id="waConnectBtnText">Generate QR Code</span>
+                        </button>
+                    </div>
+
+                    <!-- Phone navigation hint with icons -->
+                    <div style="margin-top:16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 14px;">
+                        <p style="margin:0 0 8px;font-size:12px;font-weight:800;color:#065f46;">📱 On your WhatsApp phone:</p>
+                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:#374151;">
+                            <span style="background:#fff;border:1px solid #d1fae5;border-radius:6px;padding:3px 8px;font-weight:700;">⚙ Settings</span>
+                            <span>→</span>
+                            <span style="background:#fff;border:1px solid #d1fae5;border-radius:6px;padding:3px 8px;font-weight:700;">🔗 Linked Devices</span>
+                            <span>→</span>
+                            <span style="background:#fff;border:1px solid #d1fae5;border-radius:6px;padding:3px 8px;font-weight:700;">＋ Link a Device</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: QR Code display -->
+                <div style="padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fafcff;min-height:400px;">
+                    <div id="waConnectQrPlaceholder" style="text-align:center;">
+                        <div style="width:180px;height:180px;border:2px dashed #cbd5e1;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 16px;background:#fff;">
+                            <div style="font-size:42px;margin-bottom:8px;">📷</div>
+                            <div style="font-size:12px;color:#94a3b8;font-weight:600;">QR code will<br>appear here</div>
+                        </div>
+                        <p style="font-size:12px;color:#94a3b8;margin:0;">Enter User ID and click<br>"Generate QR Code"</p>
+                    </div>
+
+                    <div id="waConnectQrCode" style="display:none;text-align:center;">
+                        <div id="waConnectQrCodeCanvas" style="padding:12px;background:#fff;border:2px solid #bbf7d0;border-radius:14px;display:inline-block;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,132,61,.1);"></div>
+                        <div id="waConnectQrExpiry" style="font-size:11px;color:#94a3b8;margin-top:4px;">QR code refreshes automatically</div>
+                    </div>
+
+                    <!-- Connected state -->
+                    <div id="waConnectSuccess" style="display:none;text-align:center;">
+                        <div style="font-size:64px;margin-bottom:12px;">✅</div>
+                        <div style="font-size:16px;font-weight:900;color:#166534;margin-bottom:4px;">WhatsApp Connected!</div>
+                        <div id="waConnectSuccessMsg" style="font-size:13px;color:#64748b;">You can now send messages and use schedulers.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ══════════ QR LOGIN MODAL (legacy) ══════════ -->
+    <div id="qrLoginModal" class="modal">
+        <div class="modal-box">
+            <h2>Connect WhatsApp</h2>
+            <p class="qr-sub">Scan the QR with WhatsApp → Linked Devices → Link a Device</p>
+            <div id="qrLoginUserLabel" class="qr-user-label" style="display:none;"></div>
+            <div id="qrLoginStatus" class="qr-status-bar disconnected" style="display:none;">Booting WhatsApp Driver...</div>
+            <div style="display:flex;justify-content:center;">
+                <div id="qrLoginModalCode"></div>
+            </div>
+            <div id="qrLoginHint" class="qr-hint" style="display:none;">
+                Open WhatsApp on your phone → tap <b>Settings → Linked Devices → Link a Device</b>, then scan this code.
+            </div>
+
+            <div class="qr-close-row">
+                <button onclick="closeQrLoginModal()">Close</button>
+            </div>
+        </div>
     </div>
 
     <div id="editScheduleModal" class="modal">
@@ -864,7 +2378,11 @@
         let selectedScheduleIds = new Set();
 
         function parsePhoneNumbers(value) {
-            return String(value || '').split(/[\n,;]+/).map(p => p.replace(/\D/g, '')).filter(p => p.length >= 10).filter((p, i, a) => a.indexOf(p) === i);
+            return String(value || '').split(/[\n,;]+/)
+                .map(p => p.trim()).filter(Boolean)
+                .map(p => p.endsWith('@g.us') ? p : p.replace(/\D/g, ''))
+                .filter(p => p.endsWith('@g.us') || p.length >= 10)
+                .filter((p, i, a) => a.indexOf(p) === i);
         }
         function escapeHtml(value) {
             return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
@@ -918,17 +2436,21 @@
             document.getElementById('serverFolderSourceBox').classList.toggle('hidden', source !== 'SERVER_FOLDER');
         }
         function switchTab(tab) {
-            ['schedule', 'numbers', 'details', 'history', 'sendNow'].forEach(name => {
-                document.getElementById(name + 'Section').classList.remove('active');
+            ['dashboard', 'schedule', 'numbers', 'details', 'history', 'sendNow', 'contacts'].forEach(name => {
+                const sec = document.getElementById(name + 'Section');
+                if (sec) sec.classList.remove('active');
                 const nav = document.getElementById('nav' + name.charAt(0).toUpperCase() + name.slice(1));
                 if (nav) nav.classList.remove('active');
             });
-            document.getElementById(tab + 'Section').classList.add('active');
-            const nav = document.getElementById('nav' + tab.charAt(0).toUpperCase() + tab.slice(1));
-            if (nav) nav.classList.add('active');
-            if (tab === 'details') loadSchedules();
-            if (tab === 'numbers') loadNumberList();
-            if (tab === 'history') loadHistoryReport();
+            const activeSec = document.getElementById(tab + 'Section');
+            if (activeSec) activeSec.classList.add('active');
+            const activeNav = document.getElementById('nav' + tab.charAt(0).toUpperCase() + tab.slice(1));
+            if (activeNav) activeNav.classList.add('active');
+
+            if (tab === 'dashboard') loadDashboard();
+            if (tab === 'details')   loadSchedules();
+            if (tab === 'numbers')   loadNumberList();
+            if (tab === 'history')   loadHistoryReport();
         }
         function syncGlobalSearch(value) {
             const scheduleInput = document.getElementById('scheduleSearchInput');
@@ -942,32 +2464,138 @@
                 loadHistoryReport();
             }
         }
+        // ── Banner helper ──────────────────────────────────────────────
+        // Update topbar connection pill
+        function setConnectPill(state, text) {
+            const pill = document.getElementById('waConnectPill');
+            const textEl = document.getElementById('waConnectText');
+            if (pill) pill.className = 'wa-connect-pill ' + state;
+            if (textEl) textEl.textContent = text;
+        }
+
+        function setWaBanner(state, title, sub, btnLabel, btnAction) {
+            // Now drives the topbar pill instead of a banner
+            const stateMap = {
+                idle:      'Not Connected',
+                booting:   'Starting…',
+                scanning:  'Scan QR Code',
+                connected: '● Connected'
+            };
+            setConnectPill(state, stateMap[state] || text);
+        }
+
+        // Open the new WA connect modal from topbar pill
+        function openWaConnectModal() {
+            document.getElementById('waConnectModal').classList.add('active');
+            // Pre-fill User ID with logged-in session or existing value
+            const inp = document.getElementById('waConnectUserIdInput');
+            if (inp && currentUserId && !inp.value) inp.value = currentUserId;
+            // If already connected, refresh status display inside modal
+            if (currentUserId) checkWhatsAppStatus();
+        }
+
+        function closeWaConnectModal() {
+            document.getElementById('waConnectModal').classList.remove('active');
+        }
+
+        // Connect WhatsApp from the new modal
+        async function connectWhatsApp() {
+            const id = (document.getElementById('waConnectUserIdInput').value || '').trim();
+            if (!id) { alert('Please enter a User ID (e.g. ADMIN or U001)'); return; }
+
+            const legacyInput = document.getElementById('userIdInput');
+            if (legacyInput) legacyInput.value = id;
+
+            // Update button state
+            const btn = document.getElementById('waConnectBtn');
+            const btnIcon = document.getElementById('waConnectBtnIcon');
+            const btnText = document.getElementById('waConnectBtnText');
+            if (btn) btn.disabled = true;
+            if (btnIcon) btnIcon.textContent = '⏳';
+            if (btnText) btnText.textContent = 'Starting WhatsApp driver…';
+
+            // Show status
+            const statusEl = document.getElementById('waConnectStatus');
+            statusEl.style.display = 'block';
+            statusEl.style.background = '#fef9c3';
+            statusEl.style.color = '#92400e';
+            statusEl.textContent = '⚙️ Booting WhatsApp browser driver — please wait…';
+
+            setConnectPill('booting', '⚙️ Starting…');
+            currentUserId = id;
+
+            await fetch(`/api/whatsapp/init/${encodeURIComponent(id)}`, { method: 'POST' });
+
+            if (statusPollInterval) clearInterval(statusPollInterval);
+            checkWhatsAppStatus();
+            statusPollInterval = setInterval(checkWhatsAppStatus, 3000);
+
+            loadSchedules(); loadHistoryReport(); loadDashboard();
+        }
+
+        function focusLoginInput() { openWaConnectModal(); }
+
         async function checkWhatsAppStatus() {
             if (!currentUserId) return;
             try {
                 const res = await fetch(`/api/whatsapp/status/${currentUserId}`);
                 const data = await parseJsonResponse(res);
-                const badge = document.getElementById('statusBadge');
-                const qrWrapper = document.getElementById('qrWrapper');
-                const qrDiv = document.getElementById('qrcode');
+
+                const statusEl     = document.getElementById('waConnectStatus');
+                const placeholder  = document.getElementById('waConnectQrPlaceholder');
+                const qrPanel      = document.getElementById('waConnectQrCode');
+                const qrCanvas     = document.getElementById('waConnectQrCodeCanvas');
+                const successPanel = document.getElementById('waConnectSuccess');
+                const successMsg   = document.getElementById('waConnectSuccessMsg');
+                const btn          = document.getElementById('waConnectBtn');
+                const btnIcon      = document.getElementById('waConnectBtnIcon');
+                const btnText      = document.getElementById('waConnectBtnText');
+
                 if (data.ready) {
                     isWhatsappReady = true;
-                    badge.textContent = 'WhatsApp Online';
-                    badge.className = 'status-bar connected';
-                    qrWrapper.style.display = 'none';
-                    qrDiv.innerHTML = '';
+                    setConnectPill('connected', '● Connected');
+
+                    // Modal: show success
+                    if (statusEl)     { statusEl.style.display='block'; statusEl.style.background='#dcfce7'; statusEl.style.color='#166534'; statusEl.textContent = `✅ WhatsApp connected as "${currentUserId}"`; }
+                    if (placeholder)  placeholder.style.display = 'none';
+                    if (qrPanel)      qrPanel.style.display = 'none';
+                    if (successPanel) successPanel.style.display = 'block';
+                    if (successMsg)   successMsg.textContent = `User "${currentUserId}" is live. You can now create schedules and send messages!`;
+                    if (btn)          { btn.disabled = false; btn.style.background = '#16a34a'; }
+                    if (btnIcon)      btnIcon.textContent = '✅';
+                    if (btnText)      btnText.textContent = 'Connected! Click to reconnect';
+
+                    if (statusPollInterval) { clearInterval(statusPollInterval); statusPollInterval = null; }
+                    loadDashboard();
+
                 } else if (data.qr) {
                     isWhatsappReady = false;
-                    badge.textContent = 'Scan QR to connect WhatsApp';
-                    badge.className = 'status-bar disconnected';
-                    qrWrapper.style.display = 'block';
-                    qrDiv.innerHTML = '';
-                    new QRCode(qrDiv, { text: data.qr, width: 180, height: 180 });
+                    setConnectPill('scanning', '📱 Scan QR Code');
+
+                    if (statusEl)     { statusEl.style.display='block'; statusEl.style.background='#fff7ed'; statusEl.style.color='#9a3412'; statusEl.textContent = '📱 Waiting for QR scan — open WhatsApp on your phone and scan the code →'; }
+                    if (placeholder)  placeholder.style.display = 'none';
+                    if (qrPanel)      qrPanel.style.display = 'block';
+                    if (successPanel) successPanel.style.display = 'none';
+                    if (btn)          btn.disabled = false;
+                    if (btnIcon)      btnIcon.textContent = '🔄';
+                    if (btnText)      btnText.textContent = 'Regenerate QR Code';
+
+                    // Render QR only if it changed
+                    if (qrCanvas && qrCanvas.dataset.lastQr !== data.qr) {
+                        qrCanvas.innerHTML = '';
+                        new QRCode(qrCanvas, { text: data.qr, width: 220, height: 220 });
+                        qrCanvas.dataset.lastQr = data.qr;
+                    }
+
                 } else {
                     isWhatsappReady = false;
-                    badge.textContent = 'Booting WhatsApp Driver...';
-                    badge.className = 'status-bar disconnected';
-                    qrWrapper.style.display = 'none';
+                    setConnectPill('booting', '⚙️ Starting…');
+
+                    if (statusEl)     { statusEl.style.display='block'; statusEl.style.background='#fef9c3'; statusEl.style.color='#92400e'; statusEl.textContent = `⚙️ Booting WhatsApp driver for "${currentUserId}"… please wait.`; }
+                    if (qrCanvas)     { qrCanvas.innerHTML = ''; delete qrCanvas.dataset.lastQr; }
+                    if (qrPanel)      qrPanel.style.display = 'none';
+                    if (placeholder)  placeholder.style.display = 'block';
+                    if (successPanel) successPanel.style.display = 'none';
                 }
             } catch (e) { }
         }
@@ -1165,10 +2793,16 @@
             set('filterSENT', 'Sent (' + (c.SENT || 0) + ')');
             set('filterFAILED', 'Failed (' + (c.FAILED || 0) + ')');
             set('filterCANCELLED', 'Cancelled (' + (c.CANCELLED || 0) + ')');
+            // Legacy metrics on Scheduler Reports
             set('metricTotal', (c.ALL || 0).toLocaleString());
             set('metricScheduled', (c.SCHEDULED || 0).toLocaleString());
             set('metricSent', (c.SENT || 0).toLocaleString());
             set('metricFailed', (c.FAILED || 0).toLocaleString());
+            // Dashboard metric cards
+            set('dbMetricTotal', (c.ALL || 0).toLocaleString());
+            set('dbMetricScheduled', (c.SCHEDULED || 0).toLocaleString());
+            set('dbMetricSent', (c.SENT || 0).toLocaleString());
+            set('dbMetricFailed', (c.FAILED || 0).toLocaleString());
         }
         function getAttachmentText(item) {
             if (item.uploadedFiles && item.uploadedFiles.length) return item.uploadedFiles.map(f => f.originalName || f.fileName).join(', ');
@@ -1229,25 +2863,15 @@
             window.open(url, '_blank');
         }
         async function loginUser() {
-            const id = document.getElementById('userIdInput').value.trim();
-            if (!id)
-                return alert('Enter User ID');
-            currentUserId = id;
+            // Now delegates to connectWhatsApp() which uses the new modal
+            openWaConnectModal();
+        }
 
-            const badge = document.getElementById('statusBadge');
-            badge.textContent = 'Booting WhatsApp Driver...';
-            badge.className = 'status-bar disconnected';
 
-            await fetch(`/api/whatsapp/init/${currentUserId}`, { method: 'POST' });
-
-            // FIX: avoid stacking duplicate polling intervals on repeated logins,
-            // and actually poll the same URL the status badge/QR code reads from
-            if (statusPollInterval) clearInterval(statusPollInterval);
-            checkWhatsAppStatus();
-            statusPollInterval = setInterval(checkWhatsAppStatus, 3000);
-
-            loadSchedules();
-            loadHistoryReport();
+        function closeQrLoginModal() {
+            document.getElementById('qrLoginModal').classList.remove('active');
+            const modalCode = document.getElementById('qrLoginModalCode');
+            if (modalCode) { modalCode.innerHTML = ''; delete modalCode.dataset.lastQr; }
         }
         async function loadSchedules() {
             // FIX: this was missing "await" entirely, so it tried to read the
@@ -1391,50 +3015,289 @@
         document.getElementById('numberListInput').addEventListener('input', () => updateCount('numberListInput', 'numberListInputCount'));
         document.getElementById('editSchedulePhone').addEventListener('input', () => updateCount('editSchedulePhone', 'editSchedulePhoneCount'));
 
+        // ══════════════════════════════════════════════════════════════
+        // GROUPS & CONTACTS MODULE
+        // ══════════════════════════════════════════════════════════════
+        let gcGroups   = [];   // full groups array from server
+        let gcContacts = [];   // full contacts array from server
+
+        async function fetchGroupsAndContacts() {
+            if (!currentUserId) {
+                setMsg('gcResponse', '⚠ Please Login to WhatsApp first before fetching groups/contacts.', false);
+                return;
+            }
+            if (!isWhatsappReady) {
+                setMsg('gcResponse', '⚠ WhatsApp is not connected. Scan QR and wait for "Connected" status.', false);
+                return;
+            }
+
+            // Show loading state
+            document.getElementById('groupList').innerHTML   = '<div class="gc-loading">⏳ Fetching groups…</div>';
+            document.getElementById('contactList').innerHTML = '<div class="gc-loading">⏳ Fetching contacts…</div>';
+            document.getElementById('groupCountBadge').textContent   = '…';
+            document.getElementById('contactCountBadge').textContent = '…';
+            setMsg('gcResponse', '', true);
+
+            // Fetch groups and contacts in parallel
+            const [gRes, cRes] = await Promise.all([
+                fetch(`/groups/${encodeURIComponent(currentUserId)}`).then(r => r.json()).catch(() => ({ success: false, error: 'Network error' })),
+                fetch(`/contacts/${encodeURIComponent(currentUserId)}`).then(r => r.json()).catch(() => ({ success: false, error: 'Network error' }))
+            ]);
+
+            if (gRes.success) {
+                gcGroups = gRes.groups || [];
+                document.getElementById('groupCountBadge').textContent = gcGroups.length;
+                renderGcList('group', gcGroups);
+            } else {
+                document.getElementById('groupList').innerHTML = `<div class="gc-empty">⚠ ${escapeHtml(gRes.error || 'Failed to load groups.')}</div>`;
+                document.getElementById('groupCountBadge').textContent = '!';
+            }
+
+            if (cRes.success) {
+                gcContacts = cRes.contacts || [];
+                document.getElementById('contactCountBadge').textContent = gcContacts.length;
+                renderGcList('contact', gcContacts);
+            } else {
+                document.getElementById('contactList').innerHTML = `<div class="gc-empty">⚠ ${escapeHtml(cRes.error || 'Failed to load contacts.')}</div>`;
+                document.getElementById('contactCountBadge').textContent = '!';
+            }
+
+            if (gRes.success && cRes.success) {
+                setMsg('gcResponse', `✓ Loaded ${gcGroups.length} groups and ${gcContacts.length} contacts.`, true);
+            }
+        }
+
+        function renderGcList(type, items, filterText) {
+            const listEl = document.getElementById(type === 'group' ? 'groupList' : 'contactList');
+            const ft = (filterText || '').toLowerCase();
+            const filtered = ft ? items.filter(i => (i.name||'').toLowerCase().includes(ft) || (i.id||'').toLowerCase().includes(ft)) : items;
+
+            if (!filtered.length) {
+                listEl.innerHTML = `<div class="gc-empty">${ft ? 'No results for "' + escapeHtml(ft) + '"' : (type === 'group' ? 'No groups found.' : 'No contacts found.')}</div>`;
+                return;
+            }
+
+            listEl.innerHTML = filtered.map(item => {
+                const isGroup = type === 'group';
+                const initials = (item.name || '?').charAt(0).toUpperCase();
+                const displayId = isGroup ? item.id : item.id.replace('@c.us', '');
+                const number    = isGroup ? item.id : displayId;
+                return `<div class="gc-item">
+                    <input type="checkbox" class="gc-check" data-type="${type}" data-id="${escapeHtml(item.id)}" data-name="${escapeHtml(item.name||'')}">
+                    <div class="gc-avatar ${isGroup ? 'group' : 'contact'}">${initials}</div>
+                    <div class="gc-info">
+                        <div class="gc-name">${escapeHtml(item.name || 'Unknown')}</div>
+                        <div class="gc-id">${escapeHtml(displayId)}</div>
+                    </div>
+                    <button class="gc-copy-btn" onclick="copyToClipboard('${escapeHtml(number)}')">📋 Copy</button>
+                </div>`;
+            }).join('');
+        }
+
+        function filterGcList(type) {
+            const inputId = type === 'group' ? 'groupSearch' : 'contactSearch';
+            const val = document.getElementById(inputId).value;
+            const items = type === 'group' ? gcGroups : gcContacts;
+            renderGcList(type, items, val);
+        }
+
+        function selectAllGc(type) {
+            document.querySelectorAll(`.gc-check[data-type="${type}"]`).forEach(cb => cb.checked = true);
+        }
+
+        function clearAllGc(type) {
+            document.querySelectorAll(`.gc-check[data-type="${type}"]`).forEach(cb => cb.checked = false);
+        }
+
+        function getSelectedGcIds(type) {
+            return Array.from(document.querySelectorAll(`.gc-check[data-type="${type}"]:checked`)).map(cb => cb.dataset.id);
+        }
+
+        function addSelectedToSchedule(type) {
+            const ids = getSelectedGcIds(type);
+            if (!ids.length) { setMsg('gcResponse', '⚠ Select at least one item first.', false); return; }
+            const current = parsePhoneNumbers(document.getElementById('schedulePhone').value);
+            const merged = [...new Set([...current, ...ids])];
+            document.getElementById('schedulePhone').value = merged.join('\n');
+            updateCount('schedulePhone', 'schedulePhoneCount');
+            setMsg('gcResponse', `✓ ${ids.length} number(s) added to Schedule form.`, true);
+            switchTab('schedule');
+        }
+
+        function addSelectedToSendNow(type) {
+            const ids = getSelectedGcIds(type);
+            if (!ids.length) { setMsg('gcResponse', '⚠ Select at least one item first.', false); return; }
+            const current = parsePhoneNumbers(document.getElementById('sendNowPhone').value);
+            const merged = [...new Set([...current, ...ids])];
+            document.getElementById('sendNowPhone').value = merged.join('\n');
+            updateCount('sendNowPhone', 'sendNowPhoneCount');
+            setMsg('gcResponse', `✓ ${ids.length} number(s) added to Quick Send form.`, true);
+            switchTab('sendNow');
+        }
+
+        async function saveSelectedToNumberList() {
+            const contactIds = getSelectedGcIds('contact');
+            if (!contactIds.length) { setMsg('gcResponse', '⚠ Select at least one contact first.', false); return; }
+            const phones = contactIds.map(id => id.replace('@c.us', '')).join('\n');
+            const res = await fetch('/api/number-list', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phones, replace: false }) });
+            const data = await parseJsonResponse(res);
+            setMsg('gcResponse', data.success ? `✓ ${contactIds.length} contact(s) saved to WhatsApp List.` : (data.error || 'Failed to save.'), data.success);
+            if (data.success) loadNumberList();
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // brief flash feedback
+                const el = event.target;
+                const orig = el.textContent;
+                el.textContent = '✓ Copied';
+                el.style.background = '#d1fae5';
+                setTimeout(() => { el.textContent = orig; el.style.background = ''; }, 1200);
+            }).catch(() => {});
+        }
+        // ══════════════════════════════════════════════════════════════
+
+        // ══════════════════════════════════════════════════════════════
+        // DASHBOARD MODULE
+        // ══════════════════════════════════════════════════════════════
+        async function loadDashboard() {
+            const uid = currentUserId || '';
+            const res = await fetch(`/api/schedules?userId=${encodeURIComponent(uid)}&status=ALL`);
+            const data = await parseJsonResponse(res);
+            if (!data.success) return;
+
+            const c = data.counts || {};
+            // Update dashboard metric cards
+            ['Total','Scheduled','Sent','Failed'].forEach(k => {
+                const el = document.getElementById('dbMetric' + k);
+                if (el) el.textContent = (c[k.toUpperCase()] || 0).toLocaleString();
+            });
+
+            // Recent 5 schedules
+            const recent = (data.schedules || []).slice(0, 6);
+            const box = document.getElementById('dbRecentSchedules');
+            if (!box) return;
+            if (!recent.length) {
+                box.innerHTML = '<div style="padding:20px;text-align:center;color:#94a3b8;font-size:13px;">No schedules yet. <a href="#" onclick="switchTab(\'schedule\');return false;" style="color:#00843d;font-weight:800;">Create one →</a></div>';
+                return;
+            }
+            box.innerHTML = recent.map((s, i) => {
+                const status = s.status || 'SCHEDULED';
+                const phones = Array.isArray(s.phones) ? s.phones.slice(0,2).join(', ') + (s.phones.length > 2 ? ` +${s.phones.length-2}` : '') : s.phone || '-';
+                return `<div style="display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid #f1f5f9;${i===recent.length-1?'border-bottom:none':''}">
+                    <span style="width:24px;height:24px;background:#f0fdf4;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#16a34a;flex-shrink:0;">${i+1}</span>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-size:13px;font-weight:800;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(s.schedulerName || s.scheduleMode || '-')}</div>
+                        <div style="font-size:11px;color:#94a3b8;">${escapeHtml(phones)} · ${s.scheduleAt ? new Date(s.scheduleAt).toLocaleString() : '-'}</div>
+                    </div>
+                    <span class="status-pill ${status}" style="font-size:10px;">${escapeHtml(status)}</span>
+                    <button class="action" onclick="quickSendSchedule('${s.id}')" title="Quick Send" style="font-size:14px;">➤</button>
+                </div>`;
+            }).join('');
+        }
+
+        async function dbQuickSend() {
+            if (!isWhatsappReady) return setMsg('dbSendResponse', '⚠ WhatsApp not connected.', false);
+            const phoneList = parsePhoneNumbers(document.getElementById('dbSendPhone').value);
+            if (!phoneList.length) return setMsg('dbSendResponse', '⚠ Enter at least one phone number.', false);
+            const files = document.getElementById('dbSendFiles').files;
+            const form = new FormData();
+            form.append('phone', phoneList.join('\n'));
+            form.append('userId', currentUserId || '');
+            form.append('caption', document.getElementById('dbSendCaption').value.trim());
+            for (const f of files) form.append('documents', f);
+            setMsg('dbSendResponse', '⏳ Sending…', true);
+            const res = await fetch('/api/send-whatsapp', { method: 'POST', body: form });
+            const data = await parseJsonResponse(res);
+            setMsg('dbSendResponse', data.message || data.error, data.success);
+        }
+        // ══════════════════════════════════════════════════════════════
+
         loadNumberList();
+        loadDashboard();
         loadSchedules();
         handleScheduleModeChange();
         handleSourceTypeChange();
+
+        // Load logged-in user info and display in sidebar + topbar
+        // Also auto-initialize WhatsApp session using the logged-in username
+        fetch('/auth/me').then(r => r.json()).then(async data => {
+            if (!data.success) { window.location.href = '/login'; return; }
+            const u = data.user;
+            const displayName = u.displayName || u.username || 'Admin';
+            const initials = displayName.charAt(0).toUpperCase();
+            // Sidebar
+            const sideAvatar = document.getElementById('userAvatar');
+            const sideName   = document.getElementById('userDisplayName');
+            if (sideAvatar) sideAvatar.textContent = initials;
+            if (sideName)   sideName.textContent   = displayName;
+            // Topbar avatar
+            const topAvatar = document.getElementById('topbarAvatar');
+            if (topAvatar) { topAvatar.textContent = initials; topAvatar.title = `Signed in as ${displayName} — click to sign out`; }
+
+            // ── Auto-link WhatsApp using the logged-in username as session ID ──
+            const sessionId = u.username || displayName;
+            currentUserId = sessionId;
+
+            // Pre-fill the WA connect modal User ID field
+            const waInput = document.getElementById('waConnectUserIdInput');
+            if (waInput) waInput.value = sessionId;
+
+            // Pre-fill legacy hidden input
+            const legacyInput = document.getElementById('userIdInput');
+            if (legacyInput) legacyInput.value = sessionId;
+
+            // Show "connecting" state in the topbar pill
+            setConnectPill('booting', '⚙️ Connecting…');
+
+            // Boot the WhatsApp session silently in the background
+            try {
+                await fetch(`/api/whatsapp/init/${encodeURIComponent(sessionId)}`, { method: 'POST' });
+            } catch(e) { /* ignore network errors during auto-init */ }
+
+            // Start polling WhatsApp status
+            if (statusPollInterval) clearInterval(statusPollInterval);
+            checkWhatsAppStatus();
+            statusPollInterval = setInterval(checkWhatsAppStatus, 3000);
+        }).catch(() => {});
+
+        // ── Must be global scope so onclick attributes can call it ──
+        function logoutUser() {
+            if (confirm('Are you sure you want to sign out?')) {
+                window.location.href = '/auth/logout';
+            }
+        }
     </script>
 
     <script>
-        function initSelectAllFix() {
-            const selectAll = document.getElementById('selectAllSchedules');
-            if (!selectAll) return;
-
-            selectAll.addEventListener('change', function () {
-                const checked = this.checked;
-
+        // Use event delegation on document so checkbox handling works
+        // even after the table is dynamically re-rendered
+        document.addEventListener('change', (e) => {
+            // ── Select-All header checkbox ──
+            if (e.target.id === 'selectAllSchedules') {
+                const checked = e.target.checked;
                 document.querySelectorAll('.row-checkbox').forEach(cb => {
                     cb.checked = checked;
-
                     const id = cb.getAttribute('data-id');
-                    if (id) {
-                        if (checked) selectedScheduleIds.add(id);
-                        else selectedScheduleIds.delete(id);
-                    }
+                    if (id) { if (checked) selectedScheduleIds.add(id); else selectedScheduleIds.delete(id); }
                 });
-            });
+            }
 
-            document.addEventListener('change', (e) => {
-                if (e.target.classList.contains('row-checkbox')) {
-                    // FIX: this referenced an undefined "id" variable and threw on
-                    // every single checkbox click instead of tracking the selection
-                    const id = e.target.dataset.id;
-                    if (!id) return;
-
-                    if (e.target.checked) selectedScheduleIds.add(id);
-                    else selectedScheduleIds.delete(id);
-
+            // ── Individual row checkbox ──
+            if (e.target.classList.contains('row-checkbox')) {
+                const id = e.target.dataset.id;
+                if (!id) return;
+                if (e.target.checked) selectedScheduleIds.add(id);
+                else selectedScheduleIds.delete(id);
+                // Sync the header checkbox state
+                const selectAll = document.getElementById('selectAllSchedules');
+                if (selectAll) {
                     const all = document.querySelectorAll('.row-checkbox').length;
                     const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
-
                     selectAll.checked = all > 0 && all === checkedCount;
                 }
-            });
-        }
-
-        window.addEventListener('DOMContentLoaded', initSelectAllFix);
+            }
+        });
     </script>
 </body>
 
