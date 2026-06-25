@@ -1699,9 +1699,9 @@
                 <button id="navDetails" onclick="switchTab('details')">
                     <span class="nav-icon">📋</span> Scheduler Reports
                 </button>
-                <!-- <button id="navHistory" onclick="switchTab('history')">
+                <button id="navHistory" onclick="switchTab('history')">
                     <span class="nav-icon">🕐</span> Scheduler Logs
-                </button> -->
+                </button>
                 <button id="navContacts" onclick="switchTab('contacts')">
                     <span class="nav-icon">🔄</span> Sync Groups &amp; Contacts
                 </button>
@@ -2827,14 +2827,16 @@
                     <thead><tr>
                                <th><input id="selectAllSchedules" type="checkbox"></th>
                                 <th>Sr No</th>
-                                <th>Scheduler Id</th>
-                                <th>Scheduler Name</th>
+                                <th>Id</th>
+                                <th>Types</th>
+                                <th>Name</th>
                                 <th>Message</th>
                                 <th>Attachment</th>
                                 <th>Receiver Number</th>
                                 <th>Is Active</th>
                                 <th>Result</th>
-                                <th>Scheduled Time</th>
+                                <th>Schedule Time</th>
+                                <th>Run Time</th>
                                 <th>Action</th>
                     </tr></thead>
                 <tbody>${rows.map((item, i) => {
@@ -2845,6 +2847,7 @@
                 return `<tr><td><input class="row-checkbox" type="checkbox" data-id="${item.id}">
                 <td>${i + 1}</td>
                 <td><b style="color:#00843d;">${escapeHtml(item.id || '-')}</b></td>
+                <td>${escapeHtml(item.scheduleMode || '-')}</td>
                 <td>${escapeHtml(item.schedulerName || item.fileName || item.scheduleMode || '-')}</td>
                 <td title="${escapeHtml(item.message || '')}">${escapeHtml((item.message || '-').slice(0, 50))}</td>
                 <td title="${escapeHtml(getAttachmentText(item))}">${escapeHtml(getAttachmentText(item).slice(0, 55))}</td>
@@ -2852,6 +2855,7 @@
                 <td><span class="toggle ${active ? 'on' : ''}" onclick="toggleActive('${item.id}', ${!active})"></span> <span class="status-pill ${status}">${escapeHtml(status)}</span></td>
                 <td>${escapeHtml(item.error || item.error || item.error || 'Success')}</td>
                 <td>${item.scheduleAt ? new Date(item.scheduleAt).toLocaleString() : '-'}</td>
+                <td>${item.lastRunAt ? new Date(item.lastRunAt).toLocaleString() : '-'}</td>
                 <td>
                     <button class="action" title="Update" onclick="openEditScheduleModal('${item.id}')">✎</button>
                     <button class="action" title="Quick Send" onclick="quickSendSchedule('${item.id}')">➤</button>
