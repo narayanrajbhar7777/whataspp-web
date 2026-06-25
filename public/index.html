@@ -2784,7 +2784,7 @@
         }
         function updateScheduleCountTabs(c) {
             c = c || {};
-            console.log('Schedule counts:', c);
+            // console.log('Schedule counts:', c);
             const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
             set('filterALL', 'All (' + (c.ALL || 0) + ')');
             set('filterSCHEDULED', 'Scheduled (' + (c.SCHEDULED || 0) + ')');
@@ -2840,7 +2840,7 @@
                                 <th>Action</th>
                     </tr></thead>
                 <tbody>${rows.map((item, i) => {
-                    console.log("Item: ",item);
+                    // console.log("Item: ",item);
                 const status = getDisplayStatus(item.status);
                 const phones = Array.isArray(item.phones) ? item.phones.join(', ') : item.phone || '-';
                 const active = item.isActive !== false && status !== 'CANCELLED';
@@ -2886,7 +2886,7 @@
             // actual server response and silently failed every time
             const uid = currentUserId || '';
             const res = await fetch(`/api/schedules?userId=${encodeURIComponent(uid)}&status=` + encodeURIComponent(currentScheduleFilter));
-            console.log('loadSchedules() response:', res);
+            // console.log('loadSchedules() response:', res);
             const data = await parseJsonResponse(res);
             if (data.success) {
                 allLoadedSchedules = data.schedules || [];
@@ -3022,7 +3022,7 @@
             const s = data.summary || {};
             summaryBox.innerHTML = `Total: ${s.total || 0} | Success: ${s.success || 0} | Failed: ${s.failed || 0}`;
             let rows = data.history || [];
-            console.log('History rows:', rows);
+            // console.log('History rows:', rows);
             const search = String(document.getElementById('historySearchInput') ? document.getElementById('historySearchInput').value : '').toLowerCase();
             if (search) rows = rows.filter(r => JSON.stringify(r).toLowerCase().includes(search));
             if (!rows.length) { listBox.innerHTML = '<div style="padding:16px;">No logs found.</div>'; return; }
@@ -3186,7 +3186,7 @@
 
             const c = data.counts || {};
             // Update dashboard metric cards
-            console.log('Dashboard counts:', c);
+            // console.log('Dashboard counts:', c);
             ['Total Schedules','Scheduled','Sent','Failed'].forEach(k => {
                 const el = document.getElementById('dbMetric' + k);
                 if (el) el.textContent = (c[k.toUpperCase()] || 0).toLocaleString();

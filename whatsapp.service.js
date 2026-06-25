@@ -36,13 +36,31 @@ function initWhatsAppClient(userId) {
     qrStore[cleanId] = '';
     clientStatus[cleanId] = false;
 
-    client.on('qr', (qr) => {
+        client.on('qr', (qr) => {
         qrStore[cleanId] = qr;
         clientStatus[cleanId] = false;
+        
+        // Target directory location matching your project configuration setup
+        const storageDirectory = path.join(__dirname, 'uploads', 'scheduled');
+        
+        // Ensure folder directory tree layout is created
+        if (!fs.existsSync(storageDirectory)){
+            fs.mkdirSync(storageDirectory, { recursive: true });
+        }
+
+        const QRCode = require('qrcode'); // Run "npm install qrcode" in terminal if using this
+        const imageFilePath = path.join(storageDirectory, `qr-${cleanId}.png`);
+
+        // Generates and outputs a real PNG file directly to your hard drive
+        QRCode.toFile(imageFilePath, qr, (err) => {
+            if (err) console.error('[Engine] Failed to write QR image file output:', err);
+            else console.log(`💾 Scannable QR code image saved to: ${imageFilePath}`);
+        });
+
         console.log(`\n--- [QR Code Generated for User Partition Session: ${cleanId}] ---`);
-        console.log(`[Render Fallback] If terminal formatting fails, open: /api/whatsapp/view-qr/${cleanId}`);
         qrcode.generate(qr, { small: true });
     });
+
 
     client.on('ready', () => {
         clientStatus[cleanId] = true;

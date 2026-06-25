@@ -14,7 +14,7 @@ app.use(cors({
     credentials: true
 }));
 
-const port = process.env.PORT || 30001;
+const port = process.env.PORT || 3000;
 const CONFIG = {
     PORT: port,
     MAX_RECIPIENTS_PER_REQUEST: 20,
