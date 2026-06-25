@@ -1708,6 +1708,9 @@
                 <button id="navSendNow" onclick="switchTab('sendNow')">
                     <span class="nav-icon">➤</span> Quick Send
                 </button>
+                <button id="navTrybeScheduler" onclick="switchTab('trybeScheduler')">
+                    <span class="nav-icon">📊</span> Trybe Report Scheduler
+                </button>
                 <button id="navNumbers" onclick="switchTab('numbers')">
                     <span class="nav-icon">☷</span> WhatsApp List
                 </button>
@@ -2070,19 +2073,94 @@
 
                 <!-- WhatsApp List -->
                 <section id="numbersSection" class="section">
-                    <div class="form-card">
-                        <h3>WhatsApp List</h3>
-                        <label>Add WhatsApp Numbers</label>
-                        <textarea id="numberListInput" placeholder="Enter max 20 numbers"></textarea>
-                        <div class="help"><span id="numberListInputCount">0 / 20</span></div>
-                        <div class="row" style="margin-top:10px;">
-                            <button class="btn-green" onclick="addNumbersToList(false)">Add To List</button>
-                            <button class="btn-dark" onclick="addNumbersToList(true)">Replace Full List</button>
-                            <button class="btn-red" onclick="clearNumberList()">Clear List</button>
+                    <div class="form-card" style="max-width: 1200px;">
+                        <h3>Contact Management</h3>
+                        
+                        <!-- Add/Edit Contact Form -->
+                        <div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 2px solid #e2e8f0;">
+                            <h4 style="margin: 0 0 16px 0; color: #0f172a; font-size: 16px; font-weight: 700;" id="contactFormTitle">Add New Contact</h4>
+                            <form id="contactForm" onsubmit="event.preventDefault(); saveContact();">
+                                <input type="hidden" id="contactEditId" value="">
+                                
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 16px;">
+                                    <div>
+                                        <label style="display: block; font-weight: 600; color: #334155; margin-bottom: 6px; font-size: 13px;">Name *</label>
+                                        <input type="text" id="contactName" required placeholder="John Doe" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px;">
+                                    </div>
+                                    
+                                    <div>
+                                        <label style="display: block; font-weight: 600; color: #334155; margin-bottom: 6px; font-size: 13px;">WhatsApp Number *</label>
+                                        <input type="tel" id="contactPhone" required placeholder="919876543210" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px;">
+                                    </div>
+                                    
+                                    <div>
+                                        <label style="display: block; font-weight: 600; color: #334155; margin-bottom: 6px; font-size: 13px;">Email</label>
+                                        <input type="email" id="contactEmail" placeholder="john@example.com" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px;">
+                                    </div>
+                                    
+                                    <div>
+                                        <label style="display: block; font-weight: 600; color: #334155; margin-bottom: 6px; font-size: 13px;">Company</label>
+                                        <input type="text" id="contactCompany" placeholder="ABC Corp" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px;">
+                                    </div>
+                                </div>
+                                
+                                <div style="display: flex; gap: 10px;">
+                                    <button type="submit" class="btn-green" id="contactSaveBtn">
+                                        💾 Save Contact
+                                    </button>
+                                    <button type="button" class="btn-white" onclick="cancelEditContact()" id="contactCancelBtn" style="display: none;">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                        <h3>Saved WhatsApp Numbers</h3>
-                        <div id="numberListDisplay"></div>
-                        <div id="numberListResponse" class="response"></div>
+                        
+                        <!-- Bulk Import Section -->
+                        <details style="margin-bottom: 20px;">
+                            <summary style="cursor: pointer; font-weight: 600; color: #0f172a; padding: 12px; background: #f1f5f9; border-radius: 8px;">
+                                📋 Bulk Import (Old Format)
+                            </summary>
+                            <div style="padding: 16px; background: #f8fafc; border-radius: 8px; margin-top: 8px;">
+                                <label style="display: block; font-weight: 600; margin-bottom: 8px;">Quick Add Multiple Numbers</label>
+                                <textarea id="bulkImportInput" placeholder="John Doe: 919876543210&#10;Jane Smith: 919123456789&#10;or just numbers:&#10;919876543210" style="width: 100%; min-height: 100px; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;"></textarea>
+                                <button class="btn-green" onclick="bulkImportContacts()" style="margin-top: 10px;">
+                                    ➕ Import Numbers
+                                </button>
+                            </div>
+                        </details>
+                        
+                        <h3 style="margin: 30px 0 16px 0;">Saved Contacts</h3>
+                        
+                        <!-- Search and Actions Bar -->
+                        <div style="display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center;">
+                            <input type="text" id="contactSearchInput" placeholder="🔍 Search contacts..." oninput="filterContacts()" style="flex: 1; min-width: 250px; padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px;">
+                            <button class="btn-white" onclick="loadNumberList()">🔄 Refresh</button>
+                            <button class="btn-red" onclick="clearAllContacts()" style="font-size: 13px;">🗑️ Clear All</button>
+                        </div>
+                        
+                        <!-- Contacts Table -->
+                        <div style="overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+                            <table id="contactsTable" style="width: 100%; border-collapse: collapse; background: white;">
+                                <thead>
+                                    <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                                        <th style="padding: 12px; text-align: left; font-weight: 700; color: #0f172a; font-size: 13px;">Name</th>
+                                        <th style="padding: 12px; text-align: left; font-weight: 700; color: #0f172a; font-size: 13px;">WhatsApp Number</th>
+                                        <th style="padding: 12px; text-align: left; font-weight: 700; color: #0f172a; font-size: 13px;">Email</th>
+                                        <th style="padding: 12px; text-align: left; font-weight: 700; color: #0f172a; font-size: 13px;">Company</th>
+                                        <th style="padding: 12px; text-align: center; font-weight: 700; color: #0f172a; font-size: 13px; width: 120px;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="contactsTableBody">
+                                    <tr>
+                                        <td colspan="5" style="padding: 40px; text-align: center; color: #94a3b8;">
+                                            No contacts saved yet. Add your first contact above!
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div id="numberListResponse" class="response" style="margin-top: 16px;"></div>
                     </div>
                 </section>
 
@@ -2121,6 +2199,155 @@
                         <button class="btn-green" style="margin-top:14px;" onclick="sendNow()">Send via
                             WhatsApp</button>
                         <div id="sendNowResponse" class="response"></div>
+                    </div>
+                </section>
+
+                <!-- Trybe Stock Tally Scheduler -->
+                <section id="trybeSchedulerSection" class="section">
+                    <!-- Loading Overlay -->
+                    <div id="trybeLoadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 9999; display: none; align-items: center; justify-content: center;">
+                        <div style="background: white; padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+                            <div style="width: 60px; height: 60px; border: 4px solid #f3f4f6; border-top: 4px solid #00843d; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                            <div id="trybeLoadingText" style="font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">Loading...</div>
+                            <div id="trybeLoadingSubtext" style="font-size: 13px; color: #64748b;">Please wait</div>
+                        </div>
+                    </div>
+
+                    <style>
+                        @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                    </style>
+
+                    <div class="form-card" style="max-width: 900px; margin: 0 auto;">
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <h2 style="margin: 0 0 8px 0; color: #064e3b; font-size: 24px; font-weight: 900;">📊 Trybe Stock Tally Scheduler</h2>
+                            <p style="margin: 0; color: #64748b; font-size: 14px;">Automated WhatsApp report delivery system with fresh API data</p>
+                        </div>
+
+                        <div id="trybeStatusMessage" class="response" style="margin-bottom: 20px; display: none;"></div>
+
+                        <div style="background: #f0f9ff; border-left: 4px solid #0284c7; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+                            <strong style="color: #0c4a6e;">API Endpoint:</strong><br>
+                            <code style="background: #e0f2fe; padding: 2px 6px; border-radius: 4px; font-size: 13px; color: #0369a1;">http://localhost:8080/KG_WEB_APP0/KGAPI/powerbi/GetTrybeStockTally</code>
+                        </div>
+
+                        <form id="trybeSchedulerForm">
+                            <label>API URL</label>
+                            <input type="url" id="trybeApiUrl" value="http://localhost:8080/KG_WEB_APP0/KGAPI/powerbi/GetTrybeStockTally" required style="margin-bottom: 14px;">
+
+                            <label>WhatsApp Session ID</label>
+                            <input type="text" id="trybeSessionId" placeholder="Loading..." readonly required style="margin-bottom: 4px;">
+                            <div class="help" style="margin-bottom: 14px;">Session ID is automatically detected from your login username</div>
+
+                            <label>Recipients (WhatsApp Numbers)</label>
+                            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                <button type="button" class="btn-white" onclick="trybeFetchContacts()" style="flex: 1; font-size: 13px;">
+                                    📋 Fetch Contacts
+                                </button>
+                                <button type="button" class="btn-white" onclick="trybeFetchGroups()" style="flex: 1; font-size: 13px;">
+                                    👥 Fetch Groups
+                                </button>
+                                <button type="button" class="btn-green" onclick="trybeLoadSavedNumbers()" style="flex: 1; font-size: 13px; font-weight: 700;">
+                                    📇 Saved Contacts
+                                </button>
+                            </div>
+                            <textarea id="trybeRecipients" placeholder="Enter phone numbers, one per line&#10;Example:&#10;919876543210&#10;919123456789" required style="min-height: 100px; margin-bottom: 4px;"></textarea>
+                            <div class="help" style="margin-bottom: 14px;">Enter phone numbers in international format without + or spaces (e.g., 919876543210)</div>
+
+                            <!-- Contact/Group Selection Panel -->
+                            <div id="trybeContactPanel" style="display: none; margin-bottom: 14px; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px; background: #f8fafc;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: #0f172a;" id="trybeContactPanelTitle">Select Contacts</h4>
+                                    <button type="button" onclick="trybeCloseContactPanel()" style="background: transparent; border: none; font-size: 18px; cursor: pointer; color: #64748b;">✕</button>
+                                </div>
+                                <input type="text" id="trybeContactSearch" placeholder="🔍 Search..." oninput="trybeFilterContacts()" style="width: 100%; margin-bottom: 10px; padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px;">
+                                <div id="trybeContactList" style="max-height: 300px; overflow-y: auto; margin-bottom: 12px; border: 1px solid #e2e8f0; border-radius: 6px; background: white;">
+                                    <!-- Contacts will be populated here -->
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button type="button" class="btn-green" onclick="trybeAddSelectedContacts()" style="flex: 1; font-size: 13px;">
+                                        ➕ Add Selected
+                                    </button>
+                                    <button type="button" class="btn-white" onclick="trybeSelectAllContacts()" style="flex: 1; font-size: 13px;">
+                                        Select All
+                                    </button>
+                                    <button type="button" class="btn-white" onclick="trybeClearSelection()" style="flex: 1; font-size: 13px;">
+                                        Clear
+                                    </button>
+                                </div>
+                            </div>
+
+                            <label>Delivery Schedule</label>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px;">
+                                <label style="display: flex; align-items: center; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                                    <input type="radio" name="trybeScheduleType" value="now" checked style="margin-right: 8px;">
+                                    <span>Send Now</span>
+                                </label>
+                                <label style="display: flex; align-items: center; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                                    <input type="radio" name="trybeScheduleType" value="scheduled" style="margin-right: 8px;">
+                                    <span>Schedule Once</span>
+                                </label>
+                                <label style="display: flex; align-items: center; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                                    <input type="radio" name="trybeScheduleType" value="daily" style="margin-right: 8px;">
+                                    <span>Daily</span>
+                                </label>
+                                <label style="display: flex; align-items: center; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                                    <input type="radio" name="trybeScheduleType" value="weekly" style="margin-right: 8px;">
+                                    <span>Weekly</span>
+                                </label>
+                                <label style="display: flex; align-items: center; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+                                    <input type="radio" name="trybeScheduleType" value="monthly" style="margin-right: 8px;">
+                                    <span>Monthly</span>
+                                </label>
+                            </div>
+
+                            <div id="trybeScheduleTimeGroup" style="display: none; margin-bottom: 14px;">
+                                <label>Schedule Date & Time</label>
+                                <input type="datetime-local" id="trybeScheduleTime">
+                            </div>
+
+                            <div id="trybeDailyTimeGroup" style="display: none; margin-bottom: 14px;">
+                                <label>Daily at Time</label>
+                                <input type="time" id="trybeDailyTime">
+                                <div class="help">Report will be sent every day at this time with fresh data</div>
+                            </div>
+
+                            <div id="trybeWeeklyGroup" style="display: none; margin-bottom: 14px;">
+                                <label>Weekly on Day</label>
+                                <select id="trybeWeeklyDay" style="margin-bottom: 10px;">
+                                    <option value="0">Sunday</option>
+                                    <option value="1" selected>Monday</option>
+                                    <option value="2">Tuesday</option>
+                                    <option value="3">Wednesday</option>
+                                    <option value="4">Thursday</option>
+                                    <option value="5">Friday</option>
+                                    <option value="6">Saturday</option>
+                                </select>
+                                <label>At Time</label>
+                                <input type="time" id="trybeWeeklyTime">
+                            </div>
+
+                            <div id="trybeMonthlyGroup" style="display: none; margin-bottom: 14px;">
+                                <label>Monthly on Day</label>
+                                <input type="number" id="trybeMonthlyDay" min="1" max="31" value="1" style="margin-bottom: 10px;">
+                                <label>At Time</label>
+                                <input type="time" id="trybeMonthlyTime">
+                            </div>
+
+                            <div style="margin: 20px 0; padding-top: 20px; border-top: 2px solid #f1f5f9;">
+                                <h3 style="margin: 0 0 12px 0; color: #1e293b; font-size: 16px;">📱 Message Preview:</h3>
+                                <div id="trybeMessagePreview" style="background: #f8fafc; padding: 16px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; white-space: pre-wrap; color: #334155; max-height: 400px; overflow-y: auto;">
+                                    Click "Preview Report" to see how the message will look...
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px;">
+                                <button type="button" class="btn-white" id="trybePreviewBtn">👁️ Preview Report</button>
+                                <button type="submit" class="btn-green" id="trybeSendBtn">📤 Send Report</button>
+                            </div>
+                        </form>
                     </div>
                 </section>
 
@@ -2375,6 +2602,11 @@
         let currentScheduleFilter = 'ALL';
         let currentHistoryFilter = 'ALL';
         let selectedScheduleIds = new Set();
+        
+        // Client-side CONFIG object
+        const CONFIG = {
+            MAX_RECIPIENTS_PER_REQUEST: 20
+        };
 
         function parsePhoneNumbers(value) {
             return String(value || '').split(/[\n,;]+/)
@@ -2435,7 +2667,7 @@
             document.getElementById('serverFolderSourceBox').classList.toggle('hidden', source !== 'SERVER_FOLDER');
         }
         function switchTab(tab) {
-            ['dashboard', 'schedule', 'numbers', 'details', 'history', 'sendNow', 'contacts'].forEach(name => {
+            ['dashboard', 'schedule', 'numbers', 'details', 'history', 'sendNow', 'contacts', 'trybeScheduler'].forEach(name => {
                 const sec = document.getElementById(name + 'Section');
                 if (sec) sec.classList.remove('active');
                 const nav = document.getElementById('nav' + name.charAt(0).toUpperCase() + name.slice(1));
@@ -2598,35 +2830,290 @@
                 }
             } catch (e) { }
         }
+        // Contact Management Functions
         async function loadNumberList() {
-            const res = await fetch('/api/number-list');
+            try {
+                const res = await fetch('/api/number-list');
+                const data = await parseJsonResponse(res);
+                console.log('loadNumberList response:', data);
+                
+                if (!data.success) {
+                    console.error('Failed to load number list:', data.error);
+                    return;
+                }
+                
+                savedNumbers = data.numbers || [];
+                console.log('Loaded savedNumbers:', savedNumbers.length, 'contacts');
+                renderContactsTable();
+                renderSavedNumberCheckboxes();
+            } catch (error) {
+                console.error('Error in loadNumberList:', error);
+            }
+        }
+        
+        function renderContactsTable() {
+            const tbody = document.getElementById('contactsTableBody');
+            
+            if (!savedNumbers.length) {
+                tbody.innerHTML = `<tr><td colspan="5" style="padding: 40px; text-align: center; color: #94a3b8;">
+                    No contacts saved yet. Add your first contact above!
+                </td></tr>`;
+                return;
+            }
+            
+            tbody.innerHTML = savedNumbers.map((contact, index) => {
+                const name = typeof contact === 'object' ? (contact.name || 'N/A') : 'N/A';
+                const phone = typeof contact === 'object' ? contact.number : contact;
+                const email = typeof contact === 'object' ? (contact.email || '-') : '-';
+                const company = typeof contact === 'object' ? (contact.company || '-') : '-';
+                const contactId = typeof contact === 'object' ? phone : contact;
+                
+                return `<tr style="border-bottom: 1px solid #f1f5f9;" data-phone="${escapeHtml(phone)}" data-name="${escapeHtml(name)}">
+                    <td style="padding: 14px; font-weight: 600; color: #0f172a;">${escapeHtml(name)}</td>
+                    <td style="padding: 14px; color: #475569; font-family: monospace;">${escapeHtml(phone)}</td>
+                    <td style="padding: 14px; color: #64748b;">${escapeHtml(email)}</td>
+                    <td style="padding: 14px; color: #64748b;">${escapeHtml(company)}</td>
+                    <td style="padding: 14px; text-align: center;">
+                        <button onclick='editContact(${JSON.stringify(contact)})' class="btn-white" style="padding: 6px 12px; font-size: 12px; margin-right: 4px;">
+                            ✏️ Edit
+                        </button>
+                        <button onclick="deleteContact('${contactId}')" class="btn-red" style="padding: 6px 12px; font-size: 12px;">
+                            🗑️
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+        
+        function filterContacts() {
+            const searchTerm = document.getElementById('contactSearchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#contactsTableBody tr');
+            
+            rows.forEach(row => {
+                const name = row.getAttribute('data-name')?.toLowerCase() || '';
+                const phone = row.getAttribute('data-phone')?.toLowerCase() || '';
+                const text = row.textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || phone.includes(searchTerm) || text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        async function saveContact() {
+            const name = document.getElementById('contactName').value.trim();
+            const phone = document.getElementById('contactPhone').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const company = document.getElementById('contactCompany').value.trim();
+            const editId = document.getElementById('contactEditId').value;
+            
+            if (!name || !phone) {
+                setMsg('numberListResponse', 'Name and WhatsApp number are required.', false);
+                return;
+            }
+            
+            const contact = { name, number: phone };
+            if (email) contact.email = email;
+            if (company) contact.company = company;
+            
+            let contacts = savedNumbers || [];
+            
+            if (editId) {
+                // Update existing contact
+                const index = contacts.findIndex(c => (typeof c === 'object' ? c.number : c) === editId);
+                if (index !== -1) {
+                    contacts[index] = contact;
+                }
+            } else {
+                // Add new contact
+                contacts.push(contact);
+            }
+            
+            // Remove duplicates
+            const seen = new Set();
+            contacts = contacts.filter(item => {
+                const number = typeof item === 'object' ? item.number : item;
+                if (seen.has(number)) return false;
+                seen.add(number);
+                return true;
+            });
+            
+            if (contacts.length > CONFIG.MAX_RECIPIENTS_PER_REQUEST) {
+                setMsg('numberListResponse', `Maximum ${CONFIG.MAX_RECIPIENTS_PER_REQUEST} contacts allowed.`, false);
+                return;
+            }
+            
+            try {
+                const res = await fetch('/api/number-list', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ numbers: contacts, replace: true })
+                });
+                
+                const data = await parseJsonResponse(res);
+                console.log('Save contact response:', data);
+                
+                // Show status message with better styling
+                const responseEl = document.getElementById('numberListResponse');
+                if (responseEl) {
+                    responseEl.textContent = data.message || data.error || (data.success ? 'Contact saved!' : 'Failed to save');
+                    responseEl.style.display = 'block';
+                    responseEl.style.padding = '14px 18px';
+                    responseEl.style.borderRadius = '8px';
+                    responseEl.style.fontWeight = '600';
+                    responseEl.style.fontSize = '14px';
+                    
+                    if (data.success) {
+                        responseEl.style.background = '#dcfce7';
+                        responseEl.style.color = '#166534';
+                        responseEl.style.border = '1px solid #bbf7d0';
+                    } else {
+                        responseEl.style.background = '#fee2e2';
+                        responseEl.style.color = '#991b1b';
+                        responseEl.style.border = '1px solid #fecaca';
+                    }
+                    
+                    setTimeout(() => {
+                        responseEl.style.display = 'none';
+                    }, 8000);
+                }
+                
+                if (data.success) {
+                    clearContactForm();
+                    await loadNumberList(); // Wait for list to reload
+                    console.log('Contact list reloaded, savedNumbers:', savedNumbers);
+                }
+            } catch (error) {
+                console.error('Error saving contact:', error);
+                setMsg('numberListResponse', 'Error: ' + error.message, false);
+            }
+        }
+        
+        function editContact(contact) {
+            const name = typeof contact === 'object' ? contact.name : '';
+            const phone = typeof contact === 'object' ? contact.number : contact;
+            const email = typeof contact === 'object' ? contact.email || '' : '';
+            const company = typeof contact === 'object' ? contact.company || '' : '';
+            
+            document.getElementById('contactName').value = name;
+            document.getElementById('contactPhone').value = phone;
+            document.getElementById('contactEmail').value = email;
+            document.getElementById('contactCompany').value = company;
+            document.getElementById('contactEditId').value = phone;
+            
+            document.getElementById('contactFormTitle').textContent = 'Edit Contact';
+            document.getElementById('contactSaveBtn').textContent = '💾 Update Contact';
+            document.getElementById('contactCancelBtn').style.display = 'inline-block';
+            
+            // Scroll to form
+            document.getElementById('contactForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        function cancelEditContact() {
+            clearContactForm();
+        }
+        
+        function clearContactForm() {
+            document.getElementById('contactForm').reset();
+            document.getElementById('contactEditId').value = '';
+            document.getElementById('contactFormTitle').textContent = 'Add New Contact';
+            document.getElementById('contactSaveBtn').textContent = '💾 Save Contact';
+            document.getElementById('contactCancelBtn').style.display = 'none';
+        }
+        
+        async function deleteContact(phone) {
+            if (!confirm('Are you sure you want to delete this contact?')) return;
+            
+            await fetch('/api/number-list/' + encodeURIComponent(phone), { method: 'DELETE' });
+            loadNumberList();
+            setMsg('numberListResponse', 'Contact deleted successfully.', true);
+        }
+        
+        async function clearAllContacts() {
+            if (!confirm('Are you sure you want to delete ALL contacts? This cannot be undone.')) return;
+            
+            const res = await fetch('/api/number-list', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ numbers: [], replace: true })
+            });
+            
             const data = await parseJsonResponse(res);
-            if (!data.success) return;
-            savedNumbers = data.numbers || [];
-            renderNumberList();
-            renderSavedNumberCheckboxes();
+            if (data.success) {
+                loadNumberList();
+                setMsg('numberListResponse', 'All contacts cleared.', true);
+            }
         }
-        function renderNumberList() {
-            const box = document.getElementById('numberListDisplay');
-            if (!savedNumbers.length) { box.innerHTML = '<p>No numbers saved.</p>'; return; }
-            box.innerHTML = savedNumbers.map(p => `<span class="number-chip">${escapeHtml(p)} <button class="btn-red" onclick="deleteNumber('${p}')">x</button></span>`).join('');
+        
+        async function bulkImportContacts() {
+            const input = document.getElementById('bulkImportInput').value;
+            const lines = input.split('\n').map(l => l.trim()).filter(l => l);
+            
+            if (!lines.length) {
+                alert('Please enter some numbers to import.');
+                return;
+            }
+            
+            const contacts = [];
+            for (const line of lines) {
+                if (line.includes(':')) {
+                    const parts = line.split(':').map(p => p.trim());
+                    if (parts.length >= 2) {
+                        contacts.push({ name: parts[0], number: parts[1] });
+                    }
+                } else {
+                    contacts.push({ name: 'Imported Contact', number: line });
+                }
+            }
+            
+            if (contacts.length === 0) {
+                alert('No valid contacts found.');
+                return;
+            }
+            
+            let existing = savedNumbers || [];
+            existing = existing.concat(contacts);
+            
+            // Remove duplicates
+            const seen = new Set();
+            existing = existing.filter(item => {
+                const number = typeof item === 'object' ? item.number : item;
+                if (seen.has(number)) return false;
+                seen.add(number);
+                return true;
+            });
+            
+            const res = await fetch('/api/number-list', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ numbers: existing, replace: true })
+            });
+            
+            const data = await parseJsonResponse(res);
+            if (data.success) {
+                document.getElementById('bulkImportInput').value = '';
+                loadNumberList();
+                alert(`${contacts.length} contact(s) imported successfully!`);
+            } else {
+                alert('Failed to import: ' + data.error);
+            }
         }
+        
         function renderSavedNumberCheckboxes() {
             const box = document.getElementById('savedNumberCheckboxes');
             if (!box) return;
-            box.innerHTML = savedNumbers.map(p => `<label class="number-chip"><input type="checkbox" class="saved-number-check" value="${p}">${escapeHtml(p)}</label>`).join('');
+            
+            box.innerHTML = savedNumbers.map(item => {
+                const displayText = typeof item === 'object' 
+                    ? `${escapeHtml(item.name)}: ${escapeHtml(item.number)}` 
+                    : escapeHtml(item);
+                const value = typeof item === 'object' ? item.number : item;
+                
+                return `<label class="number-chip"><input type="checkbox" class="saved-number-check" value="${value}">${displayText}</label>`;
+            }).join('');
         }
-        async function addNumbersToList(replace) {
-            const phones = document.getElementById('numberListInput').value;
-            const list = updateCount('numberListInput', 'numberListInputCount');
-            if (!list.length) return setMsg('numberListResponse', 'Please enter valid number.', false);
-            if (list.length > MAX_PHONE_NUMBERS) return setMsg('numberListResponse', 'Maximum 20 numbers allowed.', false);
-            const res = await fetch('/api/number-list', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phones, replace }) });
-            const data = await parseJsonResponse(res);
-            setMsg('numberListResponse', data.message || data.error, data.success);
-            if (data.success) { document.getElementById('numberListInput').value = ''; loadNumberList(); updateCount('numberListInput', 'numberListInputCount'); }
-        }
-        async function deleteNumber(phone) { await fetch('/api/number-list/' + phone, { method: 'DELETE' }); loadNumberList(); }
         async function clearNumberList() { if (confirm('Clear all saved numbers?')) { await fetch('/api/number-list', { method: 'DELETE' }); loadNumberList(); } }
         function loadSavedNumbersToSchedule() { document.getElementById('schedulePhone').value = savedNumbers.join('\n'); updateCount('schedulePhone', 'schedulePhoneCount'); }
         function loadSavedNumbersToSendNow() { document.getElementById('sendNowPhone').value = savedNumbers.join('\n'); updateCount('sendNowPhone', 'sendNowPhoneCount'); }
@@ -3030,7 +3517,7 @@
         }
         document.getElementById('schedulePhone').addEventListener('input', () => updateCount('schedulePhone', 'schedulePhoneCount'));
         document.getElementById('sendNowPhone').addEventListener('input', () => updateCount('sendNowPhone', 'sendNowPhoneCount'));
-        document.getElementById('numberListInput').addEventListener('input', () => updateCount('numberListInput', 'numberListInputCount'));
+        // Removed: numberListInput no longer exists (replaced with contact management form)
         document.getElementById('editSchedulePhone').addEventListener('input', () => updateCount('editSchedulePhone', 'editSchedulePhoneCount'));
 
         // ══════════════════════════════════════════════════════════════
@@ -3286,6 +3773,459 @@
                 window.location.href = '/auth/logout';
             }
         }
+
+        // ══════════════════════════════════════════════════════════════
+        // TRYBE STOCK TALLY SCHEDULER MODULE
+        // ══════════════════════════════════════════════════════════════
+        let trybeContactsData = [];
+        let trybeGroupsData = [];
+        
+        // Loading overlay functions
+        function trybeShowLoading(mainText, subText) {
+            const overlay = document.getElementById('trybeLoadingOverlay');
+            const textEl = document.getElementById('trybeLoadingText');
+            const subtextEl = document.getElementById('trybeLoadingSubtext');
+            
+            if (textEl) textEl.textContent = mainText || 'Loading...';
+            if (subtextEl) subtextEl.textContent = subText || 'Please wait';
+            if (overlay) overlay.style.display = 'flex';
+        }
+        
+        function trybeHideLoading() {
+            const overlay = document.getElementById('trybeLoadingOverlay');
+            if (overlay) overlay.style.display = 'none';
+        }
+        
+        async function trybeFetchContacts() {
+            const sessionId = document.getElementById('trybeSessionId').value;
+            if (!sessionId) {
+                alert('Please wait for session ID to load');
+                return;
+            }
+            
+            trybeShowLoading('Fetching Contacts', 'Loading your WhatsApp contacts...');
+            
+            try {
+                const response = await fetch(`/contacts/${encodeURIComponent(sessionId)}`);
+                const data = await response.json();
+                
+                trybeHideLoading();
+                
+                if (data.success && data.contacts) {
+                    trybeContactsData = data.contacts;
+                    trybeDisplayContacts('contact');
+                } else {
+                    alert(data.error || 'Failed to fetch contacts. Make sure WhatsApp is connected.');
+                }
+            } catch (error) {
+                trybeHideLoading();
+                alert('Error fetching contacts: ' + error.message);
+            }
+        }
+        
+        async function trybeFetchGroups() {
+            const sessionId = document.getElementById('trybeSessionId').value;
+            if (!sessionId) {
+                alert('Please wait for session ID to load');
+                return;
+            }
+            
+            trybeShowLoading('Fetching Groups', 'Loading your WhatsApp groups...');
+            
+            try {
+                const response = await fetch(`/groups/${encodeURIComponent(sessionId)}`);
+                const data = await response.json();
+                
+                trybeHideLoading();
+                
+                if (data.success && data.groups) {
+                    trybeGroupsData = data.groups;
+                    trybeDisplayContacts('group');
+                } else {
+                    alert(data.error || 'Failed to fetch groups. Make sure WhatsApp is connected.');
+                }
+            } catch (error) {
+                trybeHideLoading();
+                alert('Error fetching groups: ' + error.message);
+            }
+        }
+        
+        async function trybeLoadSavedNumbers() {
+            // Make sure we have the latest saved numbers
+            await loadNumberList();
+            
+            if (!savedNumbers || savedNumbers.length === 0) {
+                alert('No saved contacts found. Go to "WhatsApp List" to save contacts.');
+                return;
+            }
+            
+            const panel = document.getElementById('trybeContactPanel');
+            const title = document.getElementById('trybeContactPanelTitle');
+            const list = document.getElementById('trybeContactList');
+            
+            panel.style.display = 'block';
+            title.textContent = 'Select Saved Contacts';
+            
+            let html = '';
+            savedNumbers.forEach((contact, index) => {
+                const name = typeof contact === 'object' ? (contact.name || 'Unknown') : 'Unknown';
+                const phone = typeof contact === 'object' ? contact.number : contact;
+                const email = typeof contact === 'object' ? (contact.email || '') : '';
+                const company = typeof contact === 'object' ? (contact.company || '') : '';
+                const subtitle = [email, company].filter(Boolean).join(' · ') || phone;
+                
+                html += `
+                    <div style="display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s;" 
+                         onmouseover="this.style.background='#f8fafc'" 
+                         onmouseout="this.style.background='white'"
+                         onclick="this.querySelector('input').checked = !this.querySelector('input').checked"
+                         data-search="${name.toLowerCase()} ${phone} ${subtitle.toLowerCase()}">
+                        <input type="checkbox" class="trybeContactCheckbox" value="${phone}" 
+                               onclick="event.stopPropagation()" 
+                               style="width: 18px; height: 18px; margin-right: 12px; cursor: pointer; flex-shrink: 0;">
+                        <span style="font-size: 18px; margin-right: 10px; flex-shrink: 0;">👤</span>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-size: 14px; font-weight: 600; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(name)}</div>
+                            <div style="font-size: 12px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(subtitle)}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            list.innerHTML = html;
+        }
+        
+        function trybeDisplayContacts(type) {
+            const panel = document.getElementById('trybeContactPanel');
+            const title = document.getElementById('trybeContactPanelTitle');
+            const list = document.getElementById('trybeContactList');
+            
+            panel.style.display = 'block';
+            title.textContent = type === 'group' ? 'Select Groups' : 'Select Contacts';
+            
+            const data = type === 'group' ? trybeGroupsData : trybeContactsData;
+            
+            if (data.length === 0) {
+                list.innerHTML = '<div style="padding: 20px; text-align: center; color: #64748b;">No items found</div>';
+                return;
+            }
+            
+            let html = '';
+            data.forEach((item, index) => {
+                const displayName = item.name || item.displayName || 'Unknown';
+                const phoneNumber = type === 'group' ? (item.id || item.number) : (item.number || item.phone);
+                const emoji = type === 'group' ? '👥' : '👤';
+                
+                html += `
+                    <div style="display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s;" 
+                         onmouseover="this.style.background='#f8fafc'" 
+                         onmouseout="this.style.background='white'"
+                         onclick="this.querySelector('input').checked = !this.querySelector('input').checked"
+                         data-search="${displayName.toLowerCase()}">
+                        <input type="checkbox" class="trybeContactCheckbox" value="${phoneNumber}" 
+                               onclick="event.stopPropagation()" 
+                               style="width: 18px; height: 18px; margin-right: 12px; cursor: pointer; flex-shrink: 0;">
+                        <span style="font-size: 18px; margin-right: 10px; flex-shrink: 0;">${emoji}</span>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 600; color: #0f172a; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${displayName}</div>
+                            <div style="font-size: 12px; color: #64748b; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${phoneNumber}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            list.innerHTML = html;
+        }
+        
+        function trybeFilterContacts() {
+            const searchTerm = document.getElementById('trybeContactSearch').value.toLowerCase();
+            const items = document.querySelectorAll('#trybeContactList > div');
+            
+            items.forEach(item => {
+                const searchText = item.getAttribute('data-search');
+                if (searchText && searchText.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        function trybeAddSelectedContacts() {
+            const checkboxes = document.querySelectorAll('.trybeContactCheckbox:checked');
+            const textarea = document.getElementById('trybeRecipients');
+            
+            if (checkboxes.length === 0) {
+                alert('Please select at least one contact or group');
+                return;
+            }
+            
+            const selectedNumbers = Array.from(checkboxes).map(cb => cb.value);
+            const currentNumbers = textarea.value.split('\n').filter(n => n.trim());
+            const combined = [...new Set([...currentNumbers, ...selectedNumbers])];
+            
+            textarea.value = combined.join('\n');
+            trybeCloseContactPanel();
+            
+            alert(`${checkboxes.length} item(s) added to recipients`);
+        }
+        
+        function trybeSelectAllContacts() {
+            const checkboxes = document.querySelectorAll('.trybeContactCheckbox');
+            const visibleCheckboxes = Array.from(checkboxes).filter(cb => {
+                const parent = cb.closest('div[data-search]');
+                return parent && parent.style.display !== 'none';
+            });
+            
+            visibleCheckboxes.forEach(cb => cb.checked = true);
+        }
+        
+        function trybeClearSelection() {
+            const checkboxes = document.querySelectorAll('.trybeContactCheckbox');
+            checkboxes.forEach(cb => cb.checked = false);
+        }
+        
+        function trybeCloseContactPanel() {
+            document.getElementById('trybeContactPanel').style.display = 'none';
+            document.getElementById('trybeContactSearch').value = '';
+        }
+
+        (function() {
+            const form = document.getElementById('trybeSchedulerForm');
+            const previewBtn = document.getElementById('trybePreviewBtn');
+            const sendBtn = document.getElementById('trybeSendBtn');
+            const statusMessage = document.getElementById('trybeStatusMessage');
+            const messagePreview = document.getElementById('trybeMessagePreview');
+            const sessionIdInput = document.getElementById('trybeSessionId');
+
+            // Auto-load session ID from logged-in user
+            if (sessionIdInput) {
+                fetch('/auth/me')
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success && data.user) {
+                            const sessionId = data.user.username || data.user.displayName || 'admin';
+                            sessionIdInput.value = sessionId;
+                            sessionIdInput.placeholder = sessionId;
+                            console.log('Trybe Session ID loaded:', sessionId);
+                        } else {
+                            sessionIdInput.placeholder = 'Enter session ID manually';
+                            sessionIdInput.readOnly = false;
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Failed to load session info:', err);
+                        sessionIdInput.placeholder = 'Enter session ID manually';
+                        sessionIdInput.readOnly = false;
+                    });
+            }
+
+            // Toggle schedule time inputs based on selected type
+            document.querySelectorAll('input[name="trybeScheduleType"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    const value = e.target.value;
+                    document.getElementById('trybeScheduleTimeGroup').style.display = value === 'scheduled' ? 'block' : 'none';
+                    document.getElementById('trybeDailyTimeGroup').style.display = value === 'daily' ? 'block' : 'none';
+                    document.getElementById('trybeWeeklyGroup').style.display = value === 'weekly' ? 'block' : 'none';
+                    document.getElementById('trybeMonthlyGroup').style.display = value === 'monthly' ? 'block' : 'none';
+                });
+            });
+
+            // Helper function to show status
+            function showTrybeStatus(message, isSuccess = true) {
+                statusMessage.textContent = message;
+                statusMessage.style.color = isSuccess ? '#166534' : '#c62828';
+                statusMessage.style.display = 'block';
+                statusMessage.style.padding = '12px';
+                statusMessage.style.borderRadius = '8px';
+                statusMessage.style.backgroundColor = isSuccess ? '#dcfce7' : '#fee2e2';
+                statusMessage.style.border = isSuccess ? '1px solid #86efac' : '1px solid #fca5a5';
+                statusMessage.style.fontWeight = '700';
+                setTimeout(() => {
+                    statusMessage.style.display = 'none';
+                }, 8000); // Show for 8 seconds
+            }
+
+            // Format date helper
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                return `${day}-${month}-${year} ${hours}:${minutes}`;
+            }
+
+            // Preview button handler
+            if (previewBtn) {
+                previewBtn.addEventListener('click', async () => {
+                    const apiUrl = document.getElementById('trybeApiUrl').value;
+                    
+                    if (!apiUrl) {
+                        showTrybeStatus('Please enter an API URL', false);
+                        return;
+                    }
+
+                    previewBtn.disabled = true;
+                    previewBtn.textContent = '⏳ Fetching...';
+                    messagePreview.textContent = 'Fetching data from API...';
+                    
+                    trybeShowLoading('Fetching Report Data', 'Getting latest stock tally from API...');
+
+                    try {
+                        const response = await fetch('/api/trybe-report/preview', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ apiUrl })
+                        });
+
+                        const result = await response.json();
+                        
+                        trybeHideLoading();
+
+                        if (result.success) {
+                            messagePreview.textContent = result.message;
+                            showTrybeStatus('Preview loaded successfully!', true);
+                        } else {
+                            messagePreview.textContent = `Error: ${result.error}`;
+                            showTrybeStatus(result.error, false);
+                        }
+                    } catch (error) {
+                        trybeHideLoading();
+                        messagePreview.textContent = `Error: ${error.message}`;
+                        showTrybeStatus('Failed to fetch preview', false);
+                    } finally {
+                        previewBtn.disabled = false;
+                        previewBtn.textContent = '👁️ Preview Report';
+                    }
+                });
+            }
+
+            // Form submit handler
+            if (form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const apiUrl = document.getElementById('trybeApiUrl').value;
+                    const sessionId = document.getElementById('trybeSessionId').value;
+                    const recipientsText = document.getElementById('trybeRecipients').value;
+                    const scheduleType = document.querySelector('input[name="trybeScheduleType"]:checked').value;
+                    
+                    // Parse recipients
+                    const recipients = recipientsText.split('\n')
+                        .map(line => line.trim())
+                        .filter(line => line.length > 0);
+
+                    if (recipients.length === 0) {
+                        showTrybeStatus('Please enter at least one recipient', false);
+                        return;
+                    }
+
+                    let scheduleData = {
+                        apiUrl,
+                        sessionId,
+                        recipients,
+                        scheduleType
+                    };
+
+                    // Gather schedule parameters based on type
+                    if (scheduleType === 'scheduled') {
+                        const scheduleTime = document.getElementById('trybeScheduleTime').value;
+                        if (!scheduleTime) {
+                            showTrybeStatus('Please select a schedule time', false);
+                            return;
+                        }
+                        scheduleData.scheduleTime = scheduleTime;
+                        scheduleData.scheduleMode = 'CUSTOM';
+                    } else if (scheduleType === 'daily') {
+                        const dailyTime = document.getElementById('trybeDailyTime').value;
+                        if (!dailyTime) {
+                            showTrybeStatus('Please select a time for daily schedule', false);
+                            return;
+                        }
+                        const today = new Date();
+                        const startDate = today.toISOString().split('T')[0];
+                        scheduleData.startDate = startDate;
+                        scheduleData.time = dailyTime;
+                        scheduleData.scheduleMode = 'DAILY';
+                    } else if (scheduleType === 'weekly') {
+                        const weeklyDay = document.getElementById('trybeWeeklyDay').value;
+                        const weeklyTime = document.getElementById('trybeWeeklyTime').value;
+                        if (!weeklyTime) {
+                            showTrybeStatus('Please select a time for weekly schedule', false);
+                            return;
+                        }
+                        const today = new Date();
+                        const startDate = today.toISOString().split('T')[0];
+                        scheduleData.startDate = startDate;
+                        scheduleData.weeklyDay = weeklyDay;
+                        scheduleData.time = weeklyTime;
+                        scheduleData.scheduleMode = 'WEEKLY';
+                    } else if (scheduleType === 'monthly') {
+                        const monthlyDay = document.getElementById('trybeMonthlyDay').value;
+                        const monthlyTime = document.getElementById('trybeMonthlyTime').value;
+                        if (!monthlyTime) {
+                            showTrybeStatus('Please select a time for monthly schedule', false);
+                            return;
+                        }
+                        const today = new Date();
+                        const startDate = today.toISOString().split('T')[0];
+                        scheduleData.startDate = startDate;
+                        scheduleData.monthlyDay = monthlyDay;
+                        scheduleData.time = monthlyTime;
+                        scheduleData.scheduleMode = 'MONTHLY';
+                    }
+
+                    sendBtn.disabled = true;
+                    sendBtn.textContent = '⏳ Processing...';
+                    
+                    const loadingText = scheduleType === 'now' ? 'Sending Report' : 'Creating Schedule';
+                    const loadingSubtext = scheduleType === 'now' ? 'Fetching data and sending to recipients...' : 'Setting up your scheduled report...';
+                    trybeShowLoading(loadingText, loadingSubtext);
+
+                    try {
+                        const response = await fetch('/api/trybe-report/send', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(scheduleData)
+                        });
+
+                        const result = await response.json();
+                        
+                        trybeHideLoading();
+
+                        if (result.success) {
+                            showTrybeStatus(result.message || 'Report sent successfully!', true);
+                            if (scheduleType === 'now') {
+                                const details = result.details;
+                                if (details) {
+                                    setTimeout(() => {
+                                        showTrybeStatus(
+                                            `✅ Success: ${details.successCount}/${details.total} | ❌ Failed: ${details.failedCount}`,
+                                            true
+                                        );
+                                    }, 3000);
+                                }
+                            }
+                            // Reload dashboard to show new schedule
+                            if (scheduleType !== 'now') {
+                                loadDashboard();
+                                loadSchedules();
+                            }
+                        } else {
+                            showTrybeStatus(result.error || 'Failed to send report', false);
+                        }
+                    } catch (error) {
+                        trybeHideLoading();
+                        showTrybeStatus(`Error: ${error.message}`, false);
+                    } finally {
+                        sendBtn.disabled = false;
+                        sendBtn.textContent = '📤 Send Report';
+                    }
+                });
+            }
+        })();
     </script>
 
     <script>

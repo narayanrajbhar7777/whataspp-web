@@ -350,15 +350,38 @@ app.get('/api/number-list', (req, res) => {
 });
 
 app.post('/api/number-list', (req, res) => {
-    const { phones, replace } = req.body;
-    const incoming = parsePhoneNumbers(phones);
-    if (!incoming.length) return res.status(400).json({ success: false, error: 'Please enter valid number.' });
-
-    let list = replace ? incoming : loadNumberList().concat(incoming);
-    list = parsePhoneNumbers(list.join('\n'));
+    const { numbers, replace } = req.body;
+    
+    if (!numbers || !numbers.length) {
+        return res.status(400).json({ success: false, error: 'Please enter valid numbers.' });
+    }
+    
+    // Handle both object format {name, number, email, company} and plain string format
+    const processedNumbers = numbers.map(item => {
+        if (typeof item === 'object' && item.number) {
+            const contact = { name: item.name, number: item.number };
+            if (item.email) contact.email = item.email;
+            if (item.company) contact.company = item.company;
+            return contact;
+        }
+        return item; // Plain string number
+    });
+    
+    let list = replace ? processedNumbers : loadNumberList().concat(processedNumbers);
+    
+    // Remove duplicates based on number
+    const seen = new Set();
+    list = list.filter(item => {
+        const number = typeof item === 'object' ? item.number : item;
+        if (seen.has(number)) return false;
+        seen.add(number);
+        return true;
+    });
+    
     if (list.length > CONFIG.MAX_RECIPIENTS_PER_REQUEST) {
         return res.status(400).json({ success: false, error: `Maximum ${CONFIG.MAX_RECIPIENTS_PER_REQUEST} numbers allowed in the saved list.` });
     }
+    
     saveNumberList(list);
     res.json({ success: true, message: replace ? 'List replaced successfully.' : 'Numbers added successfully.' });
 });
@@ -517,6 +540,240 @@ app.post('/api/schedules/:id/quick-send', async (req, res) => {
     } catch(e) { res.status(500).json({ success: false, error: e.message }); }
 });
 
+// =================================================================
+// TRYBE STOCK TALLY REPORT API ENDPOINTS
+// =================================================================
+
+// Preview Trybe report
+app.post('/api/trybe-report/preview', async (req, res) => {
+    const { apiUrl } = req.body;
+    
+    if (!apiUrl) {
+        return res.status(400).json({ success: false, error: 'API URL is required' });
+    }
+
+    try {
+        const https = require('https');
+        const http = require('http');
+        const protocol = apiUrl.startsWith('https') ? https : http;
+        
+        protocol.get(apiUrl, (apiRes) => {
+            let data = '';
+            
+            apiRes.on('data', chunk => { data += chunk; });
+            
+            apiRes.on('end', () => {
+                try {
+                    const jsonData = JSON.parse(data);
+                    const message = formatTrybeStockTallyMessage(jsonData);
+                    res.json({ success: true, message });
+                } catch (e) {
+                    res.status(500).json({ success: false, error: 'Failed to parse API response: ' + e.message });
+                }
+            });
+        }).on('error', (err) => {
+            res.status(500).json({ success: false, error: 'Failed to fetch API: ' + err.message });
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Send Trybe report via WhatsApp
+app.post('/api/trybe-report/send', async (req, res) => {
+    const { apiUrl, sessionId, recipients, scheduleType, scheduleTime, scheduleMode, time, weeklyDay, monthlyDay, startDate } = req.body;
+    
+    if (!apiUrl || !sessionId || !recipients || recipients.length === 0) {
+        return res.status(400).json({ 
+            success: false, 
+            error: 'API URL, session ID, and recipients are required' 
+        });
+    }
+
+    try {
+        const https = require('https');
+        const http = require('http');
+        const protocol = apiUrl.startsWith('https') ? https : http;
+        
+        // Fetch data from API to validate
+        protocol.get(apiUrl, (apiRes) => {
+            let data = '';
+            
+            apiRes.on('data', chunk => { data += chunk; });
+            
+            apiRes.on('end', async () => {
+                try {
+                    const jsonData = JSON.parse(data);
+                    const message = formatTrybeStockTallyMessage(jsonData);
+                    
+                    if (scheduleType === 'now') {
+                        // Send immediately
+                        if (!clients[sessionId] || !clientStatus[sessionId]) {
+                            return res.status(400).json({ 
+                                success: false, 
+                                error: 'WhatsApp session is not active. Please scan QR code first.' 
+                            });
+                        }
+
+                        try {
+                            const output = await whatsAppService.sendWhatsAppToMultiple({
+                                userId: sessionId,
+                                phones: recipients,
+                                message: message,
+                                filePaths: [],
+                                recipientFileMap: {},
+                                helpers: HELPERS
+                            });
+
+                            res.json({
+                                success: true,
+                                message: `Report sent to ${output.successCount}/${output.total} recipients`,
+                                details: output
+                            });
+                        } catch (sendError) {
+                            res.status(500).json({ 
+                                success: false, 
+                                error: 'Failed to send message: ' + sendError.message 
+                            });
+                        }
+                    } else {
+                        // Schedule for later (one-time or recurring)
+                        const mode = scheduleMode || 'CUSTOM';
+                        let firstScheduleDate;
+                        
+                        if (mode === 'CUSTOM' && scheduleTime) {
+                            firstScheduleDate = new Date(scheduleTime);
+                        } else {
+                            // Use the scheduler math service to calculate first run
+                            const check = mathService.calculateFirstScheduleDate({
+                                scheduleMode: mode,
+                                scheduleAt: scheduleTime,
+                                startDate: startDate,
+                                time: time,
+                                weeklyDay: weeklyDay,
+                                monthlyDay: monthlyDay
+                            });
+                            
+                            if (!check.success) {
+                                return res.status(400).json({ 
+                                    success: false, 
+                                    error: check.error || 'Invalid schedule parameters' 
+                                });
+                            }
+                            firstScheduleDate = check.date;
+                        }
+
+                        const schedules = loadSchedules();
+                        const newSchedule = {
+                            id: `trybe-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                            userId: sessionId,
+                            phones: recipients,
+                            phone: recipients.join(', '),
+                            totalNumbers: recipients.length,
+                            schedulerName: `Trybe Stock Tally Report - ${mode}`,
+                            message: message, // Store initial message, but will fetch fresh on each run
+                            scheduleAt: firstScheduleDate.toISOString(),
+                            scheduleMode: mode,
+                            scheduleType: 'CUSTOM',
+                            status: 'SCHEDULED',
+                            createdAt: new Date().toISOString(),
+                            isActive: true,
+                            uploadedFiles: [],
+                            phoneFileMap: {},
+                            apiUrl: apiUrl,
+                            reportType: 'TRYBE_STOCK_TALLY',
+                            runHistory: [],
+                            // Store schedule parameters for recurring
+                            startDate: startDate,
+                            time: time,
+                            weeklyDay: weeklyDay,
+                            monthlyDay: monthlyDay
+                        };
+
+                        schedules.push(newSchedule);
+                        saveSchedules(schedules);
+
+                        const scheduleTypeText = {
+                            'CUSTOM': 'one-time',
+                            'DAILY': 'daily',
+                            'WEEKLY': 'weekly',
+                            'MONTHLY': 'monthly'
+                        }[mode] || 'scheduled';
+
+                        res.json({
+                            success: true,
+                            message: `Report ${scheduleTypeText} schedule created for ${firstScheduleDate.toLocaleString()}. Fresh data will be fetched before each send.`,
+                            scheduleId: newSchedule.id
+                        });
+                    }
+                } catch (e) {
+                    res.status(500).json({ success: false, error: 'Failed to parse API response: ' + e.message });
+                }
+            });
+        }).on('error', (err) => {
+            res.status(500).json({ success: false, error: 'Failed to fetch API: ' + err.message });
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Helper function to format Trybe Stock Tally message
+function formatTrybeStockTallyMessage(data) {
+    if (!data || !data.GetTrybeStockTally || !Array.isArray(data.GetTrybeStockTally)) {
+        throw new Error('Invalid API response format');
+    }
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${day}-${month}-${year} ${hours}:${minutes}`;
+    };
+
+    let message = 'TRYBE STOCK TALLY REPORT\n';
+    message += '--------------------------------\n';
+
+    data.GetTrybeStockTally.forEach((item) => {
+        message += `Voucher ID : ${item.voucherid}\n`;
+        message += `Voucher : ${item.voucherlabel}\n`;
+        message += `Department : ${item.departmentname}\n`;
+        message += `PCS : ${item.totalpcs}\n`;
+        message += `Date : ${formatDate(item.createddate)}\n`;
+        message += '--------------------------------\n';
+    });
+
+    return message;
+}
+
+// Helper function to fetch fresh data from Trybe API
+async function fetchTrybeApiData(apiUrl) {
+    return new Promise((resolve, reject) => {
+        const https = require('https');
+        const http = require('http');
+        const protocol = apiUrl.startsWith('https') ? https : http;
+        
+        protocol.get(apiUrl, (apiRes) => {
+            let data = '';
+            apiRes.on('data', chunk => { data += chunk; });
+            apiRes.on('end', () => {
+                try {
+                    const jsonData = JSON.parse(data);
+                    const message = formatTrybeStockTallyMessage(jsonData);
+                    resolve(message);
+                } catch (e) {
+                    reject(new Error('Failed to parse API response: ' + e.message));
+                }
+            });
+        }).on('error', (err) => {
+            reject(new Error('Failed to fetch API: ' + err.message));
+        });
+    });
+}
+
 let loopRunning = false;
 async function processDueSchedules() {
     if (loopRunning) return; loopRunning = true;
@@ -526,13 +783,30 @@ async function processDueSchedules() {
             if (s.status !== 'SCHEDULED' || !s.isActive || new Date(s.scheduleAt) > new Date() || !clients[s.userId] || !clientStatus[s.userId]) continue;
             s.status = 'PROCESSING'; saveSchedules(schedules);
             try {
+                let messageToSend = s.message;
                 let fPaths = (s.uploadedFiles || []).map(f => f.filePath);
+                
+                // If this is a Trybe report, fetch fresh data from API
+                if (s.reportType === 'TRYBE_STOCK_TALLY' && s.apiUrl) {
+                    console.log(`[Trybe Scheduler] Fetching fresh data from API for schedule ${s.id}`);
+                    try {
+                        messageToSend = await fetchTrybeApiData(s.apiUrl);
+                        console.log(`[Trybe Scheduler] Fresh data fetched successfully for schedule ${s.id}`);
+                    } catch (apiError) {
+                        console.error(`[Trybe Scheduler] Failed to fetch API data: ${apiError.message}`);
+                        s.status = 'FAILED';
+                        s.error = 'API fetch failed: ' + apiError.message;
+                        changed = true;
+                        continue;
+                    }
+                }
+                
                 if (s.scheduleType === 'LOCATION') { const scanning = fileService.resolveFilesFromLocation({ ...s, config: CONFIG }); if (scanning.success) fPaths = scanning.files; }
-                const delivery = await whatsAppService.sendWhatsAppToMultiple({ userId: s.userId, phones: s.phones, message: s.message, filePaths: fPaths, recipientFileMap: s.phoneFileMap || {}, helpers: HELPERS });
+                const delivery = await whatsAppService.sendWhatsAppToMultiple({ userId: s.userId, phones: s.phones, message: messageToSend, filePaths: fPaths, recipientFileMap: s.phoneFileMap || {}, helpers: HELPERS });
                 s.status = delivery.failedCount === 0 ? 'SENT' : (delivery.successCount > 0 ? 'PARTIAL' : 'FAILED'); s.lastRunAt = new Date().toISOString();
                 const next = mathService.calculateNextRun(s); if (next) { s.scheduleAt = next.toISOString(); s.status = 'SCHEDULED'; }
                 mathService.pushRunHistory(s, delivery); changed = true;
-            } catch(e) { s.status = 'FAILED'; changed = true; }
+            } catch(e) { s.status = 'FAILED'; s.error = e.message; changed = true; }
         }
         if (changed) saveSchedules(schedules);
     } catch(e) {} finally { loopRunning = false; }
